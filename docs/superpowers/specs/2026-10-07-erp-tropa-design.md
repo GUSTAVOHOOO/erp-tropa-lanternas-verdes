@@ -83,7 +83,7 @@ app/
         └── ocorrencias/
             ├── page.tsx           /painel/ocorrencias?status=aberta&setor=2814
             ├── loading.tsx, error.tsx
-            ├── actions.ts         criarOcorrencia, atualizarStatus, atribuirResponsavel
+            ├── actions.ts         registrarOcorrencia, atualizarStatus, atribuirResponsavel
             ├── _components/       FormOcorrencia, FiltroOcorrencias, FormStatus, FormAtribuir
             ├── nova/page.tsx      /painel/ocorrencias/nova
             └── [id]/
@@ -92,10 +92,13 @@ app/
                 └── atribuir/page.tsx   /painel/ocorrencias/o1/atribuir (só Guardião)
 
 proxy.ts                           o "middleware" do enunciado (Next 16)             AUTH-01
-components/  ui/ (shadcn), CampoTexto, MenuNavegacao, EstadoVazio, BadgeGravidade, BadgeStatus
-lib/         api-error.ts, resultado-acao.ts, sessao.ts, dal.ts,
+components/  ui/ (shadcn), CampoTexto, CampoSelect, MenuNavegacao, EstadoVazio, TelaDeErro,
+             EsqueletoLista, TabelaOcorrencias, BadgeGravidade, BadgeStatus
+lib/         api.ts, api-error.ts, resultado-acao.ts, erros-formulario.ts, formatar.ts,
+             sessao.ts (assinatura, sem next/*), dal.ts (cookies, verificarSessao, exigirPapel),
              setores.ts, lanternas.ts, usuarios.ts, ocorrencias.ts,
              schemas/ (setor, lanterna, usuario, ocorrencia, login)
+__tests__/   testes Vitest (lib, actions, proxy, componentes)
 db.json, .env.local, .env.example
 ```
 
@@ -272,9 +275,14 @@ que o lanterna escolhido é do mesmo setor.
 
 ## 10. Verificação
 
-Sem testes unitários (DEC-06). A verificação é:
+Testes com **Vitest + React Testing Library**, configurados como no guia oficial do Next.js
+(`node_modules/next/dist/docs/01-app/02-guides/testing/vitest.md`), em `__tests__/`. O guia avisa que
+Server Components `async` não são suportados pelo Vitest: eles são verificados por `build`, por
+requisições `curl` e pelo roteiro manual. A verificação é:
 
-1. `npm run lint` e `npm run build` sem erros.
+1. `npm run test:run`, `npm run lint` e `npm run build` sem erros. Testes cobrem: schemas e `db.json`,
+   camada de serviço (fetch simulado), sessão assinada, `proxy.ts`, Server Actions (sessão, papel,
+   setor, API fora do ar) e componentes cliente/síncronos (formulários, menu, estados).
 2. `bash .claude/skills/auditoria-apresentacao/scripts/verificar.sh .` sem `VIOLACAO`.
 3. Roteiro de demonstração manual, executado no navegador:
    1. `/` → navegar para `/lanternas`, filtrar por setor, F5 mantém o filtro, voltar desfaz.
@@ -287,7 +295,7 @@ Sem testes unitários (DEC-06). A verificação é:
    8. Registrar ocorrência com campos inválidos (mensagens) e depois válida (aparece na lista).
    9. Mudar status para "resolvida" sem resolução → erro no campo; com resolução → salva.
    10. Login como Ganthet → vê todos os setores, filtra por setor, atribui responsável.
-   11. Desligar o json-server → tela de erro com "Tentar de novo"; religar e tentar de novo.
+   11. Logado, desligar o json-server e abrir `/painel/ocorrencias` → tela de erro com "Tentar de novo"; religar e tentar de novo. (Páginas públicas com `revalidate` seguem mostrando a última versão boa: é o cache funcionando.)
    12. Sair → `/login`; tentar `/painel` → `/login`.
 4. Skill `auditoria-apresentacao` gera `docs/AUDITORIA.md` e `docs/ROTEIRO.md` com os 6 requisitos ✅.
 
@@ -307,7 +315,7 @@ As skills foram escritas antes deste design. Antes do código:
 ## 12. Fora do escopo
 
 Cadastro de usuários, recuperação de senha, voltar à página original após login (`?next=`), paginação,
-testes automatizados, modo escuro, upload de arquivos, tempo real. Senhas em texto puro no `db.json`
+testes E2E (Playwright), modo escuro, upload de arquivos, tempo real. Senhas em texto puro no `db.json`
 são uma limitação declarada da API fake (AUTH-11).
 
 ## 13. Riscos

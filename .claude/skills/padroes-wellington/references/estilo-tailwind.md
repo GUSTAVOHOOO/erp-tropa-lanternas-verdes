@@ -84,7 +84,7 @@ bloco gerado pelo shadcn (`--primary`, etc.), e são usadas pelos nomes semânti
 `text-destructive`). Não crie `tailwind.config.js`.
 **✅ Certo:** ajustar `--primary` no `:root` de `globals.css` e usar `bg-primary`.
 **❌ Errado:** `bg-[#00ff66]` espalhado pelo código; criar `tailwind.config.js` só para isso.
-**Como verificar:** `rg --files -g "tailwind.config.*"` deve retornar vazio; `rg -n "#[0-9a-fA-F]{6}" app components` deve retornar vazio (cores ficam em `globals.css`).
+**Como verificar:** `rg --files -g "tailwind.config.*"` deve retornar vazio; `rg -n "#[0-9a-fA-F]{6}" app components -g "!*.svg"` deve retornar vazio (cores ficam em `globals.css`; o favicon `app/icon.svg` é arquivo de imagem, não estilo de código).
 **Nota de versão:** o slide é do Tailwind 3. O create-next-app atual instala o Tailwind 4, em que
 a configuração é feita no próprio CSS (`@import "tailwindcss"` e `@theme`) e o `tailwind.config.js`
 deixou de ser necessário. A ideia do slide (personalizar a escala num lugar só) continua.
@@ -105,3 +105,44 @@ se for necessário e registre o motivo. Não instale outra biblioteca de compone
 **✅ Certo:** `import { Button } from '@/components/ui/button'`
 **❌ Errado:** `npm i @mui/material`; copiar à mão um botão de outro projeto.
 **Como verificar:** `package.json` sem bibliotecas de UI fora da lista de STACK-06.
+
+### CSS-12: Tokens da Tropa: cor só por nome semântico, gravidade com texto
+**Fonte:** [DECISÃO] design system (`docs/superpowers/specs/2026-10-07-design-system-tropa-design.md`) + [SLIDE] CSS p. 13 ("Sistema de Design (Constraints)")
+**Regra:** As cores do tema Noite e a escala de gravidade são variáveis em `app/globals.css`, expostas
+como classes (`bg-primary`, `text-primary-texto`, `text-texto-terciario`, `bg-gravidade-baixa`…`bg-gravidade-critica`).
+A gravidade segue o espectro emocional dos Lanternas: baixa azul (esperança), média amarelo (medo),
+alta laranja (ganância), crítica vermelho (fúria). A cor da gravidade nunca aparece sozinha: sempre
+vem com o rótulo em texto. Mapas de classe por valor usam objeto `as const` com a classe inteira
+(o Tailwind só gera a classe que encontra escrita por completo).
+**✅ Certo:** `const corPorGravidade = { critica: 'bg-gravidade-critica', ... } as const`
+**❌ Errado:** `` `bg-gravidade-${gravidade}` `` (classe montada não é gerada); losango colorido sem texto.
+**Como verificar:** `rg -n "bg-gravidade-\\$\{" app components` deve retornar vazio; `BadgeGravidade` sempre renderiza `rotuloGravidade`.
+
+### CSS-13: Três famílias com next/font, cada uma com um papel
+**Fonte:** [DOCS] `node_modules/next/dist/docs/01-app/03-api-reference/02-components/font.md` + [DECISÃO] design system
+**Regra:** `app/layout.tsx` carrega com `next/font/google`: Barlow (400/500/600) para a interface,
+Barlow Condensed (600/700) só para `h1`, `h2` e a marca (`font-heading`), IBM Plex Mono (500) só para
+dados como número de setor (`font-mono`). As variáveis CSS entram no `@theme` de `globals.css`.
+Fonte condensada nunca em botão, rótulo, menu ou célula de tabela.
+**✅ Certo:** `<h1 className="font-heading text-4xl font-bold">`
+**❌ Errado:** `<Button className="font-heading uppercase">`; `<link href="https://fonts.googleapis.com/...">` no layout.
+**Como verificar:** `rg -n "fonts.googleapis" app` vazio; `rg -n "font-heading" components/ui` vazio.
+
+### CSS-14: O foco do teclado é o brilho do anel
+**Fonte:** [DECISÃO] design system + [SLIDE] CSS p. 15 (pseudo-classes) — complementa CSS-08
+**Regra:** O token `--shadow-anel` (classe `shadow-anel`) é o único brilho da interface, além do
+emblema (`drop-shadow-anel`). Todo componente interativo de `components/ui` usa
+`outline-none focus-visible:shadow-anel`. Links (`<a>`, inclusive `<Link>`) recebem o mesmo brilho
+por uma regra única em `@layer base` de `globals.css`, para não repetir classe em cada link.
+**✅ Certo:** `buttonVariants` com `focus-visible:shadow-anel`.
+**❌ Errado:** `outline-none` sem `focus-visible:` substituto; `shadow-anel` como enfeite em cartão.
+**Como verificar:** `rg -n "focus-visible:shadow-anel" components/ui` acha button, input, textarea e select; `rg -n "drop-shadow-anel" app components` só onde há Emblema.
+
+### CSS-15: Movimento só para mudança de estado, e respeitando reduced-motion
+**Fonte:** [DECISÃO] design system + [DOCS] https://developer.mozilla.org/docs/Web/CSS/@media/prefers-reduced-motion
+**Regra:** Transições de cor, borda, sombra e brilho com `duration-150 ease-out`. Nada de animar
+largura/altura nem animação de entrada de página. `globals.css` tem um bloco
+`@media (prefers-reduced-motion: reduce)` que zera transições e animações.
+**✅ Certo:** `transition-colors duration-150 ease-out hover:bg-secondary`
+**❌ Errado:** `transition-all duration-700`; `animate-bounce`.
+**Como verificar:** `rg -n "prefers-reduced-motion" app/globals.css` acha o bloco; `rg -n "transition-all|duration-[5-9]00" app components` vazio.

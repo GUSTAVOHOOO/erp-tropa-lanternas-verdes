@@ -9,7 +9,7 @@ Links de referência passados pelo professor:
 - https://zod.dev/basics
 
 
-Índice: STACK-01 Next.js 16 (App Router, TypeScript, Tailwind, ESLint) · STACK-02 shadcn/ui sobre Base UI · STACK-03 react-hook-form + @hookform/resolvers + Zod 4 · STACK-04 API fake com json-server em db.json, porta 3001 · STACK-05 Estrutura de pastas · STACK-06 Lista fechada de dependências · DEC-01 fetch nos Server Components, não Axios · DEC-02 Sem TanStack Query nem SWR · DEC-03 Dois papéis: Guardião e Lanterna · DEC-04 Front preparado para o back-end: só troca API_URL · DEC-05 Um único padrão de formulário: RHF chama a Server Action · DEC-06 Testes com Vitest, como no guia oficial do Next.js · DEC-07 Sem Context API nem estado global no cliente · DEC-08 Português para o domínio, inglês só nas convenções do framework · DEC-09 Mapa das áreas exigidas pelo enunciado · DEC-10 Sem Cache Components, React Compiler ou flags experimentais
+Índice: STACK-01 Next.js 16 (App Router, TypeScript, Tailwind, ESLint) · STACK-02 shadcn/ui sobre Base UI · STACK-03 react-hook-form + @hookform/resolvers + Zod 4 · STACK-04 API fake com json-server em db.json, porta 3001 · STACK-05 Estrutura de pastas · STACK-06 Lista fechada de dependências · DEC-01 fetch nos Server Components, não Axios · DEC-02 Sem TanStack Query nem SWR · DEC-03 Dois papéis: Guardião e Lanterna · DEC-04 Front preparado para o back-end: só troca API_URL · DEC-05 Um único padrão de formulário: RHF chama a Server Action · DEC-06 Testes com Vitest, como no guia oficial do Next.js · DEC-07 Sem Context API nem estado global no cliente · DEC-08 Português para o domínio, inglês só nas convenções do framework · DEC-09 Mapa das áreas exigidas pelo enunciado · DEC-10 Sem Cache Components, React Compiler ou flags experimentais · DEC-11 Visual próprio sobre Base UI · DEC-12 Vitrine /design-system · DEC-13 Tema único escuro
 
 ---
 
@@ -37,6 +37,7 @@ com `npx shadcn@latest add button input label textarea select card table badge a
 `components/ui/` (arquivos em kebab-case, gerados pelo CLI).
 **✅ Certo:** `npx shadcn@latest add select` e `import { Select, ... } from '@/components/ui/select'`
 **❌ Errado:** instalar `@radix-ui/*` ou `@base-ui/react` à mão e montar componentes do zero.
+**Nota:** o visual dos arquivos gerados em `components/ui/` foi reescrito para o design system da Tropa, mantendo a API e o Base UI por baixo. Ver DEC-11.
 **Como verificar:** `components.json` existe; `rg -n "\"base\"|base-ui|@base-ui" components.json package.json` confirma a base.
 **Nota de versão:** conferido em 2026-10-07 com `npx shadcn@latest init --help` (shadcn 4.21.4):
 `-b, --base <base>` aceita `base`, `radix` e `aria`. O valor certo é `base` (não `base-ui`).
@@ -85,7 +86,8 @@ TrabalhoWeb/
 ├── db.json                          dados da API fake (STACK-04)
 ├── vitest.config.mts, vitest.setup.ts, CLAUDE.md, .env.example   configuração de testes e variáveis (API_URL, SESSION_SECRET: API-08)
 ├── app/
-│   ├── layout.tsx                   <html lang="pt-BR"> (ROTA-05)
+│   ├── layout.tsx                   <html lang="pt-BR"> (ROTA-05), fontes (CSS-13)
+│   ├── icon.svg                     favicon com o emblema (DEC-11)
 │   ├── globals.css                  Tailwind + tema shadcn (CSS-09)
 │   ├── not-found.tsx                404 global (ROTA-22)
 │   ├── (site)/                      ÁREA PÚBLICA (ROTA-04)
@@ -93,7 +95,8 @@ TrabalhoWeb/
 │   │   ├── lanternas/page.tsx, loading.tsx, error.tsx, _components/CartaoLanterna.tsx   "/lanternas" listagem pública com filtro por setor
 │   │   ├── lanternas/[id]/page.tsx, not-found.tsx                      "/lanternas/hal-jordan" detalhe público
 │   │   ├── login/page.tsx, actions.ts, _components/FormLogin.tsx       "/login", entrar() (AUTH-08)
-│   │   └── acesso-negado/page.tsx                                      403 explicado (AUTH-06)
+│   │   ├── acesso-negado/page.tsx                                      403 explicado (AUTH-06)
+│   │   └── design-system/page.tsx, _components/SecaoVitrine.tsx        vitrine do design system (DEC-12)
 │   └── (painel)/                    ÁREA PRIVADA
 │       ├── layout.tsx, actions.ts                                      sidebar + nome + botão Sair; sair() (AUTH-09)
 │       └── painel/
@@ -108,7 +111,9 @@ TrabalhoWeb/
 │   ├── ui/                          gerado pelo shadcn (STACK-02)
 │   ├── CampoTexto, MenuNavegacao, EstadoVazio, TelaDeErro, EsqueletoLista,
 │   │   BadgeGravidade, BadgeStatus, TabelaOcorrencias     CampoTexto (FORM-22); MenuNavegacao 'use client', usePathname (ROTA-17); EstadoVazio (API-09)
-│   └── CampoSelect
+│   ├── CampoSelect
+│   └── Emblema, Marca, IconeStatus, BarraStatus, CabecalhoPagina,
+│       LinkVoltar, MensagemErro, PaginaAviso, Juramento   design system (DEC-11, CSS-10)
 ├── lib/
 │   ├── utils.ts                     gerado pelo shadcn (cn)
 │   ├── api-error.ts, resultado-acao.ts, schemas/*                      ApiError (API-03); tipo ResultadoAcao (FORM, DEC-05); schemas (FORM-02, API-04)
@@ -213,7 +218,7 @@ e passada por props. Não crie `createContext`, Zustand nem Redux.
 (`/painel`). Páginas públicas = `/lanternas` (listagem com filtro por setor), `/lanternas/[id]`
 (detalhe) e `/sobre` (institucional). Login = `/login`. Acesso negado = `/acesso-negado`. Área
 privada = tudo sob `/painel`. A skill `auditoria-apresentacao` usa este mapa para achar os arquivos
-de cada requisito.
+de cada requisito. Vitrine do design system = `/design-system` (DEC-12), fora do menu, com link no rodapé público.
 **Como verificar:** os arquivos listados em STACK-05 para essas rotas existem.
 
 ### DEC-10: Sem Cache Components, React Compiler ou flags experimentais
@@ -225,3 +230,29 @@ de cada requisito.
 `cacheComponents: true` e `partialPrefetching: true`. Apague essas duas linhas logo após criar o
 projeto: com elas ligadas, as opções de `fetch` do slide de APIs (p. 12) deixam de valer.
 Guia do modelo usado: `node_modules/next/dist/docs/01-app/02-guides/caching-without-cache-components.md`.
+
+### DEC-11: Visual próprio sobre Base UI
+**Fonte:** [DECISÃO] design system (`docs/superpowers/specs/2026-10-07-design-system-tropa-design.md`) — complementa STACK-02 e CSS-11
+**Regra:** Os arquivos de `components/ui/` continuam vindo do shadcn e usando o Base UI (teclado, foco,
+ARIA, posicionamento do select). O que foi reescrito é só o visual (as classes), para seguir os
+tokens da Tropa. Nomes exportados, variantes (`default`, `outline`, `secondary`, `ghost`,
+`destructive`, `link`) e tamanhos não mudam, para nenhuma tela precisar mudar por causa da API.
+Componentes novos do design system ficam em `components/` (fora de `ui/`).
+**✅ Certo:** trocar as classes de `buttonVariants` mantendo `variant="outline"`.
+**❌ Errado:** apagar o Base UI e reescrever o select com `<div>` e `useState`; criar `components/tropa/Button.tsx` paralelo.
+**Como verificar:** `rg -n "@base-ui/react" components/ui` continua achando button, input, select e badge.
+
+### DEC-12: Vitrine do design system em /design-system
+**Fonte:** [DECISÃO]
+**Regra:** `app/(site)/design-system/page.tsx` é um Server Component estático que mostra cores,
+tipografia, emblema, ícones e cada componente em todos os estados (normal, foco, erro, desabilitado).
+Fica fora do menu principal; o link está no rodapé público. Os dados de exemplo são constantes no
+próprio arquivo (não chama a API).
+**Como verificar:** `rg -n "listar|buscar" "app/(site)/design-system"` vazio.
+
+### DEC-13: Tema único escuro ("Noite")
+**Fonte:** [DECISÃO] (o juramento: "na noite mais densa"; e menos código para explicar)
+**Regra:** Só existe o tema escuro, definido no `:root` de `globals.css`. Não há bloco `.dark`,
+variante `dark:`, botão de troca de tema nem estado de cliente para isso. `color-scheme: dark` no
+`html` faz os controles nativos do navegador seguirem o tema.
+**Como verificar:** `rg -n "\.dark|dark:" app components` vazio.

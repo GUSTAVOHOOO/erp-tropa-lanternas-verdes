@@ -641,7 +641,7 @@ import { cn } from "cn"
 
 // [DEC-11] visual da Tropa; teclado, foco e disabled continuam vindo do Base UI
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-transparent text-sm font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow,filter] duration-150 ease-out outline-none select-none focus-visible:shadow-anel disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4", // [CSS-08][CSS-14][CSS-15]
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-transparent text-sm font-semibold whitespace-nowrap transition duration-150 ease-out outline-none select-none focus-visible:shadow-anel disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4", // [CSS-08][CSS-14][CSS-15]
   {
     variants: {
       variant: {
@@ -779,7 +779,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       data-slot="input"
       className={cn(
         // [DEC-11][CSS-14] text-base no celular evita o zoom automático do iOS; md:text-sm no desktop
-        "h-9 w-full min-w-0 rounded-md border border-input bg-card px-3 text-base text-foreground transition-[border-color,box-shadow] duration-150 ease-out outline-none placeholder:text-texto-terciario file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground focus-visible:border-ring focus-visible:shadow-anel disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm",
+        "h-9 w-full min-w-0 rounded-md border border-input bg-card px-3 text-base text-foreground transition duration-150 ease-out outline-none placeholder:text-texto-terciario file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground focus-visible:border-ring focus-visible:shadow-anel disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm",
         className
       )}
       {...props}
@@ -801,7 +801,7 @@ function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
     <textarea
       data-slot="textarea"
       className={cn(
-        "flex field-sizing-content min-h-24 w-full rounded-md border border-input bg-card px-3 py-2 text-base text-foreground transition-[border-color,box-shadow] duration-150 ease-out outline-none placeholder:text-texto-terciario focus-visible:border-ring focus-visible:shadow-anel disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm", // [DEC-11][CSS-14]
+        "flex field-sizing-content min-h-24 w-full rounded-md border border-input bg-card px-3 py-2 text-base text-foreground transition duration-150 ease-out outline-none placeholder:text-texto-terciario focus-visible:border-ring focus-visible:shadow-anel disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive md:text-sm", // [DEC-11][CSS-14]
         className
       )}
       {...props}
@@ -924,7 +924,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-card py-2 pr-2.5 pl-3 text-sm whitespace-nowrap text-foreground transition-[border-color,box-shadow] duration-150 ease-out outline-none select-none hover:border-texto-terciario focus-visible:border-ring focus-visible:shadow-anel disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive data-placeholder:text-texto-terciario data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4", // [CSS-14]
+        "flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-card py-2 pr-2.5 pl-3 text-sm whitespace-nowrap text-foreground transition duration-150 ease-out outline-none select-none hover:border-texto-terciario focus-visible:border-ring focus-visible:shadow-anel disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive data-placeholder:text-texto-terciario data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4", // [CSS-14]
         className
       )}
       {...props}

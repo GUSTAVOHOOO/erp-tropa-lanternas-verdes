@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
+import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
 import { listarLanternas } from '@/lib/lanternas'
 import { listarSetores } from '@/lib/setores'
@@ -21,9 +22,9 @@ export default async function LanternasPage({ searchParams }: LanternasPageProps
   const nomeSetor = Object.fromEntries(setores.map((s) => [s.id, s.nome]))
 
   return (
-    <section>
-      <h1 className="text-3xl font-bold">Lanternas da Tropa</h1>
-      <nav aria-label="Filtrar por setor" className="mt-4 flex flex-wrap gap-2">
+    <section className="grid gap-6">
+      <CabecalhoPagina titulo="Lanternas da Tropa" descricao="Membros da Tropa, por setor." />
+      <nav aria-label="Filtrar por setor" className="flex flex-wrap gap-2">
         <Link
           href="/lanternas"
           aria-current={!setor ? 'page' : undefined}
@@ -49,7 +50,7 @@ export default async function LanternasPage({ searchParams }: LanternasPageProps
           acao={{ href: '/lanternas', rotulo: 'Ver todos' }}
         />
       ) : (
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"> {/* [CSS-03][CSS-06] */}
           {lanternas.map((l) => (
             <li key={l.id}>
               <CartaoLanterna lanterna={l} nomeSetor={nomeSetor[l.setorId] ?? `Setor ${l.setorId}`} />

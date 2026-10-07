@@ -158,7 +158,7 @@ mensagem; a mensagem tem `id` e `role="alert"`. Sem erro, `aria-describedby` fic
   aria-describedby={errors.titulo ? 'titulo-erro' : undefined} />
 {errors.titulo && <p id="titulo-erro" role="alert" className="text-sm text-destructive">{errors.titulo.message}</p>}
 ```
-**❌ Errado:** `<span className="text-red-600">{errors.titulo?.message}</span>` sem role nem ligação.
+**❌ Errado:** `<span className="text-destructive">{errors.titulo?.message}</span>` sem role nem ligação.
 **Como verificar:** `rg -n "errors\.\w+(\?)?\.message" app components` e conferir `role="alert"` na mesma tag; `rg -n "aria-describedby" app components`.
 
 ### FORM-11: Mensagens específicas, em português, ao lado do campo

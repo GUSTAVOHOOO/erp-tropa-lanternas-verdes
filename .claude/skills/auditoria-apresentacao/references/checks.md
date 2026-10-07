@@ -73,7 +73,7 @@ tabelas, `\|` é só escape do Markdown: no comando de verdade escreva `|`.
 | C-58 | DEC-10 | cacheComponents ligado: `cacheComponents` ou `partialPrefetching` no `next.config.ts` (o create-next-app do Next 16.4 gera as duas linhas; elas precisam ser apagadas) | `grep -nE "cacheComponents\|partialPrefetching" next.config.ts` |
 | C-59 | DEC-13 | variante `dark:` ou seletor `.dark` (tema único) | `rg -n "\.dark\|dark:" app components` |
 | C-60 | CSS-12 | listra colorida lateral (`border-l-2`…`border-l-8`, `border-r-2`…`border-r-8`) | `rg -n "border-[lr]-[2-8]" app components` |
-| C-61 | CSS-12 | classe de gravidade montada por interpolação (o Tailwind não gera) | `rg -n "gravidade-\$\{" app components` |
+| C-61 | CSS-12 | classe de gravidade montada por interpolação (o Tailwind não gera) | `rg -n 'gravidade-\$\{' app components` |
 | C-62 | CSS-13 | fonte condensada dentro de `components/ui` (botão, campo, menu) | `rg -n "font-heading" components/ui` |
 
 ## Manuais (o script não consegue decidir)

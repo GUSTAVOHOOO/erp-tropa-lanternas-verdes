@@ -21,7 +21,7 @@ nem arquivos `.css` por componente.
 ou a função `cn()` do shadcn).
 **✅ Certo:**
 ```tsx
-<span className={cn('rounded px-2 py-0.5 text-xs', nivel === 'critica' && 'bg-red-600 text-white')}>
+<span className={cn('size-2.5 rotate-45 rounded-xs', corPorGravidade[gravidade])} />
 ```
 **❌ Errado:** `<span style={{ backgroundColor: nivel === 'critica' ? 'red' : 'gray' }}>`
 **Como verificar:** `rg -n "style=\{\{" app components` deve retornar vazio (fora de `components/ui/`).
@@ -94,7 +94,7 @@ deixou de ser necessário. A ideia do slide (personalizar a escala num lugar só
 **Regra:** Se o mesmo conjunto de classes se repete, extraia um componente (`BadgeGravidade`,
 `CampoTexto`) ou use as variantes do shadcn (`buttonVariants`). Não use `@apply`.
 **✅ Certo:** `<BadgeGravidade nivel={o.gravidade} />`
-**❌ Errado:** `.badge-critica { @apply bg-red-600 text-white ... }` em `globals.css`.
+**❌ Errado:** `.badge-critica { @apply bg-gravidade-critica ... }` em `globals.css`.
 **Como verificar:** `rg -n "@apply" app` deve retornar vazio (fora do bloco base que o shadcn gera).
 
 ### CSS-11: Componentes de UI vêm do shadcn/ui (Base UI) em components/ui
@@ -116,12 +116,13 @@ vem com o rótulo em texto. Mapas de classe por valor usam objeto `as const` com
 (o Tailwind só gera a classe que encontra escrita por completo).
 **✅ Certo:** `const corPorGravidade = { critica: 'bg-gravidade-critica', ... } as const`
 **❌ Errado:** `` `bg-gravidade-${gravidade}` `` (classe montada não é gerada); losango colorido sem texto.
-**Como verificar:** `rg -n "bg-gravidade-\\$\{" app components` deve retornar vazio; `BadgeGravidade` sempre renderiza `rotuloGravidade`.
+**❌ Errado também:** listra colorida lateral (`border-l-4`, `border-r-2`…) para marcar gravidade ou destaque — use o losango + texto.
+**Como verificar:** `rg -n 'gravidade-\$\{' app components` deve retornar vazio; `rg -n "border-[lr]-[2-8]" app components` vazio; `BadgeGravidade` sempre renderiza `rotuloGravidade`.
 
 ### CSS-13: Três famílias com next/font, cada uma com um papel
 **Fonte:** [DOCS] `node_modules/next/dist/docs/01-app/03-api-reference/02-components/font.md` + [DECISÃO] design system
 **Regra:** `app/layout.tsx` carrega com `next/font/google`: Barlow (400/500/600) para a interface,
-Barlow Condensed (600/700) só para `h1`, `h2` e a marca (`font-heading`), IBM Plex Mono (500) só para
+Barlow Condensed (600/700) só para títulos (`h1`, `h2`), a marca, o juramento/lema e o nome no cartão do lanterna (`font-heading`), IBM Plex Mono (500) só para
 dados como número de setor (`font-mono`). As variáveis CSS entram no `@theme` de `globals.css`.
 Fonte condensada nunca em botão, rótulo, menu ou célula de tabela.
 **✅ Certo:** `<h1 className="font-heading text-4xl font-bold">`

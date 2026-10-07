@@ -337,7 +337,7 @@ um `not-found.tsx` próprio ("Ocorrência não encontrada" + link para a lista).
 **✅ Certo:**
 ```tsx
 export default function NotFound() {
-  return <main><h1>Página não encontrada</h1><Link href="/">Voltar ao início</Link></main>
+  return <main><h1>Setor desconhecido</h1><Link href="/">Voltar ao início</Link></main>
 }
 ```
 **❌ Errado:** depender da página padrão em inglês do Next.

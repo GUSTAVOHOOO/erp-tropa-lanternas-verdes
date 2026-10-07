@@ -5,6 +5,7 @@ import { BadgeGravidade } from '@/components/BadgeGravidade'
 import { BadgeStatus } from '@/components/BadgeStatus'
 import { BarraStatus } from '@/components/BarraStatus'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
+import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { GRAVIDADES, rotuloGravidade } from '@/lib/schemas/ocorrencia'
 
 test('BadgeGravidade sempre mostra o texto, nunca só a cor (CSS-12)', () => {
@@ -50,4 +51,18 @@ test('CabecalhoPagina tem um único h1, descrição e ação', () => {
   expect(screen.getByRole('heading', { level: 1, name: 'Ocorrências' })).toBeDefined()
   expect(screen.getByText('Todas as ocorrências da Tropa.')).toBeDefined()
   expect(screen.getByRole('link', { name: 'Registrar ocorrência' })).toBeDefined()
+})
+
+test('TabelaOcorrencias não tem texto solto entre células (hidratação)', () => {
+  const { container } = render(
+    <TabelaOcorrencias
+      ocorrencias={[{ id: 'o1', titulo: 'Ataque', descricao: 'x', planeta: 'Terra', setorId: '2814', gravidade: 'alta', status: 'aberta', envolvidos: 1, responsavelId: null, resolucao: null, criadaPor: 'u1', criadaEm: '2026-10-01T12:00:00.000Z' }]}
+      nomeSetor={{ '2814': 'Setor 2814' }}
+      nomeLanterna={{}}
+    />,
+  )
+  for (const linha of container.querySelectorAll('tr')) {
+    const textoSolto = [...linha.childNodes].filter((n) => n.nodeType === Node.TEXT_NODE)
+    expect(textoSolto).toHaveLength(0)
+  }
 })

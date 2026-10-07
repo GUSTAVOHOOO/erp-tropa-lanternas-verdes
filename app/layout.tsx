@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${barlow.variable} ${barlowCondensed.variable} ${plexMono.variable} h-full antialiased`}> {/* [ROTA-05] */}
+    <html lang="pt-BR" /* [ROTA-05] */ className={`${barlow.variable} ${barlowCondensed.variable} ${plexMono.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   )

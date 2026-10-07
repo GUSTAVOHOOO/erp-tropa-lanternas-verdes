@@ -25,14 +25,14 @@ export function TabelaOcorrencias({ ocorrencias, nomeSetor, nomeLanterna }: Tabe
       </TableHeader>
       <TableBody>
         {ocorrencias.map((o) => (
-          <TableRow key={o.id}> {/* [COMP-13] */}
+          <TableRow key={o.id} /* [COMP-13] */>
             <TableCell className="min-w-56">
               <Link href={`/painel/ocorrencias/${o.id}`} className="font-semibold text-foreground underline-offset-4 hover:underline"> {/* [ROTA-16] */}
                 {o.titulo}
               </Link>
               <span className="block text-sm text-muted-foreground">{o.planeta}</span>
             </TableCell>
-            <TableCell className="font-mono text-xs whitespace-nowrap text-muted-foreground">{nomeSetor[o.setorId] ?? o.setorId}</TableCell> {/* [CSS-13] */}
+            <TableCell /* [CSS-13] */ className="font-mono text-xs whitespace-nowrap text-muted-foreground">{nomeSetor[o.setorId] ?? o.setorId}</TableCell>
             <TableCell><BadgeGravidade gravidade={o.gravidade} /></TableCell>
             <TableCell><BadgeStatus status={o.status} /></TableCell>
             <TableCell className="whitespace-nowrap">

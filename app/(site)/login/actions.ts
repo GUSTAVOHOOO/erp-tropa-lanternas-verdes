@@ -10,10 +10,7 @@ import { buscarUsuarioPorEmail } from '@/lib/usuarios'
 
 /** Login: revalida, confere a senha, grava a sessão e entra no painel. */
 export async function entrar(dados: unknown): Promise<ResultadoAcao> {
-  const entrada = dados && typeof dados === 'object' && 'email' in dados && typeof dados.email === 'string'
-    ? { ...dados, email: dados.email.trim().toLowerCase() }
-    : dados
-  const parsed = loginSchema.safeParse(entrada) // [FORM-17]
+  const parsed = loginSchema.safeParse(dados) // [FORM-17]
   if (!parsed.success) return { ok: false, errors: z.flattenError(parsed.error).fieldErrors } // [FORM-18]
 
   let usuario: Usuario | null

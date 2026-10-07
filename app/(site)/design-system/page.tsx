@@ -114,7 +114,7 @@ export default function DesignSystemPage() {
         </ul>
       </SecaoVitrine>
 
-      <SecaoVitrine id="tipografia" titulo="Tipografia" descricao="Barlow para a interface, Barlow Condensed só em títulos e marca, IBM Plex Mono só para dados.">
+      <SecaoVitrine id="tipografia" titulo="Tipografia" descricao="Barlow para a interface, Barlow Condensed em títulos, marca, juramento e nome do lanterna, IBM Plex Mono só para dados.">
         <div className="grid gap-4">
           <p className="font-heading text-4xl leading-none font-bold">Barlow Condensed 700 · título de página</p>
           <p className="font-heading text-2xl font-semibold">Barlow Condensed 600 · título de seção</p>
@@ -161,10 +161,13 @@ export default function DesignSystemPage() {
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-3">
+            <Button type="button" size="xs">Mínimo</Button>
             <Button type="button" size="sm">Pequeno</Button>
             <Button type="button">Padrão</Button>
             <Button type="button" size="lg">Grande</Button>
             <Button type="button" size="icon" aria-label="Registrar ocorrência"><PlusIcon aria-hidden /></Button>
+            <Button type="button" size="icon-sm" aria-label="Registrar ocorrência (pequeno)"><PlusIcon aria-hidden /></Button>
+            <Button type="button" size="icon-lg" aria-label="Registrar ocorrência (grande)"><PlusIcon aria-hidden /></Button>
             <Button type="button"><PlusIcon aria-hidden />Com ícone</Button>
           </div>
         </div>

@@ -52,7 +52,7 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
         </div>
       </div>
       <p className="max-w-prose">{ocorrencia.descricao}</p>
-      <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2"> {/* [CSS-03][CSS-06] */}
+      <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2"> {/* [CSS-03] */}
         <div className="grid gap-1">
           <dt className="text-sm text-texto-terciario">Planeta</dt>
           <dd>{ocorrencia.planeta}</dd>

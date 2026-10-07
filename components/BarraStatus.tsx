@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { IconeStatus } from '@/components/IconeStatus'
 import { STATUS_OCORRENCIA, type Ocorrencia } from '@/lib/schemas/ocorrencia'
 import { cn } from '@/lib/utils'
 
@@ -38,6 +39,7 @@ export function BarraStatus({ ocorrencias }: BarraStatusProps) {
         {porStatus.map(({ status, itens }) => (
           <li key={status}>
             <Link href={`/painel/ocorrencias?status=${status}`} className="group flex items-baseline gap-2 text-muted-foreground"> {/* [ROTA-14] */}
+              <IconeStatus status={status} className="size-4 self-center" />
               <strong className="text-xl font-semibold text-foreground">{itens.length}</strong>
               <span className="underline-offset-4 group-hover:text-foreground group-hover:underline">{rotuloPlural[status]}</span>
             </Link>

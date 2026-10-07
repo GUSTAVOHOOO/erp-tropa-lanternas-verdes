@@ -23,7 +23,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <main className="mx-auto w-full max-w-6xl flex-1 p-4 md:p-8">{children}</main>
       <footer className="border-t border-border">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 p-4 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between md:p-8">
-          <p className="font-heading text-lg font-semibold text-foreground">No dia mais claro, na noite mais densa.</p>
+          <p className="font-heading text-lg font-semibold text-foreground">No dia mais claro, na noite mais densa.</p> {/* [CSS-13] */}
           <p className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <Link href="/design-system" className="underline-offset-4 hover:text-foreground hover:underline">Design system</Link> {/* [DEC-12] */}
             <span>Tropa dos Lanternas Verdes · trabalho acadêmico de Desenvolvimento Web</span>

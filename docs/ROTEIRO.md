@@ -106,7 +106,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. “S
 
 **Como funciona:** o formulário usa campos reutilizáveis e `Controller` para selects; a action verifica sessão antes de `safeParse`, ignora setor forjado por Lanterna, grava pela camada `lib/` e invalida a rota antes de redirecionar.
 
-**Por que assim:** FORM-16 vem do **slide de Formulários, p. 18** e das **Docs do shadcn/ui**. FORM-17 vem do **slide de Formulários, p. 8, 13, 20 e 21**. API-14 vem do **slide de Consumo de APIs, p. 18 e 22**, com complemento das **Docs do Next**.
+**Por que assim:** FORM-16 vem do **slide de Formulários, p. 18** e das **Docs do shadcn/ui**. FORM-17 vem do **slide de Formulários, p. 8, 13, 20 e 21**. API-14 vem do **slide de Consumo de APIs, p. 5** (POST/PATCH), **p. 16** (JSON e fluxo Action → API → `revalidatePath`) e do **slide de Formulários, p. 20** (`revalidatePath('/usuarios')`).
 
 **Trecho para mostrar:** `app/(painel)/painel/ocorrencias/actions.ts:15`.
 
@@ -160,13 +160,13 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. “S
 
 **Arquivos:** `lib/api.ts:3`, `lib/ocorrencias.ts:10`, `lib/lanternas.ts:7`, `lib/setores.ts:7`, `lib/usuarios.ts:7`, `.env.example:2`.
 
-**Como funciona:** `API_URL` aponta para o json-server; `lib/<recurso>.ts` centraliza leitura e escrita, checa `res.ok`, valida respostas Zod e declara cache. Na etapa de back-end, o adaptador de `lib/` e o endereço podem ser atualizados sem reescrever telas.
+**Como funciona:** `API_URL` aponta para o json-server; `lib/<recurso>.ts` centraliza leitura e escrita, checa `res.ok`, valida respostas Zod e declara cache. Na etapa de back-end, `lib/` é o principal ponto de integração. As telas podem ser reaproveitadas se o contrato for mantido; a action de login e a sessão podem exigir mudanças para autenticação real.
 
 **Por que assim:** API-01, API-02, API-04 e API-06 vêm do **slide de Consumo de APIs, p. 7, 12, 14 e 23**. DEC-04 é **decisão do grupo** para atender ao texto do professor sobre reuso. A senha em texto no `db.json` é limitação declarada da API fake (AUTH-11, **decisão do grupo**).
 
 **Trecho para mostrar:** `lib/ocorrencias.ts:10`.
 
-**Pergunta provável:** Como aproveitar na próxima etapa? **Resposta:** conservar componentes e actions e trocar a integração em `lib/`, ajustando schemas se o contrato da API mudar (DEC-04).
+**Pergunta provável:** Como aproveitar na próxima etapa? **Resposta:** reaproveitar os componentes e integrar a API em `lib/`. Ajustar schemas se o contrato mudar e adaptar login/sessão ao mecanismo de autenticação real; a action atual compara senhas em texto (DEC-04, AUTH-11).
 
 ## Feature: estilo e componentes
 

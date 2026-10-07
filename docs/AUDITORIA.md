@@ -43,6 +43,8 @@ O projeto atende aos seis requisitos com páginas públicas, login, proteção n
 
 **Ressalva de versão:** o enunciado chama a proteção de “middleware”; Next.js 16 usa `proxy.ts` (AUTH-01, Docs Next). O filtro de gravidade foi incluído porque a regra local ROTA-14 o exige; é uma decisão de escopo registrada no ledger R6.
 
+**Limite do reuso:** `lib/` concentra a integração HTTP, mas a action atual compara senhas em texto (`app/(site)/login/actions.ts:24`). Uma API real com autenticação e hash pode exigir mudanças na action, na sessão e nos schemas, além de `API_URL`/`lib/`.
+
 ## 3. Violações e verificações
 
 ### 3.1 Confirmadas
@@ -174,6 +176,6 @@ Nenhuma regra de slide exige uma feature inexistente neste escopo. Alguns IDs de
 - **AUTH-06:** a tela `/acesso-negado` explica o bloqueio 403 porque `forbidden()` ainda é experimental. Origem: **Decisão + Slide APIS p. 5 + Docs Next**.
 - **API-11/ROTA-21:** a fronteira de erro usa `retry` para refazer a busca no Next 16; a implementação substitui o exemplo antigo com `reset`. Origem: **Slide APIS p. 21 + Docs Next**.
 - **API-06:** o projeto usa cache explícito no modelo sem Cache Components: `revalidate: 60` nos dados públicos e `no-store` nos dados privados. Origem: **Slide APIS p. 12/23 + Decisão**.
-- **API-14:** a escrita chama `revalidatePath`; o exemplo de `revalidateTag` do slide requer ajuste no Next 16 e não é usado aqui. Origem: **Slide APIS p. 12/18/23 + Docs Next**.
+- **API-14:** a escrita chama `revalidatePath`; a fonte da regra é **Slide APIS p. 5/16 + FORMS p. 20**. A nota de versão da skill menciona que `revalidateTag` do slide APIS p. 12/23 requer ajuste no Next 16 e não é usado aqui (**Docs Next**).
 - **API-03/API-12:** `ApiError` usa a sintaxe TypeScript de propriedade no construtor, e o json-server só fornece 404 entre os erros HTTP tratados; 401/403 são decisões de sessão no app. Origem: **Slide APIS p. 5/14/21/22 + notas de versão da skill**.
 - **AUTH-11:** a API fake guarda senhas em texto no `db.json`; a próxima etapa requer autenticação e hash na API real. Origem: **Decisão**, não recomendação do professor.

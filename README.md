@@ -45,4 +45,5 @@ npm run dev                  # terminal 2: aplicação em http://localhost:3000
 ## Limitações conhecidas (API fake)
 
 O json-server não tem autenticação: as senhas ficam em texto puro no `db.json`. Na etapa de back-end,
-o login passa para a API real com hash de senha; as telas não mudam (só o `API_URL` e o miolo de `lib/`).
+`lib/` e `API_URL` são o principal ponto de integração com a API real. As telas podem continuar se o
+contrato de dados for mantido; o login e a sessão podem precisar de ajustes para autenticação com hash.

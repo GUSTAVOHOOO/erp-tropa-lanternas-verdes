@@ -19,8 +19,8 @@ node --version
 Na primeira execução, clone o repositório e instale as dependências:
 
 ```bash
-git clone URL_DO_REPOSITORIO
-cd NOME_DA_PASTA
+git clone https://github.com/GUSTAVOHOOO/erp-tropa-lanternas-verdes.git
+cd erp-tropa-lanternas-verdes
 npm install
 ```
 

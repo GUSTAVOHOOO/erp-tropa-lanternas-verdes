@@ -74,12 +74,12 @@ test('TelaDeErro não mostra detalhe técnico e chama retry', () => {
   }
 })
 
-test('TabelaOcorrencias mostra nomes e "—" sem responsável', () => {
+test('TabelaOcorrencias mostra nomes e "Sem responsável"', () => {
   const ocorrencias = db.ocorrencias.slice(0, 2).map((o) => ocorrenciaSchema.parse(o))
   render(<TabelaOcorrencias ocorrencias={ocorrencias} nomeSetor={{ '2814': 'Setor 2814' }} nomeLanterna={{ 'hal-jordan': 'Hal Jordan' }} />)
   expect(screen.getByRole('link', { name: 'Ataque de Parallax em Coast City' }).getAttribute('href')).toBe('/painel/ocorrencias/o1')
   expect(screen.getByText('Hal Jordan')).toBeDefined()
   expect(screen.getAllByText('Setor 2814')).toHaveLength(2)
-  expect(screen.getByText('—')).toBeDefined()
+  expect(screen.getByText('Sem responsável')).toBeDefined()
   expect(screen.getByText('Crítica')).toBeDefined()
 })

@@ -81,7 +81,7 @@ app/
         ├── page.tsx               /painel
         ├── loading.tsx, error.tsx
         └── ocorrencias/
-            ├── page.tsx           /painel/ocorrencias?status=aberta&setor=2814
+            ├── page.tsx           /painel/ocorrencias?status=aberta&gravidade=alta&setor=2814
             ├── loading.tsx, error.tsx
             ├── actions.ts         registrarOcorrencia, atualizarStatus, atribuirResponsavel
             ├── _components/       FormOcorrencia, FiltroOcorrencias, FormStatus, FormAtribuir
@@ -123,7 +123,7 @@ db.json, .env.local, .env.example
 | Rota | Conteúdo |
 |---|---|
 | `/painel` | Saudação (nome, setor), contadores por status, 5 ocorrências mais recentes, botão "Registrar ocorrência". Lanterna: só o próprio setor; Guardião: todos. |
-| `/painel/ocorrencias` | Tabela (título, planeta, setor, gravidade, status, responsável). Filtros na URL: status (todos) e setor (só Guardião). `FiltroOcorrencias` é cliente (`useSearchParams` + `router.push`) dentro de `<Suspense>` (ROTA-14, ROTA-15). Estado vazio com "Limpar filtros". |
+| `/painel/ocorrencias` | Tabela (título, planeta, setor, gravidade, status, responsável). Filtros na URL: status e gravidade (todos), setor (só Guardião). `FiltroOcorrencias` é cliente (`useSearchParams` + `router.push`) dentro de `<Suspense>` (ROTA-14, ROTA-15). Estado vazio com "Limpar filtros". |
 | `/painel/ocorrencias/nova` | Formulário de nova ocorrência (seção 8.2). |
 | `/painel/ocorrencias/[id]` | Detalhe + formulário de status (seção 8.3). Lanterna de outro setor → `/acesso-negado`. Id inexistente → `not-found.tsx`. Guardião vê "Atribuir responsável". |
 | `/painel/ocorrencias/[id]/atribuir` | Só Guardião (`exigirPapel('guardiao')`). Select com os lanternas do setor da ocorrência. |
@@ -206,14 +206,14 @@ coleções separadas para a área pública nunca ler senha (AUTH-11).
 |---|---|---|
 | `lib/setores.ts` | `listarSetores()` | `next: { revalidate: 60 }` |
 | `lib/lanternas.ts` | `listarLanternas({ setorId? })`, `buscarLanterna(id)` | `next: { revalidate: 60 }` |
-| `lib/ocorrencias.ts` | `listarOcorrencias({ setorId?, status? })`, `buscarOcorrencia(id)`, `criarOcorrencia(dados)`, `atualizarOcorrencia(id, campos)` | `cache: 'no-store'` |
+| `lib/ocorrencias.ts` | `listarOcorrencias({ setorId?, status?, gravidade? })`, `buscarOcorrencia(id)`, `criarOcorrencia(dados)`, `atualizarOcorrencia(id, campos)` | `cache: 'no-store'` |
 | `lib/usuarios.ts` | `buscarUsuarioPorEmail(email)`, usada só na action `entrar` | `cache: 'no-store'` |
 
 Molde de toda leitura: `fetch(new URL(caminho, process.env.API_URL), opçãoDeCache)` → `if (!res.ok)
 throw new ApiError(res.status)` → `schema.parse(await res.json())` (API-02, API-03, API-04, API-16).
 `buscar*` devolve `null` em 404, e a página chama `notFound()`.
 
-Filtros usam a query do json-server 0.17 (`?setorId=2814&status=aberta`). Listas que precisam de nomes
+Filtros usam a query do json-server 0.17 (`?setorId=2814&status=aberta&gravidade=alta`). Listas que precisam de nomes
 de setor e responsável buscam ocorrências, setores e lanternas com `Promise.all` (API-07). Escritas:
 `POST` e `PATCH`, seguidas de `revalidatePath` (API-14).
 

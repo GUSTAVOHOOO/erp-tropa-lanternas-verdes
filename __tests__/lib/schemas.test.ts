@@ -83,12 +83,12 @@ describe('atualizarStatusSchema', () => {
 
 describe('filtros vindos da URL nunca quebram a página', () => {
   test('valor desconhecido vira "sem filtro"', () => {
-    expect(filtroOcorrenciasSchema.parse({ status: 'xyz', setor: 'abc' })).toEqual({ status: undefined, setor: undefined })
+    expect(filtroOcorrenciasSchema.parse({ status: 'xyz', gravidade: 'muito-alta', setor: 'abc' })).toEqual({ status: undefined, gravidade: undefined, setor: undefined })
     expect(filtroLanternasSchema.parse({ setor: '../etc' })).toEqual({ setor: undefined })
   })
 
   test('valor válido passa', () => {
-    expect(filtroOcorrenciasSchema.parse({ status: 'aberta', setor: '2814' })).toEqual({ status: 'aberta', setor: '2814' })
+    expect(filtroOcorrenciasSchema.parse({ status: 'aberta', gravidade: 'alta', setor: '2814' })).toEqual({ status: 'aberta', gravidade: 'alta', setor: '2814' })
     expect(filtroLanternasSchema.parse({ setor: '0' })).toEqual({ setor: '0' })
   })
 })

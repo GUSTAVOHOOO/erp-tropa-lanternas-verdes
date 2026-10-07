@@ -46,22 +46,24 @@ describe('urlDaApi', () => {
 describe('leituras', () => {
   test('listarOcorrencias filtra, ordena da mais nova e não usa cache', async () => {
     fetchSimulado.mockResolvedValue(resposta(db.ocorrencias.slice(0, 2)))
-    const lista = await listarOcorrencias({ setorId: '2814', status: 'aberta' })
+    const lista = await listarOcorrencias({ setorId: '2814', status: 'aberta', gravidade: 'alta' })
     expect(lista).toHaveLength(2)
     const url = urlChamada()
     expect(url.pathname).toBe('/ocorrencias')
     expect(url.searchParams.get('setorId')).toBe('2814')
     expect(url.searchParams.get('status')).toBe('aberta')
+    expect(url.searchParams.get('gravidade')).toBe('alta')
     expect(url.searchParams.get('_sort')).toBe('criadaEm')
     expect(url.searchParams.get('_order')).toBe('desc')
     expect(opcoesChamada().cache).toBe('no-store')
   })
 
-  test('sem filtro não manda setorId nem status', async () => {
+  test('sem filtro não manda setorId, status nem gravidade', async () => {
     fetchSimulado.mockResolvedValue(resposta([]))
     await listarOcorrencias()
     expect(urlChamada().searchParams.has('setorId')).toBe(false)
     expect(urlChamada().searchParams.has('status')).toBe(false)
+    expect(urlChamada().searchParams.has('gravidade')).toBe(false)
   })
 
   test('setores e lanternas usam revalidate de 60 segundos', async () => {

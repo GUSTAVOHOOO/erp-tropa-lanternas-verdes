@@ -14,18 +14,18 @@ import { FiltroOcorrencias } from '@/app/(painel)/painel/ocorrencias/_components
 
 export const metadata: Metadata = { title: 'Ocorrências | Central de Comando' }
 
-type OcorrenciasPageProps = { searchParams: Promise<{ status?: string; setor?: string }> }
+type OcorrenciasPageProps = { searchParams: Promise<{ status?: string; gravidade?: string; setor?: string }> }
 
 /** Lista de ocorrências com filtros na URL. */
 export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageProps) {
   const sessao = await verificarSessao() // [AUTH-04]
   const filtro = filtroOcorrenciasSchema.parse(await searchParams) // [ROTA-10][ROTA-11]
   const [ocorrencias, setores, lanternas] = await Promise.all([ // [API-07]
-    listarOcorrencias({ setorId: setorParaFiltro(sessao, filtro.setor), status: filtro.status }), // [AUTH-07]
+    listarOcorrencias({ setorId: setorParaFiltro(sessao, filtro.setor), status: filtro.status, gravidade: filtro.gravidade }), // [AUTH-07]
     listarSetores(),
     listarLanternas(),
   ])
-  const temFiltro = Boolean(filtro.status || (sessao.papel === 'guardiao' && filtro.setor))
+  const temFiltro = Boolean(filtro.status || filtro.gravidade || (sessao.papel === 'guardiao' && filtro.setor))
 
   return (
     <section>

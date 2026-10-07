@@ -64,8 +64,9 @@ export const atribuicaoSchema = z.object({
 })
 export type AtribuicaoData = z.infer<typeof atribuicaoSchema>
 
-/** ?status= e ?setor= da lista do painel. Valor desconhecido vira "sem filtro". [ROTA-11] */
+/** Filtros da lista do painel. Valor desconhecido vira "sem filtro". [ROTA-11] */
 export const filtroOcorrenciasSchema = z.object({
   status: z.enum(STATUS_OCORRENCIA).optional().catch(undefined),
+  gravidade: z.enum(GRAVIDADES).optional().catch(undefined),
   setor: z.string().regex(/^\d+$/).optional().catch(undefined),
 })

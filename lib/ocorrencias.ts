@@ -1,9 +1,9 @@
 import * as z from 'zod'
 import { urlDaApi } from '@/lib/api'
 import { ApiError } from '@/lib/api-error'
-import { ocorrenciaSchema, type Ocorrencia, type StatusOcorrencia } from '@/lib/schemas/ocorrencia'
+import { ocorrenciaSchema, type Gravidade, type Ocorrencia, type StatusOcorrencia } from '@/lib/schemas/ocorrencia'
 
-export type FiltroOcorrencias = { setorId?: string; status?: StatusOcorrencia }
+export type FiltroOcorrencias = { setorId?: string; status?: StatusOcorrencia; gravidade?: Gravidade }
 export type DadosNovaOcorrencia = Omit<Ocorrencia, 'id'>
 
 /** Ocorrências da mais nova para a mais antiga. Sem cache: mudam o tempo todo e dependem do usuário. */
@@ -11,6 +11,7 @@ export async function listarOcorrencias(filtro: FiltroOcorrencias = {}): Promise
   const url = urlDaApi('/ocorrencias', {
     setorId: filtro.setorId,
     status: filtro.status,
+    gravidade: filtro.gravidade,
     _sort: 'criadaEm',
     _order: 'desc',
   })

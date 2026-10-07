@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
+import { LinkVoltar } from '@/components/LinkVoltar'
 import { exigirPapel } from '@/lib/dal'
 import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { listarLanternas } from '@/lib/lanternas'
@@ -31,10 +32,9 @@ export default async function AtribuirPage({ params }: AtribuirPageProps) {
   }
 
   return (
-    <section className="max-w-xl">
-      <Link href={`/painel/ocorrencias/${ocorrencia.id}`} className="text-sm text-primary hover:underline">← Voltar à ocorrência</Link>
-      <h1 className="mt-4 text-2xl font-semibold">Atribuir responsável</h1>
-      <p className="mt-1 text-muted-foreground">{ocorrencia.titulo}</p>
+    <section className="grid max-w-xl gap-6">
+      <LinkVoltar href={`/painel/ocorrencias/${ocorrencia.id}`}>Voltar à ocorrência</LinkVoltar>
+      <CabecalhoPagina titulo="Atribuir responsável" descricao={ocorrencia.titulo} />
       {lanternas.length === 0 ? (
         <EstadoVazio titulo="Nenhum lanterna neste setor" descricao="Não há lanternas designados no setor desta ocorrência." />
       ) : (

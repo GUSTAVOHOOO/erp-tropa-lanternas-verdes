@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import { PlusIcon } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
+import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
@@ -26,11 +28,16 @@ export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageP
   const temFiltro = Boolean(filtro.status || filtro.gravidade || (sessao.papel === 'guardiao' && filtro.setor))
 
   return (
-    <section>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold">Ocorrências</h1>
-        <Link href="/painel/ocorrencias/nova" className={buttonVariants()}>Registrar ocorrência</Link>
-      </div>
+    <section className="grid gap-6">
+      <CabecalhoPagina
+        titulo="Ocorrências"
+        descricao={sessao.papel === 'guardiao' ? 'Todas as ocorrências da Tropa.' : `Ocorrências do Setor ${sessao.setorId}.`}
+      >
+        <Link href="/painel/ocorrencias/nova" className={buttonVariants()}> {/* [ROTA-16] */}
+          <PlusIcon aria-hidden />
+          Registrar ocorrência
+        </Link>
+      </CabecalhoPagina>
       <Suspense fallback={null}> {/* [ROTA-15] */}
         <FiltroOcorrencias setores={sessao.papel === 'guardiao' ? setores : []} />
       </Suspense>

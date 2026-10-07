@@ -4,6 +4,8 @@ import { notFound, redirect } from 'next/navigation'
 import { buttonVariants } from '@/components/ui/button'
 import { BadgeGravidade } from '@/components/BadgeGravidade'
 import { BadgeStatus } from '@/components/BadgeStatus'
+import { CabecalhoPagina } from '@/components/CabecalhoPagina'
+import { LinkVoltar } from '@/components/LinkVoltar'
 import { verificarSessao } from '@/lib/dal'
 import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { formatarData } from '@/lib/formatar'
@@ -34,37 +36,48 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
   const responsavel = lanternas.find((l) => l.id === ocorrencia.responsavelId)
 
   return (
-    <article className="max-w-3xl">
-      <Link href="/painel/ocorrencias" className="text-sm text-primary hover:underline">← Voltar à lista</Link>
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-        <h1 className="text-2xl font-semibold">{ocorrencia.titulo}</h1>
-        {sessao.papel === 'guardiao' && (
-          <Link href={`/painel/ocorrencias/${ocorrencia.id}/atribuir`} className={buttonVariants({ variant: 'outline' })}>
-            Atribuir responsável
-          </Link>
-        )}
+    <article className="grid max-w-3xl gap-8">
+      <div className="grid gap-4">
+        <LinkVoltar href="/painel/ocorrencias">Voltar à lista</LinkVoltar>
+        <CabecalhoPagina titulo={ocorrencia.titulo}>
+          {sessao.papel === 'guardiao' && ( // [COMP-14]
+            <Link href={`/painel/ocorrencias/${ocorrencia.id}/atribuir`} className={buttonVariants({ variant: 'outline' })}>
+              Atribuir responsável
+            </Link>
+          )}
+        </CabecalhoPagina>
+        <div className="flex flex-wrap items-center gap-4">
+          <BadgeGravidade gravidade={ocorrencia.gravidade} />
+          <BadgeStatus status={ocorrencia.status} />
+        </div>
       </div>
-      <p className="mt-2 text-muted-foreground">{ocorrencia.descricao}</p>
-      <dl className="mt-6 grid grid-cols-[max-content_1fr] gap-x-6 gap-y-3">
-        <dt className="font-medium">Planeta</dt>
-        <dd>{ocorrencia.planeta}</dd>
-        <dt className="font-medium">Setor</dt>
-        <dd>{setor?.nome ?? `Setor ${ocorrencia.setorId}`}</dd>
-        <dt className="font-medium">Gravidade</dt>
-        <dd><BadgeGravidade gravidade={ocorrencia.gravidade} /></dd>
-        <dt className="font-medium">Status</dt>
-        <dd><BadgeStatus status={ocorrencia.status} /></dd>
-        <dt className="font-medium">Seres envolvidos</dt>
-        <dd>{ocorrencia.envolvidos}</dd>
-        <dt className="font-medium">Responsável</dt>
-        <dd>{responsavel?.nome ?? '—'}</dd>
-        <dt className="font-medium">Registrada em</dt>
-        <dd>{formatarData(ocorrencia.criadaEm)}</dd>
-        {ocorrencia.resolucao && (
-          <>
-            <dt className="font-medium">Resolução</dt>
-            <dd>{ocorrencia.resolucao}</dd>
-          </>
+      <p className="max-w-prose">{ocorrencia.descricao}</p>
+      <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2"> {/* [CSS-03][CSS-06] */}
+        <div className="grid gap-1">
+          <dt className="text-sm text-texto-terciario">Planeta</dt>
+          <dd>{ocorrencia.planeta}</dd>
+        </div>
+        <div className="grid gap-1">
+          <dt className="text-sm text-texto-terciario">Setor</dt>
+          <dd className="font-mono text-sm">{setor?.nome ?? `Setor ${ocorrencia.setorId}`}</dd> {/* [CSS-13] */}
+        </div>
+        <div className="grid gap-1">
+          <dt className="text-sm text-texto-terciario">Seres envolvidos</dt>
+          <dd className="tabular-nums">{ocorrencia.envolvidos}</dd>
+        </div>
+        <div className="grid gap-1">
+          <dt className="text-sm text-texto-terciario">Responsável</dt>
+          <dd>{responsavel?.nome ?? <span className="text-texto-terciario">Sem responsável</span>}</dd>
+        </div>
+        <div className="grid gap-1">
+          <dt className="text-sm text-texto-terciario">Registrada em</dt>
+          <dd>{formatarData(ocorrencia.criadaEm)}</dd>
+        </div>
+        {ocorrencia.resolucao && ( // [COMP-14]
+          <div className="grid gap-1 sm:col-span-2">
+            <dt className="text-sm text-texto-terciario">Resolução</dt>
+            <dd className="max-w-prose">{ocorrencia.resolucao}</dd>
+          </div>
         )}
       </dl>
       <FormStatus

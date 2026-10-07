@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { CampoSelect } from '@/components/CampoSelect'
 import { CampoTexto } from '@/components/CampoTexto'
+import { MensagemErro } from '@/components/MensagemErro'
 import { aplicarErrosDoServidor } from '@/lib/erros-formulario'
 import { novaOcorrenciaSchema, rotuloGravidade, type NovaOcorrenciaData } from '@/lib/schemas/ocorrencia'
 import type { Setor } from '@/lib/schemas/setor'
@@ -30,7 +31,7 @@ export function FormOcorrencia({ setores, setorFixo }: FormOcorrenciaProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-6 grid gap-4"> {/* [FORM-06][FORM-07] */}
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5"> {/* [FORM-06][FORM-07] */}
       <CampoTexto id="titulo" rotulo="Título" registro={register('titulo')} erro={errors.titulo?.message} />
       <CampoTexto id="descricao" rotulo="Descrição" multilinha registro={register('descricao')} erro={errors.descricao?.message} />
       <CampoTexto id="planeta" rotulo="Planeta" registro={register('planeta')} erro={errors.planeta?.message} />
@@ -61,8 +62,8 @@ export function FormOcorrencia({ setores, setorFixo }: FormOcorrenciaProps) {
         )}
       />
       <CampoTexto id="envolvidos" rotulo="Seres envolvidos" type="number" inputMode="numeric" registro={register('envolvidos')} erro={errors.envolvidos?.message} /> {/* [FORM-13] */}
-      {errors.root && <p role="alert" className="text-sm text-destructive">{errors.root.message}</p>}
-      <Button type="submit" disabled={isSubmitting}> {/* [FORM-08] */}
+      {errors.root && <MensagemErro>{errors.root.message}</MensagemErro>}
+      <Button type="submit" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
         {isSubmitting ? 'Registrando...' : 'Registrar ocorrência'}
       </Button>
     </form>

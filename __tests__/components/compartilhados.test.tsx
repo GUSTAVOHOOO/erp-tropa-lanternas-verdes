@@ -6,6 +6,7 @@ import { CampoTexto } from '@/components/CampoTexto'
 import { MenuNavegacao } from '@/components/MenuNavegacao'
 import { EstadoVazio } from '@/components/EstadoVazio'
 import { TelaDeErro } from '@/components/TelaDeErro'
+import { MensagemErro } from '@/components/MensagemErro'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { ocorrenciaSchema } from '@/lib/schemas/ocorrencia'
 
@@ -82,4 +83,12 @@ test('TabelaOcorrencias mostra nomes e "Sem responsável"', () => {
   expect(screen.getAllByText('Setor 2814')).toHaveLength(2)
   expect(screen.getByText('Sem responsável')).toBeDefined()
   expect(screen.getByText('Crítica')).toBeDefined()
+})
+
+test('MensagemErro é um alerta com texto e ícone decorativo', () => {
+  const { container } = render(<MensagemErro id="email-erro">Informe um e-mail válido.</MensagemErro>)
+  const alerta = screen.getByRole('alert')
+  expect(alerta.id).toBe('email-erro')
+  expect(alerta.textContent).toBe('Informe um e-mail válido.')
+  expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
 })

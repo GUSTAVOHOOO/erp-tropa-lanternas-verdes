@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { CampoSelect } from '@/components/CampoSelect'
+import { MensagemErro } from '@/components/MensagemErro'
 import { aplicarErrosDoServidor } from '@/lib/erros-formulario'
 import type { Lanterna } from '@/lib/schemas/lanterna'
 import { atribuicaoSchema, type AtribuicaoData } from '@/lib/schemas/ocorrencia'
@@ -30,7 +31,7 @@ export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual }: Form
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-6 grid gap-4"> {/* [FORM-06][FORM-07] */}
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5"> {/* [FORM-06][FORM-07] */}
       <Controller
         name="responsavelId"
         control={control}
@@ -48,8 +49,8 @@ export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual }: Form
           />
         )}
       />
-      {errors.root && <p role="alert" className="text-sm text-destructive">{errors.root.message}</p>}
-      <Button type="submit" disabled={isSubmitting}> {/* [FORM-08] */}
+      {errors.root && <MensagemErro>{errors.root.message}</MensagemErro>}
+      <Button type="submit" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
         {isSubmitting ? 'Salvando...' : 'Atribuir responsável'}
       </Button>
     </form>

@@ -2,6 +2,7 @@ import type { UseFormRegisterReturn } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { MensagemErro } from '@/components/MensagemErro'
 
 type CampoTextoProps = {
   id: string
@@ -29,11 +30,7 @@ export function CampoTexto({ id, rotulo, registro, erro, type = 'text', autoComp
       ) : (
         <Input id={id} type={type} autoComplete={autoComplete} inputMode={inputMode} {...registro} {...acessibilidade} />
       )}
-      {erro && (
-        <p id={idErro} role="alert" className="text-sm text-destructive">
-          {erro}
-        </p>
-      )}
+      {erro && <MensagemErro id={idErro}>{erro}</MensagemErro>}
     </div>
   )
 }

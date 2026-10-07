@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { CampoSelect } from '@/components/CampoSelect'
 import { CampoTexto } from '@/components/CampoTexto'
+import { MensagemErro } from '@/components/MensagemErro'
 import { aplicarErrosDoServidor } from '@/lib/erros-formulario'
 import { atualizarStatusSchema, rotuloStatus, type AtualizarStatusData, type StatusOcorrencia } from '@/lib/schemas/ocorrencia'
 import { atualizarStatus } from '@/app/(painel)/painel/ocorrencias/actions'
@@ -35,8 +36,8 @@ export function FormStatus({ ocorrenciaId, statusAtual, resolucaoAtual }: FormSt
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="mt-8 grid gap-4 rounded-xl border p-4"> {/* [FORM-06][FORM-07] */}
-      <h2 className="font-semibold">Atualizar status</h2>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5 rounded-lg border border-border bg-card p-5"> {/* [FORM-06][FORM-07] */}
+      <h2 className="font-heading text-2xl font-semibold">Atualizar status</h2>
       <Controller
         name="status"
         control={control}
@@ -47,9 +48,9 @@ export function FormStatus({ ocorrenciaId, statusAtual, resolucaoAtual }: FormSt
       {status === 'resolvida' && ( // [COMP-14]
         <CampoTexto id="resolucao" rotulo="Como foi resolvida?" multilinha registro={register('resolucao')} erro={errors.resolucao?.message} />
       )}
-      {errors.root && <p role="alert" className="text-sm text-destructive">{errors.root.message}</p>}
-      {salvo && <p role="status" className="text-sm text-primary">Status atualizado.</p>}
-      <Button type="submit" disabled={isSubmitting}> {/* [FORM-08] */}
+      {errors.root && <MensagemErro>{errors.root.message}</MensagemErro>}
+      {salvo && <p role="status" className="text-sm text-primary-texto">Status atualizado.</p>}
+      <Button type="submit" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
         {isSubmitting ? 'Salvando...' : 'Salvar status'}
       </Button>
     </form>

@@ -1,13 +1,14 @@
-import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
+import { PaginaAviso } from '@/components/PaginaAviso'
 
 /** 404 global: nenhuma rota casou com a URL. */
 export default function NaoEncontrada() {
   return (
-    <main className="mx-auto max-w-lg flex-1 p-8 text-center"> {/* [ROTA-22] */}
-      <h1 className="text-2xl font-semibold">Página não encontrada</h1>
-      <p className="mt-2 text-muted-foreground">Este endereço não existe em nenhum dos 3600 setores.</p>
-      <Link href="/" className={buttonVariants({ className: 'mt-6' })}>Voltar ao início</Link>
+    <main className="flex-1 p-4 md:p-8"> {/* [ROTA-22] */}
+      <PaginaAviso
+        titulo="Setor desconhecido"
+        descricao="Este endereço não existe em nenhum dos 3600 setores."
+        acao={{ href: '/', rotulo: 'Voltar ao início' }}
+      />
     </main>
   )
 }

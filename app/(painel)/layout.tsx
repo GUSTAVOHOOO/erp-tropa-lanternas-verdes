@@ -1,38 +1,40 @@
-import Link from 'next/link'
+import { CirclePlusIcon, LayoutDashboardIcon, ListIcon, LogOutIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Marca } from '@/components/Marca'
 import { MenuNavegacao, type LinkMenu } from '@/components/MenuNavegacao'
 import { lerSessao } from '@/lib/dal'
 import { sair } from '@/app/(painel)/actions'
 
 const LINKS_PAINEL: LinkMenu[] = [
-  { href: '/painel', rotulo: 'Resumo' },
-  { href: '/painel/ocorrencias', rotulo: 'Ocorrências' },
-  { href: '/painel/ocorrencias/nova', rotulo: 'Registrar ocorrência' },
+  { href: '/painel', rotulo: 'Resumo', icone: <LayoutDashboardIcon aria-hidden /> },
+  { href: '/painel/ocorrencias', rotulo: 'Ocorrências', icone: <ListIcon aria-hidden /> },
+  { href: '/painel/ocorrencias/nova', rotulo: 'Registrar ocorrência', icone: <CirclePlusIcon aria-hidden /> },
 ]
 
 /** Casca da Central de Comando. Lê a sessão só para mostrar o nome: a proteção fica nas páginas. */
 export default async function PainelLayout({ children }: { children: React.ReactNode }) {
   const sessao = await lerSessao() // [AUTH-10]
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col md:flex-row">
-      <aside className="border-b p-4 md:w-64 md:border-r md:border-b-0">
-        <Link href="/" className="font-semibold text-primary">Central de Oa</Link>
+    <div className="flex flex-1 flex-col md:flex-row">
+      <aside className="flex flex-col gap-5 border-b border-sidebar-border bg-sidebar p-4 md:sticky md:top-0 md:h-dvh md:w-56 md:shrink-0 md:border-r md:border-b-0">
+        <Marca href="/" />
         {sessao && (
-          <p className="mt-4 text-sm">
-            <span className="font-medium">{sessao.nome}</span>
-            <span className="block text-muted-foreground">
-              {sessao.papel === 'guardiao' ? 'Guardião' : `Lanterna · Setor ${sessao.setorId}`}
+          <p className="grid gap-0.5 rounded-md border border-border bg-card p-3 text-sm">
+            <span className="font-semibold">{sessao.nome}</span>
+            <span className="text-muted-foreground">
+              {sessao.papel === 'guardiao' ? 'Guardião · todos os setores' : `Lanterna · Setor ${sessao.setorId}`}
             </span>
           </p>
         )}
-        <div className="mt-4">
-          <MenuNavegacao links={LINKS_PAINEL} orientacao="vertical" />
-        </div>
-        <form action={sair} className="mt-6"> {/* [AUTH-09] funciona sem JavaScript */}
-          <Button type="submit" variant="outline" className="w-full">Sair</Button>
+        <MenuNavegacao links={LINKS_PAINEL} orientacao="vertical" />
+        <form action={sair} className="md:mt-auto"> {/* [AUTH-09] funciona sem JavaScript */}
+          <Button type="submit" variant="ghost" className="w-full justify-start">
+            <LogOutIcon aria-hidden />
+            Sair
+          </Button>
         </form>
       </aside>
-      <main className="flex-1 p-4 md:p-8">{children}</main>
+      <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
     </div>
   )
 }

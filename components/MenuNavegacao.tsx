@@ -7,7 +7,8 @@ import { MenuIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-export type LinkMenu = { href: string; rotulo: string }
+/** `icone` é um elemento (ex.: <HouseIcon aria-hidden />): o layout é Server Component e não pode passar função para cá. */
+export type LinkMenu = { href: string; rotulo: string; icone?: React.ReactNode }
 
 type MenuNavegacaoProps = {
   links: LinkMenu[]
@@ -39,7 +40,7 @@ export function MenuNavegacao({ links, orientacao = 'horizontal' }: MenuNavegaca
         className={cn(
           aberto ? 'flex' : 'hidden',
           'mt-2 flex-col gap-1 md:mt-0 md:flex',
-          orientacao === 'horizontal' && 'md:flex-row md:items-center md:gap-4',
+          orientacao === 'horizontal' && 'md:flex-row md:items-center',
         )}
       >
         {links.map((link) => (
@@ -48,8 +49,10 @@ export function MenuNavegacao({ links, orientacao = 'horizontal' }: MenuNavegaca
               href={link.href} // [ROTA-16]
               aria-current={atual === link.href ? 'page' : undefined} // [ROTA-17]
               onClick={() => setAberto(false)}
-              className="block rounded-md px-2 py-1 text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring aria-[current=page]:font-semibold aria-[current=page]:text-primary"
+              // [CSS-08][CSS-15] página atual: fundo de superfície + contorno, sem listra lateral
+              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-out hover:bg-secondary hover:text-foreground aria-[current=page]:bg-card aria-[current=page]:text-foreground aria-[current=page]:ring-1 aria-[current=page]:ring-border [&_svg]:size-4.5 [&_svg]:shrink-0 [&_svg]:text-texto-terciario aria-[current=page]:[&_svg]:text-primary-texto"
             >
+              {link.icone}
               {link.rotulo}
             </Link>
           </li>

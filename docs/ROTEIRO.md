@@ -24,11 +24,11 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 
 **Arquivos:**
 - `app/(site)/page.tsx`: homepage, com `AREAS` (`:7-11`) e a lista de áreas (`:34-46`).
-- `app/(site)/layout.tsx`: cabeçalho e rodapé montados entre as páginas (`:6-11` com os links do menu).
-- `components/MenuNavegacao.tsx`: menu com `usePathname` (`:20`) e botão de abrir no celular (`:21`).
+- `app/(site)/layout.tsx`: cabeçalho e rodapé montados entre as páginas (`LINKS_SITE` em `:6-11`, `<header>` em `:17`, `<footer>` em `:24`).
+- `components/MenuNavegacao.tsx`: menu com `usePathname` (`:20`) e botão de abrir no celular (`:26`).
 
 **Como funciona (fluxo):**
-1. `app/(site)/layout.tsx:14` monta o cabeçalho e o rodapé; `{children}` entra no meio.
+1. `app/(site)/layout.tsx:15-33` monta o cabeçalho e o rodapé; `{children}` entra no meio.
 2. `app/(site)/page.tsx:14` é um Server Component; os links de ação usam `<Link>` (`:25-26`).
 3. A lista de áreas é um `<ul>` com um `<Link>` por item (`:36-44`), não um grid de cartões.
 4. `MenuNavegacao.tsx:20` lê a rota atual com `usePathname` e `aria-current` marca o link ativo (`:50`).
@@ -128,7 +128,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 
 **Arquivos:**
 - `proxy.ts`: checagem otimista, só lê o cookie (`:6` função, `:7` `decodificarSessao`, `:10-12` redirect, `:19` matcher).
-- `lib/dal.ts`: checagem definitiva (`:30-34` `verificarSessao`, `:37-41` `exigirPapel`, `:25-27` `lerSessao`, `:11` cookie, `:21` apagar).
+- `lib/dal.ts`: checagem definitiva (`:30-34` `verificarSessao`, `:37-41` `exigirPapel`, `:25-27` `lerSessao`, `:11-12` cookie, `:20-21` apagar).
 - `lib/sessao.ts:34-50`: `decodificarSessao` confere assinatura e expiração.
 - `app/(painel)/painel/page.tsx:19`: exemplo de página protegida.
 
@@ -195,7 +195,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 **O que é:** o Resumo mostra uma barra com a contagem por status e as cinco ocorrências mais recentes. A lista tem filtros de status, gravidade e setor, todos na URL.
 
 **Arquivos:**
-- `app/(painel)/painel/page.tsx:18`: Resumo, com `Promise.all` (`:20`).
+- `app/(painel)/painel/page.tsx:17`: Resumo, com `Promise.all` (`:20`).
 - `components/BarraStatus.tsx:22`: barra de status, com a contagem por status (`:25`, JS-09) e links para a lista filtrada (`:41`).
 - `app/(painel)/painel/ocorrencias/page.tsx:22`: lista, com `searchParams` (`:24`), `Suspense` (`:41`) e estado vazio (`:44`).
 - `app/(painel)/painel/ocorrencias/_components/FiltroOcorrencias.tsx:14`: filtros (`:15` `useSearchParams`, `:23` `router.push`).
@@ -203,7 +203,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 - `lib/schemas/ocorrencia.ts:68`: `filtroOcorrenciasSchema`.
 
 **Como funciona (fluxo):**
-1. A lista lê os filtros de `searchParams` (`ocorrencias/page.tsx:24`), normaliza e busca na API (`:25`).
+1. A lista lê os filtros de `searchParams` (`ocorrencias/page.tsx:24`), normaliza (`:26`) e busca na API (`:27`).
 2. Parâmetros repetidos, inválidos ou de setor desconhecido são ignorados (`lib/filtro-ocorrencias.ts:15`).
 3. `FiltroOcorrencias` troca a URL com `router.push` (`FiltroOcorrencias.tsx:23`). Assim o filtro sobrevive ao F5, pode ser compartilhado e o Voltar desfaz.
 4. O componente que usa `useSearchParams` fica dentro de `<Suspense>` (`ocorrencias/page.tsx:41-43`).
@@ -271,7 +271,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 - `app/(painel)/painel/ocorrencias/[id]/page.tsx:23`: detalhe. `:24` sessão, `:27-31` busca em `try`, `:32` `notFound()`, `:33` redirect por setor, `:83-88` formulário.
 - `app/(painel)/painel/ocorrencias/_components/FormStatus.tsx:21`: formulário (`:22` estado da mensagem, `:23` `useForm`, `:29` `useWatch`).
 - `app/(painel)/painel/ocorrencias/actions.ts:46`: `atualizarStatus`.
-- `lib/schemas/ocorrencia.ts:53`: `atualizarStatusSchema`, com `.refine` e `path` em `:58`.
+- `lib/schemas/ocorrencia.ts:53`: `atualizarStatusSchema`, com `.refine` em `:56` e `path` em `:58`.
 
 **Como funciona (fluxo):**
 1. O detalhe busca a ocorrência, setores e lanternas em `try` (`[id]/page.tsx:27-31`). Erro HTTP passa por `tratarErroDetalhe`.
@@ -300,7 +300,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 
 **Arquivos:**
 - `app/(painel)/painel/ocorrencias/[id]/atribuir/page.tsx:17` (função) e `:18` (`exigirPapel`).
-- `app/(painel)/painel/ocorrencias/_components/FormAtribuir.tsx:20`: formulário (`:22` `useForm`).
+- `app/(painel)/painel/ocorrencias/_components/FormAtribuir.tsx:20`: formulário (`:21` `useForm`).
 - `app/(painel)/painel/ocorrencias/actions.ts:70`: `atribuirResponsavel`, com `exigirPapel` em `:71`.
 
 **Como funciona (fluxo):**
@@ -329,14 +329,14 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 **Arquivos:**
 - `components/EsqueletoLista.tsx:4`: esqueleto do loading.
 - `components/EstadoVazio.tsx:12`: estado vazio com explicação e ação.
-- `components/TelaDeErro.tsx:13`: mensagem para humanos, com "Tentar de novo" (`:25`). O detalhe técnico vai só para o console (`:15`).
+- `components/TelaDeErro.tsx:13`: mensagem para humanos, com "Tentar de novo" (`:26`). O detalhe técnico vai só para o console (`:15`).
 - `app/(painel)/painel/ocorrencias/error.tsx:5-6` e `loading.tsx:3-4`: fronteiras de erro e de carregamento da rota.
 - `lib/erro-detalhe.ts:5-12`: classifica o erro HTTP (404, 401, 403, e o resto segue).
 
 **Como funciona (fluxo):**
 1. `loading.tsx` mostra o esqueleto enquanto a página carrega (API-10).
 2. Lista vazia mostra `EstadoVazio` com explicação (API-09; `lanternas/page.tsx:46`).
-3. Falha da API abre o `error.tsx`, que mostra a mensagem e o botão "Tentar de novo" (`TelaDeErro.tsx:25`, `retry()`).
+3. Falha da API abre o `error.tsx`, que mostra a mensagem e o botão "Tentar de novo" (`TelaDeErro.tsx:26`, `retry()`).
 4. Erro HTTP 401 leva ao login, 403 a acesso negado, 404 a `notFound()`, e o resto sobe para o `error.tsx` (`lib/erro-detalhe.ts:7-11`).
 
 **Por que assim:**
@@ -370,7 +370,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. "Sli
 - `.env.example:2`: `API_URL=http://localhost:3001`.
 
 **Como funciona (fluxo):**
-1. Cada função de `lib/` monta a URL com `urlDaApi` (`lib/api.ts:5`).
+1. Cada função de `lib/` monta a URL com `urlDaApi` (`lib/api.ts:2`).
 2. Cada chamada checa `res.ok` (API-02) e lança `ApiError` com o status (API-03).
 3. A resposta é validada com Zod (`ocorrenciaSchema`, `lib/schemas/ocorrencia.ts:21`). Se o formato mudar, o erro aparece aqui.
 4. O cache é declarado em cada fetch (API-06).

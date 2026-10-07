@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test": "vitest",
     "test:run": "vitest run",
-    "api": "json-server --watch db.json --port 3001"
+    "api": "json-server --watch db.json --port 3001",
+    "iniciar": "bash scripts/iniciar.sh"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

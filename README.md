@@ -58,6 +58,22 @@ Abra [http://localhost:3000](http://localhost:3000). Para encerrar, pressione `C
 
 Se você executar somente `npm run dev`, as páginas sem dados podem abrir, mas login, lanternas e ocorrências não funcionarão corretamente porque a API estará desligada.
 
+### Atalho para colegas
+
+Em ambientes com Bash (Git Bash, WSL, macOS ou Linux), um único comando prepara e inicia tudo:
+
+```bash
+bash scripts/iniciar.sh
+```
+
+O script instala as dependências quando `node_modules` ainda não existe, cria `.env.local`, gera um `SESSION_SECRET` automaticamente se necessário e inicia a API e o Next.js. Também é possível usar:
+
+```bash
+npm run iniciar
+```
+
+Deixe esse terminal aberto enquanto usar o sistema. Pressione `Ctrl+C` para encerrar os dois servidores. O script não substitui um `.env.local` já existente nem restaura ou altera o `db.json` por conta própria.
+
 ## Como navegar
 
 ### Área pública

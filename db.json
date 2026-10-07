@@ -1,0 +1,32 @@
+{
+  "setores": [
+    { "id": "0", "numero": 0, "nome": "Setor 0", "descricao": "Oa, no centro do universo: sede da Tropa e lar dos Guardiões." },
+    { "id": "674", "numero": 674, "nome": "Setor 674", "descricao": "Inclui Bolovax Vik, planeta natal de Kilowog." },
+    { "id": "1417", "numero": 1417, "nome": "Setor 1417", "descricao": "Inclui Graxos IV, planeta natal de Arisia." },
+    { "id": "2814", "numero": 2814, "nome": "Setor 2814", "descricao": "Inclui a Terra. Um dos setores mais movimentados do universo." },
+    { "id": "3601", "numero": 3601, "nome": "Setor 3601", "descricao": "Último setor do mapa. Nenhum lanterna designado no momento." }
+  ],
+  "lanternas": [
+    { "id": "hal-jordan", "nome": "Hal Jordan", "especie": "Humano", "planetaNatal": "Terra", "setorId": "2814", "status": "ativo" },
+    { "id": "john-stewart", "nome": "John Stewart", "especie": "Humano", "planetaNatal": "Terra", "setorId": "2814", "status": "em_missao" },
+    { "id": "guy-gardner", "nome": "Guy Gardner", "especie": "Humano", "planetaNatal": "Terra", "setorId": "2814", "status": "ativo" },
+    { "id": "kilowog", "nome": "Kilowog", "especie": "Bolovaxiano", "planetaNatal": "Bolovax Vik", "setorId": "674", "status": "ativo" },
+    { "id": "salaak", "nome": "Salaak", "especie": "Slyggiano", "planetaNatal": "Slyggia", "setorId": "0", "status": "ativo" },
+    { "id": "arisia", "nome": "Arisia Rrab", "especie": "Graxionita", "planetaNatal": "Graxos IV", "setorId": "1417", "status": "afastado" }
+  ],
+  "usuarios": [
+    { "id": "u1", "nome": "Ganthet", "email": "ganthet@oa.tropa", "senha": "guardiao123", "papel": "guardiao", "setorId": null, "lanternaId": null },
+    { "id": "u2", "nome": "Hal Jordan", "email": "hal@oa.tropa", "senha": "lanterna123", "papel": "lanterna", "setorId": "2814", "lanternaId": "hal-jordan" },
+    { "id": "u3", "nome": "Kilowog", "email": "kilowog@oa.tropa", "senha": "lanterna123", "papel": "lanterna", "setorId": "674", "lanternaId": "kilowog" }
+  ],
+  "ocorrencias": [
+    { "id": "o1", "titulo": "Ataque de Parallax em Coast City", "descricao": "A entidade do medo tomou o centro da cidade e controla parte da população.", "planeta": "Terra", "setorId": "2814", "gravidade": "critica", "status": "em_andamento", "envolvidos": 3, "responsavelId": "hal-jordan", "resolucao": null, "criadaPor": "u1", "criadaEm": "2026-10-01T12:00:00.000Z" },
+    { "id": "o2", "titulo": "Nave de Sinestro avistada perto de Marte", "descricao": "Sensores de Oa captaram assinatura de energia amarela na órbita de Marte.", "planeta": "Marte", "setorId": "2814", "gravidade": "alta", "status": "aberta", "envolvidos": 1, "responsavelId": null, "resolucao": null, "criadaPor": "u2", "criadaEm": "2026-10-03T09:30:00.000Z" },
+    { "id": "o3", "titulo": "Contrabando de anéis falsificados", "descricao": "Quadrilha vendia réplicas de anéis de poder em um mercado clandestino.", "planeta": "Terra", "setorId": "2814", "gravidade": "media", "status": "resolvida", "envolvidos": 4, "responsavelId": "guy-gardner", "resolucao": "Anéis apreendidos e levados a Oa para análise dos Guardiões.", "criadaPor": "u2", "criadaEm": "2026-09-20T15:00:00.000Z" },
+    { "id": "o4", "titulo": "Tempestade de energia amarela", "descricao": "Distúrbio de energia amarela no lado oculto da Lua, sem vítimas até agora.", "planeta": "Lua", "setorId": "2814", "gravidade": "baixa", "status": "aberta", "envolvidos": 2, "responsavelId": null, "resolucao": null, "criadaPor": "u1", "criadaEm": "2026-10-05T18:45:00.000Z" },
+    { "id": "o5", "titulo": "Treinamento de recrutas interrompido", "descricao": "Um ataque de Manhunters interrompeu o treinamento de doze recrutas.", "planeta": "Bolovax Vik", "setorId": "674", "gravidade": "media", "status": "em_andamento", "envolvidos": 12, "responsavelId": "kilowog", "resolucao": null, "criadaPor": "u3", "criadaEm": "2026-10-02T08:00:00.000Z" },
+    { "id": "o6", "titulo": "Asteroide desviado de rota", "descricao": "Asteroide em rota de colisão com uma colônia agrícola do setor.", "planeta": "Bolovax Vik", "setorId": "674", "gravidade": "alta", "status": "resolvida", "envolvidos": 1, "responsavelId": "kilowog", "resolucao": "Asteroide redirecionado para órbita segura com uma construção do anel.", "criadaPor": "u3", "criadaEm": "2026-09-28T22:10:00.000Z" },
+    { "id": "o7", "titulo": "Sinal de socorro não identificado", "descricao": "Pedido de socorro em frequência desconhecida, repetido a cada hora.", "planeta": "Korugar", "setorId": "674", "gravidade": "critica", "status": "aberta", "envolvidos": 5, "responsavelId": null, "resolucao": null, "criadaPor": "u1", "criadaEm": "2026-10-06T03:20:00.000Z" },
+    { "id": "o8", "titulo": "Falha na Bateria Central de Oa", "descricao": "Oscilação de energia na Bateria Central durante a recarga dos anéis.", "planeta": "Oa", "setorId": "0", "gravidade": "alta", "status": "aberta", "envolvidos": 1, "responsavelId": "salaak", "resolucao": null, "criadaPor": "u1", "criadaEm": "2026-10-04T11:00:00.000Z" }
+  ]
+}

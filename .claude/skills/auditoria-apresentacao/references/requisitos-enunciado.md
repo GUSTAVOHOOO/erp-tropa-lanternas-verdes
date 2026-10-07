@@ -22,12 +22,12 @@ projeto usar outros, procure pelo papel do arquivo e anote o caminho real.
 
 ### REQ-01: Homepage
 - **Onde:** `app/(site)/page.tsx` (rota `/`), header em `app/(site)/layout.tsx`.
-- **Evidência:** `<Link>` para `/sobre`, `/setores`, `/login` e `/painel` (na página ou no header); nenhum `<a href>` interno.
+- **Evidência:** `<Link>` para `/lanternas`, `/sobre`, `/login` e `/painel` (na página ou no header); nenhum `<a href>` interno.
 - **Regras:** DEC-09, ROTA-16, ROTA-06, COMP-12, CSS-07.
 - **Comando:** `rg -n "<Link" "app/(site)/page.tsx" "app/(site)/layout.tsx" components`
 
 ### REQ-02: Páginas públicas (pelo menos duas)
-- **Onde:** `/sobre` (institucional), `/setores` (listagem), `/setores/[id]` (detalhe).
+- **Onde:** `/lanternas` (listagem), `/lanternas/[id]` (detalhe) e `/sobre` (institucional), nos arquivos `app/(site)/lanternas/page.tsx`, `app/(site)/lanternas/[id]/page.tsx` e `app/(site)/sobre/page.tsx`.
 - **Evidência:** ficam em `app/(site)/`; não chamam `verificarSessao`; o `matcher` do `proxy.ts` não as inclui; abrem numa janela anônima.
 - **Regras:** DEC-09, ROTA-04, ROTA-07, API-05, API-09, ROTA-09, ROTA-10, ROTA-12, ROTA-21.
 - **Comando:** `rg --files "app/(site)" -g page.tsx` e `rg -n "matcher" proxy.ts`

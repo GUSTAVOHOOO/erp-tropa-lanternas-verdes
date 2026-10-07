@@ -70,6 +70,7 @@ tabelas, `\|` é só escape do Markdown: no comando de verdade escreva `|`.
 | C-55 | CSS-07 | `<div ... onClick` | `rg -n "<div[^>]*onClick" app components` |
 | C-56 | DEC-01, DEC-02, DEC-07, STACK-06 | import de axios, TanStack Query, swr, zustand, redux, jose, next-auth, prop-types, yup, formik | |
 | C-57 | DEC-10 | `cacheComponents`, `reactCompiler` ou `experimental` no `next.config.ts` | |
+| C-58 | DEC-10 | cacheComponents ligado: `cacheComponents` ou `partialPrefetching` no `next.config.ts` (o create-next-app do Next 16.4 gera as duas linhas; elas precisam ser apagadas) | `grep -nE "cacheComponents\|partialPrefetching" next.config.ts` |
 
 ## Manuais (o script não consegue decidir)
 

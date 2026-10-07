@@ -142,6 +142,7 @@ relatar VIOLACAO C-18 STACK-06 "dependência fora da lista permitida" "$( [ -f p
 ' 2>/dev/null)"
 relatar VIOLACAO C-56 DEC-01/02/07 "import de biblioteca descartada" "$(g "from ['\"](axios|@tanstack/react-query|swr|zustand|redux|@reduxjs/toolkit|jose|next-auth|prop-types|yup|formik)['\"]")"
 relatar VIOLACAO C-57 DEC-10 "flags experimentais no next.config" "$( [ -f next.config.ts ] && grep -nE "cacheComponents|reactCompiler|experimental" next.config.ts)"
+relatar VIOLACAO C-58 DEC-10 "cacheComponents ligado" "$( [ -f next.config.ts ] && grep -nE "cacheComponents|partialPrefetching" next.config.ts)"
 
 # ---------- Marcadores [ID] ----------
 echo

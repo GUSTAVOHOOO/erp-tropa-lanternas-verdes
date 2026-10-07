@@ -195,6 +195,7 @@ if (!ocorrencia) notFound() // [ROTA-12]
 ```
 **❌ Errado:** renderizar `<p>Não achei</p>` com status 200, ou deixar estourar `undefined.titulo`.
 **Como verificar:** toda página `[id]` tem `notFound()` ou trata `ApiError` 404 (API-12).
+**Nota de versão (conferida no Next 16.4):** em rota com `loading.tsx`, o Next começa a enviar a resposta (status `200`) antes de a página terminar. Se a página depois chamar `notFound()`, o corpo traz o `not-found.tsx` com `<meta name="robots" content="noindex">`; se chamar `redirect()`, o corpo traz um `<meta http-equiv="refresh">` e o navegador segue para o destino. Para quem usa o site o resultado é o mesmo; só o status HTTP fica `200`. Pergunta provável da banca: "por que o 404 responde 200?" → por causa do streaming do `loading.tsx` (slide de APIs, p. 19: cada bloco chega no seu tempo).
 
 ### ROTA-13: useParams/usePathname/useSearchParams/useRouter vêm de next/navigation
 **Fonte:** [SLIDE] ROTAS p. 17 ("useParams() no cliente... importe de next/navigation"), p. 19, p. 20
@@ -308,22 +309,25 @@ try { await salvarOcorrencia(d); redirect('/painel/ocorrencias') } catch { retur
 ### ROTA-21: loading.tsx e error.tsx em toda rota que busca dados
 **Fonte:** [SLIDE] ROTAS p. 21 ("loading.tsx... é um `<Suspense>` automático"; "error.tsx... Precisa ser Client Component"); ROTAS p. 22; APIS p. 19, p. 23
 **Regra:** Toda pasta cuja `page.tsx` faz `await` de dados tem `loading.tsx` (ou `<Suspense>`
-explícito) e `error.tsx`. `error.tsx` começa com `'use client'`, recebe `reset` e mostra botão
+explícito) e `error.tsx`. `error.tsx` começa com `'use client'`, recebe `retry` e mostra botão
 "Tentar de novo" (API-11).
 **✅ Certo:**
 ```tsx
 // error.tsx
 'use client'
-export default function Erro({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function Erro({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
   return (
     <div role="alert">
       <p>Não foi possível carregar as ocorrências.</p>
-      <button onClick={() => reset()}>Tentar de novo</button>
+      <button onClick={() => retry()}>Tentar de novo</button>
     </div>
   )
 }
 ```
 **❌ Errado:** rota de listagem sem `loading.tsx` (tela congelada) ou `error.tsx` sem `'use client'`.
+**Nota de versão:** o slide (ROTAS p. 21) usa `reset()`. No Next 16.4 a doc recomenda `retry()`:
+`reset()` só re-renderiza, sem buscar os dados de novo, então o "Tentar de novo" não funcionaria
+depois que a API voltasse. Fonte: `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md`.
 **Como verificar:** para cada `page.tsx` com `await listar|await buscar`, existe `loading.tsx` e `error.tsx` na mesma pasta ou em pasta ancestral do mesmo grupo; `rg -L "^['\"]use client['\"]" app -g error.tsx` deve retornar vazio.
 
 ### ROTA-22: not-found.tsx para 404 com saída clara

@@ -185,11 +185,14 @@ export default function Loading() {
 
 ### API-11: error.tsx com "Tentar de novo"
 **Fonte:** [SLIDE] APIS p. 21 ("5xx do servidor: error.tsx com reset() para tentar de novo"), p. 23; ROTAS p. 21
-**Regra:** `error.tsx` (cliente) mostra mensagem humana e um botão que chama `reset()`. Não mostra
+**Regra:** `error.tsx` (cliente) mostra mensagem humana e um botão que chama `retry()`. Não mostra
 `error.message` (em produção vem genérica; em desenvolvimento pode ser técnica).
 **✅ Certo:** ver exemplo em ROTA-21.
 **❌ Errado:** `<p>{error.message}</p>` ou `error.tsx` sem botão.
-**Como verificar:** `rg -n "reset\(\)" app -g error.tsx` acha todos; `rg -n "error\.message" app -g error.tsx` deve retornar vazio.
+**Nota de versão:** o slide (ROTAS p. 21) usa `reset()`. No Next 16.4 a doc recomenda `retry()`:
+`reset()` só re-renderiza, sem buscar os dados de novo, então o "Tentar de novo" não funcionaria
+depois que a API voltasse. Fonte: `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md`.
+**Como verificar:** `rg -n "retry\(\)" app -g error.tsx` acha todos; `rg -n "error\.message" app -g error.tsx` deve retornar vazio.
 
 ### API-12: Classificar o erro e escolher a saída
 **Fonte:** [SLIDE] APIS p. 5 (tabela de status: "401 Não autenticado — mande ao login"; "403 Sem permissão — explique o bloqueio"; "404 Não encontrado — notFound()"; "500/503 tentar de novo"), p. 21, p. 22 (código "Classificar o erro e escolher a saída"; "Relance o que você não sabe tratar. Engolir o erro com um catch vazio esconde o problema")

@@ -36,7 +36,7 @@ await salvarOcorrencia(...)
 ### JS-04: Funções nomeadas com verbo
 **Fonte:** [SLIDE] JS p. 9 ("Dica: Use nomes de verbos para funções (ex: calcularTotal, obterUsuario)"); APIS p. 7 e p. 14 (`buscarProdutos`); FORMS p. 20 (`criarConta`)
 **Regra:** Funções e Server Actions começam com verbo em português: `listarOcorrencias`,
-`buscarOcorrencia`, `criarOcorrencia`, `atribuirResponsavel`, `verificarSessao`, `entrar`, `sair`.
+`buscarOcorrencia`, `registrarOcorrencia`, `atribuirResponsavel`, `verificarSessao`, `entrar`, `sair`.
 Componentes são substantivos em PascalCase (COMP-01).
 **✅ Certo:** `export async function listarSetores()`
 **❌ Errado:** `export async function setores()` ou `dadosOcorrencia()`.

@@ -9,15 +9,18 @@ Links de referência passados pelo professor:
 - https://zod.dev/basics
 
 
-Índice: STACK-01 Next.js 16 (App Router, TypeScript, Tailwind, ESLint) · STACK-02 shadcn/ui sobre Base UI · STACK-03 react-hook-form + @hookform/resolvers + Zod 4 · STACK-04 API fake com json-server em db.json, porta 3001 · STACK-05 Estrutura de pastas · STACK-06 Lista fechada de dependências · DEC-01 fetch nos Server Components, não Axios · DEC-02 Sem TanStack Query nem SWR · DEC-03 Dois papéis: Guardião e Lanterna · DEC-04 Front preparado para o back-end: só troca API_URL · DEC-05 Um único padrão de formulário: RHF chama a Server Action · DEC-06 Testes unitários e PropTypes fora do escopo · DEC-07 Sem Context API nem estado global no cliente · DEC-08 Português para o domínio, inglês só nas convenções do framework · DEC-09 Mapa das áreas exigidas pelo enunciado · DEC-10 Sem Cache Components, React Compiler ou flags experimentais
+Índice: STACK-01 Next.js 16 (App Router, TypeScript, Tailwind, ESLint) · STACK-02 shadcn/ui sobre Base UI · STACK-03 react-hook-form + @hookform/resolvers + Zod 4 · STACK-04 API fake com json-server em db.json, porta 3001 · STACK-05 Estrutura de pastas · STACK-06 Lista fechada de dependências · DEC-01 fetch nos Server Components, não Axios · DEC-02 Sem TanStack Query nem SWR · DEC-03 Dois papéis: Guardião e Lanterna · DEC-04 Front preparado para o back-end: só troca API_URL · DEC-05 Um único padrão de formulário: RHF chama a Server Action · DEC-06 Testes com Vitest, como no guia oficial do Next.js · DEC-07 Sem Context API nem estado global no cliente · DEC-08 Português para o domínio, inglês só nas convenções do framework · DEC-09 Mapa das áreas exigidas pelo enunciado · DEC-10 Sem Cache Components, React Compiler ou flags experimentais
 
 ---
 
 ### STACK-01: Next.js 16 (App Router, TypeScript, Tailwind, ESLint)
 **Fonte:** [DOCS] https://nextjs.org/docs/app/getting-started/installation + [DECISÃO] versão 16
-**Regra:** Projeto criado com `npx create-next-app@latest erp-tropa --yes` (padrão atual:
-TypeScript, Tailwind CSS, ESLint, App Router, Turbopack, alias `@/*`, sem pasta `src/`). Node.js
-20.9 ou mais novo. Scripts: `npm run dev`, `npm run build`, `npm run lint` (que roda `eslint`).
+**Regra:** O npm não aceita letras maiúsculas no nome do pacote, e a pasta se chama `TrabalhoWeb`.
+Por isso o projeto é gerado como `erp-tropa` numa pasta temporária fora do repositório
+(`npx create-next-app@latest erp-tropa --yes --use-npm --skip-install --disable-git`) e os arquivos
+são copiados para a raiz de `TrabalhoWeb`. Padrão atual do create-next-app: TypeScript, Tailwind CSS,
+ESLint, App Router, Turbopack, alias `@/*`, sem pasta `src/`. Node.js 20.9 ou mais novo.
+Scripts: `dev`, `build`, `start`, `lint`, `test`, `test:run`, `api`.
 **✅ Certo:** importar com alias: `import { listarSetores } from '@/lib/setores'`
 **❌ Errado:** `import { listarSetores } from '../../../lib/setores'`; script `next lint` (removido no Next 16).
 **Como verificar:** `package.json` tem `"next": "16.x"` e `"lint": "eslint"`; `rg -n "from '\.\./\.\./" app components` deve retornar vazio.
@@ -49,20 +52,20 @@ com `npx shadcn@latest add button input label textarea select card table badge a
 desenvolvimento: `npm i -D json-server@0.17.4`. Script `"api": "json-server --watch db.json --port 3001"`.
 Rodar `npm run api` e `npm run dev` em dois terminais. Porta 3001 porque o Next usa a 3000.
 `.env.local`: `API_URL=http://localhost:3001`. Os `id` no `db.json` são strings.
-**✅ Certo (formato do db.json):**
+**Nota:** o json-server 0.17.4 escuta em `localhost` IPv6 (`::1`). Use `API_URL=http://localhost:3001`,
+não `127.0.0.1`. Registros criados por POST recebem um `id` string aleatório (ex.: `"mn60GVZ"`).
+**✅ Certo (formato do db.json, uma linha de exemplo por coleção):**
 ```json
 {
-  "setores": [
-    { "id": "2814", "numero": 2814, "nome": "Setor 2814", "descricao": "Setor que inclui a Terra." }
-  ],
+  "setores": [{ "id": "2814", "numero": 2814, "nome": "Setor 2814", "descricao": "Inclui a Terra." }],
+  "lanternas": [{ "id": "hal-jordan", "nome": "Hal Jordan", "especie": "Humano", "planetaNatal": "Terra", "setorId": "2814", "status": "ativo" }],
   "usuarios": [
-    { "id": "u1", "nome": "Ganthet", "email": "ganthet@oa.tropa", "senha": "guardiao123", "papel": "guardiao", "setorId": "0" },
-    { "id": "u2", "nome": "Hal Jordan", "email": "hal@oa.tropa", "senha": "lanterna123", "papel": "lanterna", "setorId": "2814" }
+    { "id": "u1", "nome": "Ganthet", "email": "ganthet@oa.tropa", "senha": "guardiao123", "papel": "guardiao", "setorId": null, "lanternaId": null },
+    { "id": "u2", "nome": "Hal Jordan", "email": "hal@oa.tropa", "senha": "lanterna123", "papel": "lanterna", "setorId": "2814", "lanternaId": "hal-jordan" }
   ],
-  "ocorrencias": [
-    { "id": "o1", "titulo": "Ataque de Parallax em Coast City", "descricao": "...", "setorId": "2814",
-      "gravidade": "critica", "status": "aberta", "envolvidos": 3, "responsavelId": null, "criadaEm": "2026-10-01T12:00:00.000Z" }
-  ]
+  "ocorrencias": [{ "id": "o1", "titulo": "Ataque de Parallax em Coast City", "descricao": "...", "planeta": "Terra",
+    "setorId": "2814", "gravidade": "critica", "status": "em_andamento", "envolvidos": 3,
+    "responsavelId": "hal-jordan", "resolucao": null, "criadaPor": "u1", "criadaEm": "2026-10-01T12:00:00.000Z" }]
 }
 ```
 **❌ Errado:** `API_URL` com `NEXT_PUBLIC_`; json-server na porta 3000; URL da API escrita no código.
@@ -72,65 +75,46 @@ e confira a sintaxe de filtros no README da v1 antes de usar `_page`/`_sort`.
 
 ### STACK-05: Estrutura de pastas
 **Fonte:** [DECISÃO] estrutura do projeto, montada a partir de [SLIDE] ROTAS p. 11 (`_components`, pastas = rotas), p. 15 (`(site)`/`(painel)`), FORMS p. 14/15 (`lib/schemas/`), FORMS p. 20 (`actions.ts` ao lado da rota), APIS p. 14 (`lib/<recurso>.ts`), APIS p. 22 (`lib/api-error.ts`)
-**Status:** RASCUNHO. O mapa de rotas e as telas ainda serão aprovados no design do sistema; atualize
-esta árvore quando o design for aprovado.
 **Regra:** Siga esta árvore. Arquivo novo entra na pasta do seu papel; se nenhuma serve, registre
 uma decisão antes.
 ```
-erp-tropa/
-├── proxy.ts                          controle de acesso otimista (AUTH-01)
-├── db.json                           dados da API fake (STACK-04)
-├── .env.local / .env.example         API_URL, SESSION_SECRET (API-08)
+TrabalhoWeb/
+├── proxy.ts                         controle de acesso otimista (AUTH-01)
+├── db.json                          dados da API fake (STACK-04)
+├── vitest.config.mts, vitest.setup.ts, CLAUDE.md, .env.example   configuração de testes e variáveis (API_URL, SESSION_SECRET: API-08)
 ├── app/
-│   ├── layout.tsx                    <html lang="pt-BR"> (ROTA-05)
-│   ├── globals.css                   Tailwind + tema shadcn (CSS-09)
-│   ├── not-found.tsx                 404 global (ROTA-22)
-│   ├── (site)/                       ÁREA PÚBLICA (ROTA-04)
-│   │   ├── layout.tsx                header público
-│   │   ├── page.tsx                  "/"  homepage (DEC-09)
-│   │   ├── sobre/page.tsx            "/sobre"  institucional
-│   │   ├── setores/page.tsx          "/setores"  listagem pública
-│   │   ├── setores/loading.tsx, error.tsx
-│   │   ├── setores/[id]/page.tsx     "/setores/2814"  detalhe público
-│   │   ├── login/page.tsx            "/login"
-│   │   ├── login/actions.ts          entrar() (AUTH-08)
-│   │   ├── login/_components/FormLogin.tsx
-│   │   └── acesso-negado/page.tsx    403 explicado (AUTH-06)
-│   └── (painel)/                     ÁREA PRIVADA
-│       ├── layout.tsx                sidebar + nome + botão Sair
-│       ├── actions.ts                sair() (AUTH-09)
+│   ├── layout.tsx                   <html lang="pt-BR"> (ROTA-05)
+│   ├── globals.css                  Tailwind + tema shadcn (CSS-09)
+│   ├── not-found.tsx                404 global (ROTA-22)
+│   ├── (site)/                      ÁREA PÚBLICA (ROTA-04)
+│   │   ├── layout.tsx, page.tsx, sobre/page.tsx                        header público, "/" homepage (DEC-09), "/sobre"
+│   │   ├── lanternas/page.tsx, loading.tsx, error.tsx, _components/CartaoLanterna.tsx   "/lanternas" listagem pública com filtro por setor
+│   │   ├── lanternas/[id]/page.tsx, not-found.tsx                      "/lanternas/hal-jordan" detalhe público
+│   │   ├── login/page.tsx, actions.ts, _components/FormLogin.tsx       "/login", entrar() (AUTH-08)
+│   │   └── acesso-negado/page.tsx                                      403 explicado (AUTH-06)
+│   └── (painel)/                    ÁREA PRIVADA
+│       ├── layout.tsx, actions.ts                                      sidebar + nome + botão Sair; sair() (AUTH-09)
 │       └── painel/
-│           ├── page.tsx              "/painel"  resumo
-│           ├── loading.tsx, error.tsx
+│           ├── page.tsx, loading.tsx, error.tsx                        "/painel" resumo
 │           └── ocorrencias/
-│               ├── page.tsx          "/painel/ocorrencias"  lista + filtros (searchParams)
-│               ├── loading.tsx, error.tsx
-│               ├── actions.ts        criarOcorrencia, atualizarStatus, atribuirResponsavel
-│               ├── _components/      FormOcorrencia.tsx, FiltroOcorrencias.tsx, ...
-│               ├── nova/page.tsx     "/painel/ocorrencias/nova"
-│               └── [id]/
-│                   ├── page.tsx      "/painel/ocorrencias/o1"  detalhe
-│                   ├── not-found.tsx
-│                   └── atribuir/page.tsx   só Guardião (exigirPapel)
+│               ├── page.tsx, loading.tsx, error.tsx, actions.ts        lista + filtros (searchParams); actions.ts cresce na tarefa 8
+│               ├── _components/FiltroOcorrencias.tsx, FormOcorrencia.tsx
+│               ├── _components/FormStatus.tsx, FormAtribuir.tsx
+│               ├── nova/page.tsx                                       "/painel/ocorrencias/nova"
+│               └── [id]/page.tsx, not-found.tsx, atribuir/page.tsx     detalhe; atribuir só Guardião (exigirPapel)
 ├── components/
-│   ├── ui/                           gerado pelo shadcn (STACK-02)
-│   ├── CampoTexto.tsx                (FORM-22)
-│   ├── MenuNavegacao.tsx             'use client', usePathname (ROTA-17)
-│   ├── EstadoVazio.tsx               (API-09)
-│   └── BadgeGravidade.tsx
-└── lib/
-    ├── utils.ts                      cn() do shadcn
-    ├── api-error.ts                  ApiError (API-03)
-    ├── resultado-acao.ts             tipo ResultadoAcao (FORM, DEC-05)
-    ├── sessao.ts                     cookie assinado (AUTH-02, AUTH-03)
-    ├── dal.ts                        verificarSessao, exigirPapel (AUTH-04, AUTH-06)
-    ├── ocorrencias.ts                camada de serviço (API-01)
-    ├── setores.ts
-    ├── usuarios.ts
-    └── schemas/
-        ├── ocorrencia.ts             schemas de resposta e de formulário (FORM-02, API-04)
-        ├── login.ts
-        └── setor.ts
+│   ├── ui/                          gerado pelo shadcn (STACK-02)
+│   ├── CampoTexto, MenuNavegacao, EstadoVazio, TelaDeErro, EsqueletoLista,
+│   │   BadgeGravidade, BadgeStatus, TabelaOcorrencias     CampoTexto (FORM-22); MenuNavegacao 'use client', usePathname (ROTA-17); EstadoVazio (API-09)
+│   └── CampoSelect
+├── lib/
+│   ├── utils.ts                     gerado pelo shadcn (cn)
+│   ├── api-error.ts, resultado-acao.ts, schemas/*                      ApiError (API-03); tipo ResultadoAcao (FORM, DEC-05); schemas (FORM-02, API-04)
+│   ├── api.ts, setores.ts, lanternas.ts, ocorrencias.ts, usuarios.ts   camada de serviço (API-01)
+│   ├── sessao.ts, dal.ts, erros-formulario.ts   sessao.ts puro, sem next/* (AUTH-03); dal.ts verificarSessao, exigirPapel (AUTH-04, AUTH-06)
+│   └── formatar.ts
+├── __tests__/                       testes de cada tarefa (DEC-06)
+└── README.md, docs/AUDITORIA.md, docs/ROTEIRO.md
 ```
 **❌ Errado:** `services/`, `utils/api.ts`, `hooks/useOcorrencias.ts` com fetch, `app/api/` sem necessidade.
 **Como verificar:** comparar `rg --files app components lib` com a árvore; pasta não prevista precisa de decisão registrada.
@@ -138,10 +122,12 @@ erp-tropa/
 ### STACK-06: Lista fechada de dependências
 **Fonte:** [DECISÃO] simplicidade (o enunciado prioriza simplicidade; cada dependência precisa ser explicada)
 **Regra:** `dependencies`/`devDependencies` só podem conter: `next`, `react`, `react-dom`,
-`typescript`, `@types/*`, `tailwindcss`, `@tailwindcss/postcss`, `eslint`, `eslint-config-next`,
-`react-hook-form`, `@hookform/resolvers`, `zod`, `json-server`, e o que o `shadcn init`/`shadcn add`
-instalar sozinho (Base UI, `class-variance-authority`, `clsx`, `tailwind-merge`, ícones `lucide-react`,
-`tw-animate-css`). Qualquer outra exige uma regra `[DECISÃO]` nova.
+`typescript`, `@types/node` (^24, para casar com o Vitest 5), `@types/react`, `@types/react-dom`,
+`tailwindcss`, `@tailwindcss/turbopack`, `eslint`, `eslint-config-next`, `react-hook-form`,
+`@hookform/resolvers`, `zod`, `json-server` (0.17.4), `vitest`, `jsdom`, `@testing-library/react`,
+`@testing-library/dom`, e o que o `shadcn init`/`shadcn add` instalar sozinho (`shadcn`,
+`@base-ui/react`, `class-variance-authority`, `cn`, `lucide-react`, `tw-animate-css`).
+Qualquer outra exige uma regra `[DECISÃO]` nova.
 **✅ Certo:** dependência nova discutida e registrada aqui antes do `npm i`.
 **❌ Errado:** `npm i axios @tanstack/react-query zustand jose next-auth`.
 **Como verificar:** ler `package.json` e comparar com esta lista (a skill de auditoria faz isso).
@@ -193,11 +179,18 @@ padrões. A única `<form action={...}>` do projeto é o botão Sair (AUTH-09), 
 **Nota de versão:** `useActionState` não está desatualizado: é a API atual do React 19 (substituiu
 `useFormState`). A escolha é só por simplicidade.
 
-### DEC-06: Testes unitários e PropTypes fora do escopo
-**Fonte:** [DECISÃO] + [SLIDE] PROPS p. 9 (itens 5 e 7 do checklist aparecem como "Pendente")
-**Regra:** Não há biblioteca de testes nem PropTypes. A validação de props é feita por TypeScript
-(COMP-06). A verificação do projeto é a skill `auditoria-apresentacao` + `npm run lint` + `npm run build`.
-**Como verificar:** `package.json` sem `jest`, `vitest`, `@testing-library/*`, `prop-types`.
+### DEC-06: Testes com Vitest, como no guia oficial do Next.js
+**Fonte:** [DOCS] `node_modules/next/dist/docs/01-app/02-guides/testing/vitest.md` + [SLIDE] PROPS p. 9 (item 7 do checklist: "Testes Unitários... `describe('Component')`") + [DECISÃO] ajustes de instalação
+**Regra:** Testes em `__tests__/`, rodados com `npm run test:run`. Testamos schemas, camada de serviço
+(com `fetch` simulado), sessão, `proxy.ts`, Server Actions (com `next/navigation`, `next/cache` e
+`@/lib/dal` simulados) e componentes cliente ou síncronos com React Testing Library. Server
+Components `async` não são suportados pelo Vitest (o guia avisa): eles são verificados por
+`npm run build`, `curl` e pelo roteiro manual. PropTypes não: a tipagem é TypeScript (COMP-06).
+**Diferenças em relação ao guia:** (1) sem `@vitejs/plugin-react`: uma dependência opcional dele
+exige Babel 8 e conflita com o Babel 7 do pacote `shadcn`; o Vite 8 já transforma JSX sozinho.
+(2) sem `vite-tsconfig-paths`: o Vite 8 resolve o alias `@/` com `resolve.tsconfigPaths: true` e
+avisa que o plugin é desnecessário. (3) `vitest.setup.ts` chama `cleanup()` depois de cada teste.
+**Como verificar:** `npm run test:run` passa; `package.json` não tem os dois plugins acima.
 
 ### DEC-07: Sem Context API nem estado global no cliente
 **Fonte:** [DECISÃO] + [SLIDE] PROPS p. 12 ("Context para dados globais", citado como próximo tópico)
@@ -214,10 +207,11 @@ e passada por props. Não crie `createContext`, Zustand nem Redux.
 
 ### DEC-09: Mapa das áreas exigidas pelo enunciado
 **Fonte:** [DECISÃO]
-**Regra:** Homepage = `app/(site)/page.tsx` ("/"), com links para Sobre, Setores, Login e (se logado)
-Painel. Páginas públicas = `/sobre` (institucional), `/setores` (listagem), `/setores/[id]` (detalhe).
-Login = `/login`. Área privada = tudo sob `/painel`. A skill `auditoria-apresentacao` usa este mapa
-para achar os arquivos de cada requisito.
+**Regra:** Homepage = `app/(site)/page.tsx` ("/"), com links para Lanternas, Sobre e Central de Comando
+(`/painel`). Páginas públicas = `/lanternas` (listagem com filtro por setor), `/lanternas/[id]`
+(detalhe) e `/sobre` (institucional). Login = `/login`. Acesso negado = `/acesso-negado`. Área
+privada = tudo sob `/painel`. A skill `auditoria-apresentacao` usa este mapa para achar os arquivos
+de cada requisito.
 **Como verificar:** os arquivos listados em STACK-05 para essas rotas existem.
 
 ### DEC-10: Sem Cache Components, React Compiler ou flags experimentais
@@ -225,3 +219,7 @@ para achar os arquivos de cada requisito.
 **Regra:** `next.config.ts` fica como o create-next-app gerou. Nada de `cacheComponents`,
 `reactCompiler` ou `experimental.*`. Os padrões de cache dos slides (API-06) continuam válidos.
 **Como verificar:** `rg -n "cacheComponents|reactCompiler|experimental" next.config.ts` deve retornar vazio.
+**Nota de versão:** o `create-next-app` do Next 16.4 já gera `next.config.ts` com
+`cacheComponents: true` e `partialPrefetching: true`. Apague essas duas linhas logo após criar o
+projeto: com elas ligadas, as opções de `fetch` do slide de APIs (p. 12) deixam de valer.
+Guia do modelo usado: `node_modules/next/dist/docs/01-app/02-guides/caching-without-cache-components.md`.

@@ -12,9 +12,7 @@ Modelo em três camadas (doc oficial: https://nextjs.org/docs/app/guides/authent
 2. `lib/dal.ts`: checagem de verdade, em cada página privada e cada Server Action (AUTH-04, AUTH-05).
 3. `lib/<recurso>.ts` e Server Actions: filtro por papel/setor no servidor (AUTH-07).
 
-Arquivos envolvidos: `proxy.ts`, `lib/sessao.ts`, `lib/dal.ts`, `lib/usuarios.ts`,
-`lib/schemas/login.ts`, `app/(site)/login/actions.ts`, `app/(site)/login/_components/FormLogin.tsx`,
-`app/(painel)/actions.ts` (sair), `app/(site)/acesso-negado/page.tsx`.
+Arquivos envolvidos: `proxy.ts`, `lib/sessao.ts` (assinatura e regras puras, sem `next/*`), `lib/dal.ts` (cookies, `criarSessao`, `apagarSessao`, `lerSessao`, `verificarSessao`, `exigirPapel`), `lib/usuarios.ts`, `lib/schemas/login.ts`, `app/(site)/login/actions.ts`, `app/(site)/login/_components/FormLogin.tsx`, `app/(painel)/actions.ts` (sair), `app/(site)/acesso-negado/page.tsx`.
 
 
 Índice: AUTH-01 proxy.ts (não middleware.ts) protege /painel e redireciona para /login · AUTH-02 Sessão num cookie httpOnly criado no servidor · AUTH-03 Cookie assinado com HMAC (node:crypto) e SESSION_SECRET · AUTH-04 verificarSessao() no DAL, chamada em toda página privada · AUTH-05 Toda Server Action confere sessão (e papel) antes de agir · AUTH-06 Sem permissão é 403: exigirPapel redireciona para /acesso-negado · AUTH-07 Lanterna só vê o próprio setor: o filtro é aplicado no servidor · AUTH-08 Login com RHF + Server Action entrar · AUTH-09 Sair = Server Action que apaga o cookie e redireciona · AUTH-10 Não fazer a checagem de acesso no layout · AUTH-11 Limitações da API fake documentadas
@@ -60,8 +58,11 @@ codemod oficial é `npx @next/codemod@canary middleware-to-proxy .`.
 mínimo: `id`, `nome`, `papel`, `setorId`, `expiraEm`. Nunca senha nem e-mail.
 **✅ Certo:**
 ```ts
+// lib/dal.ts
+import { DURACAO_SESSAO_MS } from '@/lib/sessao'
+
 export async function criarSessao(dados: Omit<Sessao, 'expiraEm'>) {
-  const expiraEm = Date.now() + 8 * 60 * 60 * 1000 // 8 horas
+  const expiraEm = Date.now() + DURACAO_SESSAO_MS
   const cookieStore = await cookies()
   cookieStore.set(NOME_COOKIE, codificarSessao({ ...dados, expiraEm }), { // [AUTH-02]
     httpOnly: true,
@@ -81,46 +82,69 @@ export async function criarSessao(dados: Omit<Sessao, 'expiraEm'>) {
 assinatura com `timingSafeEqual`, valida o formato com Zod e checa `expiraEm`. Sem isso, qualquer
 pessoa editaria o cookie no DevTools e viraria Guardião. `SESSION_SECRET` fica em `.env.local`,
 sem `NEXT_PUBLIC_` (API-08). Gere com `openssl rand -base64 32`.
+`lib/sessao.ts` não importa nada de `next/*`: assim o `proxy.ts` e os testes usam o mesmo código. `setorId` e `lanternaId` são `null` para o Guardião; uma sessão de Lanterna sem `setorId` é rejeitada pelo schema.
 **✅ Certo:**
 ```ts
 // lib/sessao.ts
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { cookies } from 'next/headers'
 import * as z from 'zod'
+import { PAPEIS } from '@/lib/schemas/usuario'
+
+// Este arquivo não importa nada de next/*: o proxy.ts, o dal.ts e os testes usam o mesmo código.
 
 export const NOME_COOKIE = 'sessao'
+export const DURACAO_SESSAO_MS = 8 * 60 * 60 * 1000 // 8 horas
 
 const sessaoSchema = z.object({
   id: z.string(),
   nome: z.string(),
-  papel: z.enum(['guardiao', 'lanterna']),
-  setorId: z.string(),
+  papel: z.enum(PAPEIS),
+  setorId: z.string().nullable(), // null para o Guardião
+  lanternaId: z.string().nullable(),
   expiraEm: z.number(),
-})
+}).refine((s) => s.papel === 'guardiao' || s.setorId !== null) // Lanterna sempre tem setor
+
 export type Sessao = z.infer<typeof sessaoSchema>
 
-function assinar(texto: string) {
+function assinar(texto: string): string {
   const segredo = process.env.SESSION_SECRET
   if (!segredo) throw new Error('SESSION_SECRET não definido no .env.local') // sem segredo, a assinatura não protege nada
   return createHmac('sha256', segredo).update(texto).digest('base64url')
 }
 
-export function codificarSessao(sessao: Sessao) {
+/** Valor do cookie: dados em base64url + "." + assinatura HMAC. Editar os dados quebra a assinatura. */
+export function codificarSessao(sessao: Sessao): string {
   const dados = Buffer.from(JSON.stringify(sessao)).toString('base64url')
   return `${dados}.${assinar(dados)}` // [AUTH-03]
 }
 
-export function decodificarSessao(valor: string | undefined): Sessao | null {
+/** Lê o cookie. Devolve null se faltar, se a assinatura não conferir, se o formato for outro ou se expirou. */
+export function decodificarSessao(valor: string | undefined, agora = Date.now()): Sessao | null {
   if (!valor) return null
-  const [dados, assinatura] = valor.split('.')
-  if (!dados || !assinatura) return null
+  const [dados, assinatura, sobra] = valor.split('.')
+  if (!dados || !assinatura || sobra !== undefined) return null
   const recebida = Buffer.from(assinatura)
   const esperada = Buffer.from(assinar(dados))
   if (recebida.length !== esperada.length) return null // timingSafeEqual lança erro com tamanhos diferentes
   if (!timingSafeEqual(recebida, esperada)) return null // [AUTH-03]
-  const resultado = sessaoSchema.safeParse(JSON.parse(Buffer.from(dados, 'base64url').toString()))
-  if (!resultado.success || resultado.data.expiraEm < Date.now()) return null
-  return resultado.data
+  try {
+    const resultado = sessaoSchema.safeParse(JSON.parse(Buffer.from(dados, 'base64url').toString()))
+    if (!resultado.success || resultado.data.expiraEm < agora) return null
+    return resultado.data
+  } catch {
+    return null
+  }
+}
+
+/** Lanterna só acessa o próprio setor; Guardião acessa todos. [AUTH-07] */
+export function podeAcessarSetor(sessao: Sessao, setorId: string): boolean {
+  return sessao.papel === 'guardiao' || sessao.setorId === setorId
+}
+
+/** Setor usado nos filtros: o Lanterna fica preso ao próprio setor; o Guardião usa o da URL (ou todos). [AUTH-07] */
+export function setorParaFiltro(sessao: Sessao, setorDaUrl?: string): string | undefined {
+  if (sessao.papel === 'lanterna') return sessao.setorId ?? 'sem-setor'
+  return setorDaUrl
 }
 ```
 **❌ Errado:** cookie `sessao=2` (só o id, sem assinatura); segredo escrito no código; `NEXT_PUBLIC_SESSION_SECRET`.
@@ -138,13 +162,44 @@ o proxy é otimista e pode deixar passar (matcher errado, rota movida).
 import { cache } from 'react'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { decodificarSessao, NOME_COOKIE, type Sessao } from '@/lib/sessao'
+import type { Papel } from '@/lib/schemas/usuario'
+import { codificarSessao, decodificarSessao, DURACAO_SESSAO_MS, NOME_COOKIE, type Sessao } from '@/lib/sessao'
 
+/** Grava a sessão num cookie httpOnly. Só roda no servidor (Server Action). [AUTH-02] */
+export async function criarSessao(dados: Omit<Sessao, 'expiraEm'>): Promise<void> {
+  const expiraEm = Date.now() + DURACAO_SESSAO_MS
+  const cookieStore = await cookies()
+  cookieStore.set(NOME_COOKIE, codificarSessao({ ...dados, expiraEm }), { // [AUTH-02]
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    expires: new Date(expiraEm),
+  })
+}
+
+export async function apagarSessao(): Promise<void> {
+  ;(await cookies()).delete(NOME_COOKIE) // [AUTH-09]
+}
+
+/** Lê a sessão sem redirecionar: o layout do painel usa só para mostrar o nome. [AUTH-10] */
+export const lerSessao = cache(async (): Promise<Sessao | null> => {
+  return decodificarSessao((await cookies()).get(NOME_COOKIE)?.value)
+})
+
+/** Primeira linha de toda página e action do painel. Sem sessão válida → /login. [AUTH-04] */
 export const verificarSessao = cache(async (): Promise<Sessao> => {
-  const sessao = decodificarSessao((await cookies()).get(NOME_COOKIE)?.value)
+  const sessao = await lerSessao()
   if (!sessao) redirect('/login') // [AUTH-04]
   return sessao
 })
+
+/** Logado mas sem o papel exigido → /acesso-negado (o "403" explicado). [AUTH-06] */
+export async function exigirPapel(papel: Papel): Promise<Sessao> {
+  const sessao = await verificarSessao()
+  if (sessao.papel !== papel) redirect('/acesso-negado') // [AUTH-06]
+  return sessao
+}
 ```
 ```tsx
 // app/(painel)/painel/page.tsx
@@ -185,9 +240,7 @@ export async function exigirPapel(papel: Sessao['papel']): Promise<Sessao> {
 ```
 **❌ Errado:** mandar o Lanterna para `/login` (ele já está logado); esconder o botão e deixar a URL aberta; `experimental.authInterrupts` no `next.config.ts`.
 **Como verificar:** `rg -n "acesso-negado" lib app` acha `exigirPapel` e a página; `rg -n "authInterrupts|forbidden\(" .` deve retornar vazio.
-**Nota de versão:** a página responde com status HTTP 200, não 403. A semântica de 403 está na
-mensagem e no fluxo. Se a banca perguntar: `forbidden()` daria o status 403 real, mas é
-experimental no Next 16.
+**Nota de versão (conferida no Next 16.4):** em rota com `loading.tsx`, o Next começa a enviar a resposta (status `200`) antes de a página terminar. Se a página depois chamar `notFound()`, o corpo traz o `not-found.tsx` com `<meta name="robots" content="noindex">`; se chamar `redirect()`, o corpo traz um `<meta http-equiv="refresh">` e o navegador segue para o destino. Para quem usa o site o resultado é o mesmo; só o status HTTP fica `200`. Pergunta provável da banca: "por que o 404 responde 200?" → por causa do streaming do `loading.tsx` (slide de APIs, p. 19: cada bloco chega no seu tempo).
 
 ### AUTH-07: Lanterna só vê o próprio setor: o filtro é aplicado no servidor
 **Fonte:** [DECISÃO] regra de negócio dos dois papéis + [DOCS] https://nextjs.org/docs/app/guides/authentication ("client-side UI restrictions alone are not sufficient for security"; DTO)
@@ -197,14 +250,14 @@ setor. Esconder botões na UI é só conveniência.
 **✅ Certo:**
 ```tsx
 const sessao = await verificarSessao()
-const setorId = sessao.papel === 'lanterna' ? sessao.setorId : setorDaUrl // [AUTH-07]
+const setorId = setorParaFiltro(sessao, filtro.setor) // [AUTH-07]
 const ocorrencias = await listarOcorrencias({ setorId, status })
 ```
 ```tsx
-if (sessao.papel === 'lanterna' && ocorrencia.setorId !== sessao.setorId) redirect('/acesso-negado') // [AUTH-07]
+if (!podeAcessarSetor(sessao, ocorrencia.setorId)) redirect('/acesso-negado') // [AUTH-07]
 ```
 **❌ Errado:** buscar todas as ocorrências e filtrar com `.filter()` no componente cliente; aceitar `?setor=` da URL para o Lanterna.
-**Como verificar:** `rg -n "papel === 'lanterna'" app lib` aparece na listagem, no detalhe e nas actions de escrita.
+**Como verificar:** `rg -n "setorParaFiltro|podeAcessarSetor" app lib`.
 
 ### AUTH-08: Login com RHF + Server Action entrar
 **Fonte:** [DECISÃO] fluxo do login + [SLIDE] FORMS p. 16, p. 19, p. 20 (mesmo schema no cliente e no servidor; erro do servidor no formulário); ROTAS p. 20 (replace após login) + [DOCS] https://nextjs.org/docs/app/guides/authentication ("Sign-up and login functionality")

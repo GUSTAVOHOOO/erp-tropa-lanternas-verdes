@@ -172,7 +172,7 @@ O foco no primeiro campo inválido já vem do RHF (`shouldFocusError` é `true` 
 
 ### FORM-12: Nunca misturar useState com register no mesmo campo
 **Fonte:** [SLIDE] FORMS p. 21 (armadilha "Misturar useState com register no mesmo campo"); FORMS p. 4 (RHF usa inputs não controlados)
-**Regra:** O valor do campo é do RHF. Se precisar ler o valor para mostrar algo, use `watch('campo')`
+**Regra:** O valor do campo é do RHF. Se precisar ler o valor para mostrar algo, use `useWatch({ control, name: 'campo' })`
 de um campo específico (FORM-21), não `useState` + `onChange`.
 **✅ Certo:** `<Input id="titulo" {...register('titulo')} />`
 **❌ Errado:**
@@ -254,14 +254,14 @@ schema do formulário, depois da checagem de sessão (AUTH-05). Só usa `parsed.
 **✅ Certo:**
 ```ts
 'use server'
-export async function criarOcorrencia(dados: unknown): Promise<ResultadoAcao> {
+export async function registrarOcorrencia(dados: unknown): Promise<ResultadoAcao> {
   const sessao = await verificarSessao() // [AUTH-05]
   const parsed = novaOcorrenciaSchema.safeParse(dados) // [FORM-17]
   if (!parsed.success) return { ok: false, errors: z.flattenError(parsed.error).fieldErrors } // [FORM-18]
   ...
 }
 ```
-**❌ Errado:** `export async function criarOcorrencia(dados: NovaOcorrenciaData) { await salvar(dados) }` (o tipo não existe em tempo de execução).
+**❌ Errado:** `export async function registrarOcorrencia(dados: NovaOcorrenciaData) { await salvar(dados) }` (o tipo não existe em tempo de execução).
 **Como verificar:** todo arquivo com `'use server'` contém `safeParse` (exceto `sair`, que não recebe dados): `rg -l "^['\"]use server['\"]" app | xargs rg -L "safeParse"`.
 
 ### FORM-18: Erros do servidor com z.flattenError (Zod 4)
@@ -270,7 +270,7 @@ export async function criarOcorrencia(dados: unknown): Promise<ResultadoAcao> {
 cliente, cada erro vira `setError(campo, { type: 'server', message })`.
 **✅ Certo:**
 ```tsx
-const resultado = await criarOcorrencia(dados)
+const resultado = await registrarOcorrencia(dados)
 if (resultado?.errors) {
   for (const [campo, mensagens] of Object.entries(resultado.errors)) {
     setError(campo as keyof NovaOcorrenciaData, { type: 'server', message: mensagens?.[0] })
@@ -304,10 +304,15 @@ if (resultado?.erro) setError('root', { type: 'server', message: resultado.erro 
 ### FORM-21: watch só de um campo, onde precisa
 **Fonte:** [SLIDE] FORMS p. 21 (armadilha "Usar watch() no componente todo e perder a performance"); p. 10
 **Regra:** Se precisar mostrar algo dependente de um valor (ex.: campo "resolução" só aparece quando
-status = resolvida), use `watch('status')` com o nome do campo. Nunca `watch()` sem argumento.
-**✅ Certo:** `const status = watch('status')`
+status = resolvida), use `useWatch({ control, name: 'status' })` com o nome do campo. Nunca observe o formulário inteiro.
+**✅ Certo:** `const status = useWatch({ control, name: 'status' })`
 **❌ Errado:** `const valores = watch()`
-**Como verificar:** `rg -n "watch\(\)" app components` deve retornar vazio.
+**Como verificar:** `rg -n "watch\(" app components` (não deve achar `watch(` solto; `useWatch(` é o certo).
+**Nota de versão:** o slide (FORMS p. 10 e p. 21) fala em `watch`. Com o ESLint do Next 16
+(`eslint-plugin-react-hooks` 7), `watch()` gera o aviso `react-hooks/incompatible-library`, porque a
+função não pode ser memorizada pelo React Compiler. O `useWatch({ control, name })` do próprio React
+Hook Form observa um campo só, do mesmo jeito, sem o aviso. A ideia do slide (observar só o campo
+necessário) continua a mesma.
 
 ### FORM-22: Componente CampoTexto reutilizável
 **Fonte:** [SLIDE] FORMS p. 17 ("campo acessível — padrão para reaproveitar"), p. 21 ("Extrair um componente `<CampoTexto>` reutilizável")

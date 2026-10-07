@@ -129,6 +129,10 @@ relatar VIOLACAO C-20 CSS-02 "style inline" "$(g "style=\{\{")"
 relatar REVISAR  C-37 CSS-04/09 "valor arbitrário ou cor hex no className" "$(g "[a-z]-\[[0-9#]|#[0-9a-fA-F]{6}")"
 relatar VIOLACAO C-54 CSS-09 "tailwind.config.* criado" "$(ls tailwind.config.* 2>/dev/null)"
 relatar VIOLACAO C-55 CSS-07 "<div onClick> no lugar de botão" "$(g "<div[^>]*onClick")"
+relatar VIOLACAO C-59 DEC-13 "tema escuro duplicado (dark: ou .dark)" "$(g "\.dark|dark:")"
+relatar VIOLACAO C-60 CSS-12 "listra colorida lateral" "$(g "border-[lr]-[2-8]")"
+relatar VIOLACAO C-61 CSS-12 "classe de gravidade montada por interpolação" "$(g "gravidade-\\\$\{")"
+relatar VIOLACAO C-62 CSS-13 "fonte condensada em components/ui" "$(grep -rn "font-heading" components/ui 2>/dev/null)"
 
 # ---------- Dependências ----------
 relatar VIOLACAO C-18 STACK-06 "dependência fora da lista permitida" "$( [ -f package.json ] && node -e '

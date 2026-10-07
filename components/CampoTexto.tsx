@@ -14,8 +14,8 @@ type CampoTextoProps = {
   multilinha?: boolean
 }
 
-/** Campo de texto com label, mensagem de erro acessível e integração com o React Hook Form. [FORM-22] */
-export function CampoTexto({ id, rotulo, registro, erro, type = 'text', autoComplete, inputMode, multilinha = false }: CampoTextoProps) {
+/** Campo de texto com label, mensagem de erro acessível e integração com o React Hook Form. */
+export function CampoTexto({ id, rotulo, registro, erro, type = 'text', autoComplete, inputMode, multilinha = false }: CampoTextoProps) { // [FORM-22]
   const idErro = `${id}-erro`
   const acessibilidade = {
     'aria-invalid': erro ? true : undefined, // [FORM-10]

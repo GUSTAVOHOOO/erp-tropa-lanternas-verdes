@@ -49,13 +49,13 @@ export function decodificarSessao(valor: string | undefined, agora = Date.now())
   }
 }
 
-/** Lanterna só acessa o próprio setor; Guardião acessa todos. [AUTH-07] */
+/** Lanterna só acessa o próprio setor; Guardião acessa todos. */
 export function podeAcessarSetor(sessao: Sessao, setorId: string): boolean {
-  return sessao.papel === 'guardiao' || sessao.setorId === setorId
+  return sessao.papel === 'guardiao' || sessao.setorId === setorId // [AUTH-07]
 }
 
-/** Setor usado nos filtros: o Lanterna fica preso ao próprio setor; o Guardião usa o da URL (ou todos). [AUTH-07] */
+/** Setor usado nos filtros: o Lanterna fica preso ao próprio setor; o Guardião usa o da URL (ou todos). */
 export function setorParaFiltro(sessao: Sessao, setorDaUrl?: string): string | undefined {
-  if (sessao.papel === 'lanterna') return sessao.setorId ?? 'sem-setor'
+  if (sessao.papel === 'lanterna') return sessao.setorId ?? 'sem-setor' // [AUTH-07]
   return setorDaUrl
 }

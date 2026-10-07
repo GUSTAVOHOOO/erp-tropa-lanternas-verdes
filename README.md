@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ERP da Tropa dos Lanternas Verdes
 
-## Getting Started
+Front-end da Central de Oa: registro e acompanhamento de ocorrências intergalácticas.
+Trabalho da disciplina Desenvolvimento Web com React & Next.js (Prof. Wellington).
 
-First, run the development server:
+## Como rodar
+
+Requisitos: Node.js 20.9 ou mais novo.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # depois troque o SESSION_SECRET por um valor aleatório
+npm run api                  # terminal 1: API fake (json-server) em http://localhost:3001
+npm run dev                  # terminal 2: aplicação em http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usuários de demonstração
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Usuário | Papel | Setor | E-mail | Senha |
+|---|---|---|---|---|
+| Ganthet | Guardião | todos | ganthet@oa.tropa | guardiao123 |
+| Hal Jordan | Lanterna | 2814 | hal@oa.tropa | lanterna123 |
+| Kilowog | Lanterna | 674 | kilowog@oa.tropa | lanterna123 |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Comando | O que faz |
+|---|---|
+| `npm run dev` | servidor de desenvolvimento |
+| `npm run api` | json-server com `db.json` na porta 3001 |
+| `npm run test:run` | testes (Vitest) uma vez; `npm test` fica observando |
+| `npm run lint` | ESLint |
+| `npm run build` | build de produção |
 
-To learn more about Next.js, take a look at the following resources:
+## Organização
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `app/(site)`: área pública (homepage, lanternas, sobre, login, acesso negado).
+- `app/(painel)`: Central de Comando, protegida.
+- `proxy.ts`: o "middleware" do enunciado (no Next.js 16 o arquivo se chama `proxy.ts`).
+- `lib/`: camada de serviço (uma função por operação), sessão e schemas Zod.
+- `components/`: componentes reutilizáveis; `components/ui` é gerado pelo shadcn/ui.
+- `.claude/skills/padroes-wellington`: as regras de código com a fonte de cada uma (slide, doc ou decisão).
+- `docs/AUDITORIA.md` e `docs/ROTEIRO.md`: evidências dos requisitos e roteiro da apresentação.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Limitações conhecidas (API fake)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O json-server não tem autenticação: as senhas ficam em texto puro no `db.json`. Na etapa de back-end,
+o login passa para a API real com hash de senha; as telas não mudam (só o `API_URL` e o miolo de `lib/`).

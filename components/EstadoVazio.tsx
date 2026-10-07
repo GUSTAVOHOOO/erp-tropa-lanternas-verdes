@@ -7,10 +7,10 @@ type EstadoVazioProps = {
   acao?: { href: string; rotulo: string }
 }
 
-/** Estado "deu certo, mas não há dados": explica e oferece uma saída. [API-09] */
+/** Estado "deu certo, mas não há dados": explica e oferece uma saída. */
 export function EstadoVazio({ titulo, descricao, acao }: EstadoVazioProps) {
   return (
-    <div role="status" className="mt-6 rounded-xl border border-dashed p-8 text-center">
+    <div role="status" className="mt-6 rounded-xl border border-dashed p-8 text-center"> {/* [API-09] */}
       <p className="font-medium">{titulo}</p>
       <p className="mt-1 text-sm text-muted-foreground">{descricao}</p>
       {acao && (

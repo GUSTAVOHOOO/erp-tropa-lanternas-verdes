@@ -17,8 +17,8 @@ export const rotuloStatus: Record<StatusOcorrencia, string> = {
   resolvida: 'Resolvida',
 }
 
-/** Formato de uma ocorrência como a API devolve. [API-04] */
-export const ocorrenciaSchema = z.object({
+/** Formato de uma ocorrência como a API devolve. */
+export const ocorrenciaSchema = z.object({ // [API-04]
   id: z.coerce.string(),
   titulo: z.string(),
   descricao: z.string(),
@@ -34,8 +34,8 @@ export const ocorrenciaSchema = z.object({
 })
 export type Ocorrencia = z.infer<typeof ocorrenciaSchema>
 
-/** Formulário "Registrar ocorrência": mesmo schema no cliente e na Server Action. [FORM-02] */
-export const novaOcorrenciaSchema = z.object({
+/** Formulário "Registrar ocorrência": mesmo schema no cliente e na Server Action. */
+export const novaOcorrenciaSchema = z.object({ // [FORM-02]
   titulo: z.string().trim()
     .min(5, 'O título precisa ter pelo menos 5 caracteres.')
     .max(100, 'Use no máximo 100 caracteres no título.'), // [FORM-11]
@@ -64,8 +64,8 @@ export const atribuicaoSchema = z.object({
 })
 export type AtribuicaoData = z.infer<typeof atribuicaoSchema>
 
-/** Filtros da lista do painel. Valor desconhecido vira "sem filtro". [ROTA-11] */
-export const filtroOcorrenciasSchema = z.object({
+/** Filtros da lista do painel. Valor desconhecido vira "sem filtro". */
+export const filtroOcorrenciasSchema = z.object({ // [ROTA-11]
   status: z.enum(STATUS_OCORRENCIA).optional().catch(undefined),
   gravidade: z.enum(GRAVIDADES).optional().catch(undefined),
   setor: z.string().regex(/^\d+$/).optional().catch(undefined),

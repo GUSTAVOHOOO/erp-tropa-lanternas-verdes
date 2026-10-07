@@ -1,7 +1,7 @@
 import * as z from 'zod'
 
-/** Formato de um setor como a API devolve. [API-04] */
-export const setorSchema = z.object({
+/** Formato de um setor como a API devolve. */
+export const setorSchema = z.object({ // [API-04]
   id: z.coerce.string(),
   numero: z.number(),
   nome: z.string(),

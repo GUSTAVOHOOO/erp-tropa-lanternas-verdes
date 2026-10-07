@@ -4,8 +4,8 @@ import { buttonVariants } from '@/components/ui/button'
 
 export const metadata: Metadata = { title: 'Acesso negado | Central de Oa' }
 
-/** Logado, mas sem permissão: o "403" explicado (APIS p. 5). [AUTH-06] */
-export default function AcessoNegadoPage() {
+/** Logado, mas sem permissão: o "403" explicado (APIS p. 5). */
+export default function AcessoNegadoPage() { // [AUTH-06]
   return (
     <section className="mx-auto max-w-lg py-8 text-center">
       <h1 className="text-2xl font-semibold">Acesso negado</h1>

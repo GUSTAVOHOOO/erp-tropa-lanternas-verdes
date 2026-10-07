@@ -10,8 +10,8 @@ type TabelaOcorrenciasProps = {
   nomeLanterna: Record<string, string>
 }
 
-/** Tabela de ocorrências usada no resumo e na lista do painel. [COMP-03] */
-export function TabelaOcorrencias({ ocorrencias, nomeSetor, nomeLanterna }: TabelaOcorrenciasProps) {
+/** Tabela de ocorrências usada no resumo e na lista do painel. */
+export function TabelaOcorrencias({ ocorrencias, nomeSetor, nomeLanterna }: TabelaOcorrenciasProps) { // [COMP-03]
   return (
     <Table className="mt-6">
       <TableHeader>

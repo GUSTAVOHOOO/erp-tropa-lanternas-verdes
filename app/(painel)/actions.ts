@@ -3,9 +3,9 @@
 import { redirect } from 'next/navigation'
 import { apagarSessao, verificarSessao } from '@/lib/dal'
 
-/** Sair: apaga o cookie e volta ao login. [AUTH-09] */
+/** Sair: apaga o cookie e volta ao login. */
 export async function sair() {
   await verificarSessao() // [AUTH-05]
-  await apagarSessao()
+  await apagarSessao() // [AUTH-09]
   redirect('/login')
 }

@@ -8,8 +8,8 @@ import { aplicarErrosDoServidor } from '@/lib/erros-formulario'
 import { loginSchema, type LoginData } from '@/lib/schemas/login'
 import { entrar } from '@/app/(site)/login/actions'
 
-/** Formulário de login: valida no cliente (UX) e a action valida de novo (segurança). [AUTH-08] */
-export function FormLogin() {
+/** Formulário de login: valida no cliente (UX) e a action valida de novo (segurança). */
+export function FormLogin() { // [AUTH-08]
   const { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema), // [FORM-01]
     mode: 'onBlur', // [FORM-05]

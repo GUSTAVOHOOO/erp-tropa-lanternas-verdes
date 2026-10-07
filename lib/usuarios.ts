@@ -5,12 +5,12 @@ import { usuarioSchema, type Usuario } from '@/lib/schemas/usuario'
 
 /**
  * Usuário de login pelo e-mail (sem diferenciar maiúsculas). Devolve a senha:
- * use só dentro da action entrar, nunca passe o resultado para um componente. [AUTH-11]
+ * use só dentro da action entrar, nunca passe o resultado para um componente.
  */
 export async function buscarUsuarioPorEmail(email: string): Promise<Usuario | null> {
   const url = urlDaApi('/usuarios', { email: email.trim().toLowerCase() })
   const res = await fetch(url, { cache: 'no-store' })
   if (!res.ok) throw new ApiError(res.status) // [API-02]
-  const usuarios = z.array(usuarioSchema).parse(await res.json()) // [API-04]
+  const usuarios = z.array(usuarioSchema).parse(await res.json()) // [API-04][AUTH-11]
   return usuarios[0] ?? null
 }

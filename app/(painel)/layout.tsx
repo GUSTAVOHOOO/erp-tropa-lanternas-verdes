@@ -10,9 +10,9 @@ const LINKS_PAINEL: LinkMenu[] = [
   { href: '/painel/ocorrencias/nova', rotulo: 'Registrar ocorrência' },
 ]
 
-/** Casca da Central de Comando. Lê a sessão só para mostrar o nome: a proteção fica nas páginas. [AUTH-10] */
+/** Casca da Central de Comando. Lê a sessão só para mostrar o nome: a proteção fica nas páginas. */
 export default async function PainelLayout({ children }: { children: React.ReactNode }) {
-  const sessao = await lerSessao()
+  const sessao = await lerSessao() // [AUTH-10]
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col md:flex-row">
       <aside className="border-b p-4 md:w-64 md:border-r md:border-b-0">

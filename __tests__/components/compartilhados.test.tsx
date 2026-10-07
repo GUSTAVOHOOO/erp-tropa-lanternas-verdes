@@ -62,12 +62,16 @@ test('EstadoVazio explica e oferece uma saída', () => {
 
 test('TelaDeErro não mostra detalhe técnico e chama retry', () => {
   const retry = vi.fn()
-  vi.spyOn(console, 'error').mockImplementation(() => {})
-  render(<TelaDeErro error={new Error('TypeError: fetch failed')} retry={retry} />)
-  expect(screen.getByRole('alert').textContent).toContain('Não foi possível falar com a Central de Oa.')
-  expect(screen.queryByText(/fetch failed/)).toBeNull()
-  fireEvent.click(screen.getByRole('button', { name: 'Tentar de novo' }))
-  expect(retry).toHaveBeenCalledOnce()
+  const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+  try {
+    render(<TelaDeErro error={new Error('TypeError: fetch failed')} retry={retry} />)
+    expect(screen.getByRole('alert').textContent).toContain('Não foi possível falar com a Central de Oa.')
+    expect(screen.queryByText(/fetch failed/)).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Tentar de novo' }))
+    expect(retry).toHaveBeenCalledOnce()
+  } finally {
+    consoleError.mockRestore()
+  }
 })
 
 test('TabelaOcorrencias mostra nomes e "—" sem responsável', () => {

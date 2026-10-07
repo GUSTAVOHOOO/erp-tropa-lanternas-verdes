@@ -8,11 +8,11 @@ const LINKS_SITE: LinkMenu[] = [
   { href: '/painel', rotulo: 'Central de Comando' },
 ]
 
-/** Casca da área pública: header e rodapé ficam montados entre as páginas. [ROTA-06] */
+/** Casca da área pública: header e rodapé ficam montados entre as páginas. */
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <header className="border-b">
+      <header className="border-b"> {/* [ROTA-06] */}
         <div className="mx-auto flex w-full max-w-6xl items-start justify-between gap-4 p-4 md:items-center">
           <Link href="/" className="font-semibold text-primary">Central de Oa</Link>
           <MenuNavegacao links={LINKS_SITE} />

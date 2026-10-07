@@ -9,8 +9,8 @@ export const rotuloStatusLanterna: Record<StatusLanterna, string> = {
   afastado: 'Afastado',
 }
 
-/** Perfil público de um lanterna (sem e-mail nem senha: isso fica em usuarios). [API-04] */
-export const lanternaSchema = z.object({
+/** Perfil público de um lanterna (sem e-mail nem senha: isso fica em usuarios). */
+export const lanternaSchema = z.object({ // [API-04]
   id: z.coerce.string(),
   nome: z.string(),
   especie: z.string(),
@@ -21,7 +21,7 @@ export const lanternaSchema = z.object({
 
 export type Lanterna = z.infer<typeof lanternaSchema> // [FORM-03]
 
-/** ?setor= da página /lanternas. Valor que não é número vira "sem filtro". [ROTA-11] */
-export const filtroLanternasSchema = z.object({
+/** ?setor= da página /lanternas. Valor que não é número vira "sem filtro". */
+export const filtroLanternasSchema = z.object({ // [ROTA-11]
   setor: z.string().regex(/^\d+$/).optional().catch(undefined),
 })

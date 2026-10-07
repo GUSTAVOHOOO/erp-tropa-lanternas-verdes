@@ -7,8 +7,8 @@ const AREAS = [
   { href: '/painel', titulo: 'Central de Comando', descricao: 'Área restrita: registre e acompanhe ocorrências.' },
 ]
 
-/** Homepage: ponto de entrada com navegação para todas as áreas. [DEC-09] */
-export default function HomePage() {
+/** Homepage: ponto de entrada com navegação para todas as áreas. */
+export default function HomePage() { // [DEC-09]
   return (
     <section>
       <h1 className="text-3xl font-bold md:text-4xl">Central de Ocorrências da Tropa dos Lanternas Verdes</h1>

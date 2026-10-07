@@ -856,7 +856,7 @@ test('gatilho do select usa o anel e marca erro pela borda', () => {
       <SelectTrigger aria-label="Gravidade"><SelectValue placeholder="Escolha" /></SelectTrigger>
     </Select>,
   )
-  const gatilho = screen.getByRole('button', { name: 'Gravidade' }) // o Base UI expõe o gatilho como botão
+  const gatilho = screen.getByRole('combobox', { name: 'Gravidade' }) // sem <Label>, o Base UI expõe o gatilho como combobox
   expect(gatilho.className).toContain('focus-visible:shadow-anel')
   expect(gatilho.className).toContain('aria-invalid:border-destructive')
 })
@@ -1102,7 +1102,7 @@ function Card({
       data-slot="card"
       data-size={size}
       className={cn(
-        "flex flex-col gap-(--card-spacing) overflow-hidden rounded-lg border border-border bg-card py-(--card-spacing) text-sm text-card-foreground [--card-spacing:--spacing(5)] has-data-[slot=card-footer]:pb-0 data-[size=sm]:[--card-spacing:--spacing(3)]",
+        "group/card flex flex-col gap-5 overflow-hidden rounded-lg border border-border bg-card py-5 text-sm text-card-foreground has-data-[slot=card-footer]:pb-0 data-[size=sm]:gap-3 data-[size=sm]:py-3",
         className
       )}
       {...props}
@@ -1114,7 +1114,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-header"
-      className={cn("flex flex-col gap-1 px-(--card-spacing)", className)}
+      className={cn("flex flex-col gap-1 px-5 group-data-[size=sm]/card:px-3", className)}
       {...props}
     />
   )
@@ -1154,7 +1154,7 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-content"
-      className={cn("px-(--card-spacing)", className)}
+      className={cn("px-5 group-data-[size=sm]/card:px-3", className)}
       {...props}
     />
   )
@@ -1164,7 +1164,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-footer"
-      className={cn("flex items-center border-t border-border p-(--card-spacing)", className)}
+      className={cn("flex items-center border-t border-border p-5 group-data-[size=sm]/card:p-3", className)}
       {...props}
     />
   )

@@ -95,7 +95,7 @@ relatar VIOLACAO C-27c FORM-05 "useForm sem mode onBlur + reValidateMode onChang
 relatar VIOLACAO C-28 FORM-06 "onSubmit sem handleSubmit" "$(g "onSubmit=\{" | grep -v 'handleSubmit')"
 relatar VIOLACAO C-29 FORM-07 "<form> com handleSubmit sem noValidate (mesma linha)" "$(g "<form[^>]*handleSubmit" | grep -v 'noValidate')"
 relatar REVISAR  C-30 FORM-10 "mensagem de erro em <p>/<span> sem role=\"alert\"" "$(g "<(p|span)[^>]*>.*(errors\.|fieldState\.error|erro\})" | grep -v 'role="alert"')"
-relatar VIOLACAO C-31 FORM-21 "watch() sem argumento" "$(g "watch\(\)")"
+relatar VIOLACAO C-31 FORM-21 "watch( solto (usar useWatch)" "$(g "(^|[^A-Za-z])watch\(")"
 relatar REVISAR  C-32 FORM-14 ".refine( sem path: nas 5 linhas seguintes" "$(janela_sem '\.refine\(' 'path:' 5 | grep -E '^lib/schemas/')"
 relatar VIOLACAO C-25 FORM-15/18 "sintaxe Zod 3 (z.string().email(), .flatten())" "$(g "z\.string\(\)\.(email|uuid|url)\(|\.flatten\(\)")"
 relatar REVISAR  C-26 FORM-13 "z.number() em lib/schemas (só vale em schema de resposta)" "$(g "z\.number\(\)" | grep -E '^lib/schemas/')"

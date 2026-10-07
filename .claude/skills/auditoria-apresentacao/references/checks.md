@@ -46,7 +46,7 @@ tabelas, `\|` é só escape do Markdown: no comando de verdade escreva `|`.
 | C-28 | FORM-06 | `onSubmit={` sem `handleSubmit` | `rg -n "onSubmit=\{" app components` |
 | C-29 | FORM-07 | `<form ... handleSubmit` sem `noValidate` na mesma linha | se a tag `<form>` quebra em várias linhas, confira à mão |
 | C-30 | FORM-10 | `<p>`/`<span>` exibindo `errors.`/`fieldState.error`/`{erro}` sem `role="alert"` na mesma linha (REVISAR) | `rg -n "<(p\|span)[^>]*>.*errors\." app components` |
-| C-31 | FORM-21 | `watch()` sem argumento | `rg -n "watch\(\)" app components` |
+| C-31 | FORM-21 | `watch(` solto (o certo é `useWatch(`) | `rg -n "(^\|[^A-Za-z])watch\(" app components` |
 | C-32 | FORM-14 | `.refine(` em `lib/schemas` sem `path:` nas 5 linhas seguintes (REVISAR: refine de campo único não precisa de path) | `rg -n -A5 "\.refine\(" lib/schemas` |
 | C-33 | AUTH-02, ROTA-10 | `cookies().get/set/delete` sem `await` | `rg -n "[^(]cookies\(\)\.(get\|set\|delete)" app lib proxy.ts` |
 | C-34 | AUTH-02 | `localStorage`, `sessionStorage`, `document.cookie` | `rg -n "localStorage\|sessionStorage\|document\.cookie" app components lib` |

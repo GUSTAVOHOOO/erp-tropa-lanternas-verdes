@@ -4,7 +4,7 @@ import { cn } from "cn"
 
 // [DEC-11] visual da Tropa; teclado, foco e disabled continuam vindo do Base UI
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-transparent text-sm font-semibold whitespace-nowrap transition-[background-color,border-color,color,box-shadow,filter] duration-150 ease-out outline-none select-none focus-visible:shadow-anel disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4", // [CSS-08][CSS-14][CSS-15]
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-transparent text-sm font-semibold whitespace-nowrap transition duration-150 ease-out outline-none select-none focus-visible:shadow-anel disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4", // [CSS-08][CSS-14][CSS-15]
   {
     variants: {
       variant: {

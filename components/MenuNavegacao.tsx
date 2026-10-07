@@ -49,8 +49,8 @@ export function MenuNavegacao({ links, orientacao = 'horizontal' }: MenuNavegaca
               href={link.href} // [ROTA-16]
               aria-current={atual === link.href ? 'page' : undefined} // [ROTA-17]
               onClick={() => setAberto(false)}
-              // [CSS-08][CSS-15] página atual: fundo de superfície + contorno, sem listra lateral
-              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-out hover:bg-secondary hover:text-foreground aria-[current=page]:bg-card aria-[current=page]:text-foreground aria-[current=page]:ring-1 aria-[current=page]:ring-border [&_svg]:size-4.5 [&_svg]:shrink-0 [&_svg]:text-texto-terciario aria-[current=page]:[&_svg]:text-primary-texto"
+              // [CSS-08][CSS-14][CSS-15] página atual: fundo de superfície + contorno, sem listra lateral
+              className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-out hover:bg-secondary hover:text-foreground aria-[current=page]:bg-card aria-[current=page]:text-foreground aria-[current=page]:ring-1 aria-[current=page]:ring-border outline-none focus-visible:shadow-anel [&_svg]:size-4.5 [&_svg]:shrink-0 [&_svg]:text-texto-terciario aria-[current=page]:[&_svg]:text-primary-texto"
             >
               {link.icone}
               {link.rotulo}

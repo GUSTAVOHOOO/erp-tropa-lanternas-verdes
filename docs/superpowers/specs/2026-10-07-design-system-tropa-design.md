@@ -155,8 +155,15 @@ Mesmos nomes de exportação, variantes e tamanhos. Nenhuma tela muda por causa 
 |---|---|
 | `components/Emblema.tsx` | Marca em SVG (seção 4). |
 | `components/IconeStatus.tsx` | Ícone de carga por status (seção 4). |
-| `components/BarraStatus.tsx` | Resumo do painel: barra com **um segmento por ocorrência** (`flex-1`, cor por status, sem `style`; CSS-02) + legenda com links `?status=` mostrando o total de cada status. A barra é `aria-hidden`; a informação acessível está na legenda. |
+| `components/BarraStatus.tsx` | Resumo do painel: barra com **um segmento por ocorrência** (`flex-1`, sem `style`; CSS-02). Cor por status segue a metáfora de carga do `IconeStatus`: aberta `bg-texto-terciario`, em andamento `bg-primary/50`, resolvida `bg-primary` + legenda com links `?status=` mostrando o total de cada status. A barra é `aria-hidden`; a informação acessível está na legenda. |
 | `components/CabecalhoPagina.tsx` | Cabeçalho padrão das páginas: `h1`, descrição opcional e ação opcional (`children`), em `flex flex-wrap items-end justify-between gap-4`. Um jeito só de abrir uma página. |
+| `components/Marca.tsx` | Link "Central de Oa" com o Emblema, usado no header público e na sidebar do painel. |
+| `components/LinkVoltar.tsx` | Link "voltar" com `ArrowLeftIcon`, usado nas telas de detalhe e de formulário. |
+| `components/MensagemErro.tsx` | Mensagem de erro de formulário (`role="alert"`, `CircleAlertIcon` + texto em `text-destructive`). Usada por `CampoTexto`, `CampoSelect` e pelo erro geral (`errors.root`) dos formulários. |
+| `components/PaginaAviso.tsx` | Páginas 403/404: Emblema apagado, `h1`, explicação e uma ação. |
+| `components/Juramento.tsx` | O juramento em `<figure><blockquote>`, um verso por linha. Usado na home e no Sobre. |
+
+Esses cinco nasceram de repetição encontrada no código (CSS-10, COMP-03).
 
 ## 6. Telas
 
@@ -196,7 +203,7 @@ Em `.claude/skills/padroes-wellington/references/`:
 - `estilo-tailwind.md`
   - **CSS-12 Tokens da Tropa**: cores só pelos nomes semânticos; gravidade só por `bg-gravidade-*`/`text-gravidade-*` e sempre com texto. Fonte: [DECISÃO] + CSS p. 13 (sistema de design).
   - **CSS-13 Fontes com next/font**: três famílias, papéis fixos (seção 3.3). Fonte: [DOCS] `node_modules/next/dist/docs/01-app/03-api-reference/02-components/font.md`.
-  - **CSS-14 Foco é o anel**: `focus-visible:shadow-anel` em todo elemento interativo; complementa CSS-08.
+  - **CSS-14 Foco é o anel**: `focus-visible:shadow-anel` nos componentes de `components/ui`; links (`<a>`) recebem o mesmo brilho por uma regra base única em `globals.css`; complementa CSS-08.
   - **CSS-15 Movimento**: só transição de estado, 150 ms ease-out, e bloco `prefers-reduced-motion` no `globals.css`.
   - CSS-09: o comando de verificação passa a ignorar `*.svg` (o favicon é um arquivo de imagem, não estilo de código).
 - `stack-e-decisoes.md`

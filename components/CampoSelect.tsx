@@ -16,13 +16,13 @@ type CampoSelectProps = {
   placeholder?: string
 }
 
-/** Select controlado com label e erro acessível. [FORM-16] */
+/** Select controlado com label e erro acessível. */
 export function CampoSelect({ id, rotulo, itens, valor, aoMudar, aoSair, refCampo, erro, placeholder = 'Escolha uma opção' }: CampoSelectProps) {
   const idErro = `${id}-erro`
   return (
     <div className="grid gap-1.5">
       <Label htmlFor={id}>{rotulo}</Label>
-      <Select items={itens} value={valor || null} onValueChange={(novo) => aoMudar(novo)}>
+      <Select items={itens} value={valor || null} onValueChange={(novo) => aoMudar(novo)}> {/* [FORM-16] */}
         <SelectTrigger
           id={id}
           ref={refCampo}

@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import db from '@/db.json'
 
 vi.mock('@/app/(painel)/painel/ocorrencias/actions', () => ({ registrarOcorrencia: vi.fn() }))
@@ -28,6 +28,7 @@ test('Lanterna não vê o campo setor e envia o setor da sessão', async () => {
   fireEvent.change(screen.getByLabelText('Seres envolvidos'), { target: { value: '3' } })
   fireEvent.click(screen.getByRole('button', { name: 'Registrar ocorrência' }))
   expect(await screen.findByText('Não foi possível falar com a Central de Oa.')).toBeDefined()
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Registrar ocorrência' }).hasAttribute('disabled')).toBe(false))
   expect(registrarOcorrencia).toHaveBeenCalledWith({
     titulo: 'Invasão em Oa', descricao: 'Muitos invasores na Bateria Central.', planeta: 'Oa', setorId: '2814', gravidade: 'media', envolvidos: 3,
   })

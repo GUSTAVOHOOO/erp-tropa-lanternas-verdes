@@ -9,7 +9,7 @@ const TODOS = 'todos'
 
 type FiltroOcorrenciasProps = { setores: Setor[] }
 
-/** Filtros da lista mantidos na URL. [ROTA-14] */
+/** Filtros da lista mantidos na URL. */
 export function FiltroOcorrencias({ setores }: FiltroOcorrenciasProps) {
   const params = useSearchParams() // [ROTA-13]
   const router = useRouter()
@@ -19,7 +19,7 @@ export function FiltroOcorrencias({ setores }: FiltroOcorrenciasProps) {
     const novos = new URLSearchParams(params)
     if (!valor || valor === TODOS) novos.delete(chave)
     else novos.set(chave, valor)
-    router.push(`${pathname}?${novos}`)
+    router.push(`${pathname}?${novos}`) // [ROTA-14]
   }
 
   const statusAtual = params.get('status')

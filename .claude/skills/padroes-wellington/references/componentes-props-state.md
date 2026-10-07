@@ -2,7 +2,7 @@
 
 Decks: JSX (`react_intro_componentes_jsx.pdf`) e PROPS (`react_props_state_components.pdf`).
 O checklist de componentes do professor está em PROPS p. 9 e foi coberto por COMP-01, 02, 03, 06,
-07 e 08. O item 7 do checklist (testes unitários) não virou regra: ver DEC-06.
+07 e 08. O item 7 do checklist (testes unitários) virou DEC-06: testes com Vitest em `__tests__/`.
 
 Índice: COMP-01 nomenclatura · 02 responsabilidade única · 03 reutilização · 04 props somente
 leitura · 05 desestruturação · 06 tipagem de props · 07 lógica fora da apresentação ·

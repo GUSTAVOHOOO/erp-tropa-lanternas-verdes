@@ -134,11 +134,11 @@ relatar VIOLACAO C-55 CSS-07 "<div onClick> no lugar de botão" "$(g "<div[^>]*o
 relatar VIOLACAO C-18 STACK-06 "dependência fora da lista permitida" "$( [ -f package.json ] && node -e '
   const p = require("./package.json");
   const deps = Object.keys({ ...p.dependencies, ...p.devDependencies });
-  const ok = ["next","react","react-dom","typescript","tailwindcss","@tailwindcss/postcss","eslint","eslint-config-next",
-    "react-hook-form","@hookform/resolvers","zod","json-server","class-variance-authority","clsx","tailwind-merge",
-    "lucide-react","tw-animate-css","server-only","@eslint/eslintrc","shadcn"];
-  const prefixos = ["@types/","@base-ui","@base-ui-components/"];
-  deps.filter(d => !ok.includes(d) && !prefixos.some(x => d.startsWith(x))).forEach(d => console.log(d));
+  const ok = ["next","react","react-dom","typescript","@types/node","@types/react","@types/react-dom",
+    "tailwindcss","@tailwindcss/turbopack","eslint","eslint-config-next","react-hook-form","@hookform/resolvers",
+    "zod","json-server","vitest","jsdom","@testing-library/react","@testing-library/dom",
+    "shadcn","@base-ui/react","class-variance-authority","clsx","tailwind-merge","cn","lucide-react","tw-animate-css"];
+  deps.filter(d => !ok.includes(d)).forEach(d => console.log(d));
 ' 2>/dev/null)"
 relatar VIOLACAO C-56 DEC-01/02/07 "import de biblioteca descartada" "$(g "from ['\"](axios|@tanstack/react-query|swr|zustand|redux|@reduxjs/toolkit|jose|next-auth|prop-types|yup|formik)['\"]")"
 relatar VIOLACAO C-57 DEC-10 "flags experimentais no next.config" "$( [ -f next.config.ts ] && grep -nE "cacheComponents|reactCompiler|experimental" next.config.ts)"

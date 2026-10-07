@@ -137,7 +137,7 @@ relatar VIOLACAO C-18 STACK-06 "dependência fora da lista permitida" "$( [ -f p
   const ok = ["next","react","react-dom","typescript","@types/node","@types/react","@types/react-dom",
     "tailwindcss","@tailwindcss/turbopack","eslint","eslint-config-next","react-hook-form","@hookform/resolvers",
     "zod","json-server","vitest","jsdom","@testing-library/react","@testing-library/dom",
-    "shadcn","@base-ui/react","class-variance-authority","clsx","tailwind-merge","cn","lucide-react","tw-animate-css"];
+    "shadcn","@base-ui/react","class-variance-authority","cn","lucide-react","tw-animate-css"];
   deps.filter(d => !ok.includes(d)).forEach(d => console.log(d));
 ' 2>/dev/null)"
 relatar VIOLACAO C-56 DEC-01/02/07 "import de biblioteca descartada" "$(g "from ['\"](axios|@tanstack/react-query|swr|zustand|redux|@reduxjs/toolkit|jose|next-auth|prop-types|yup|formik)['\"]")"

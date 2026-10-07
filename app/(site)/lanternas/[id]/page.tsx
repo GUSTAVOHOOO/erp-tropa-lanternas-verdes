@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { buscarLanterna } from '@/lib/lanternas'
 import { listarSetores } from '@/lib/setores'
 import { rotuloStatusLanterna } from '@/lib/schemas/lanterna'
@@ -12,7 +13,12 @@ type LanternaPageProps = { params: Promise<{ id: string }> }
 /** Ficha pública de um lanterna. */
 export default async function LanternaPage({ params }: LanternaPageProps) {
   const { id } = await params // [ROTA-10]
-  const [lanterna, setores] = await Promise.all([buscarLanterna(id), listarSetores()]) // [API-07]
+  let lanterna, setores
+  try {
+    ;[lanterna, setores] = await Promise.all([buscarLanterna(id), listarSetores()]) // [API-07]
+  } catch (erro) {
+    tratarErroDetalhe(erro) // [API-12]
+  }
   if (!lanterna) notFound() // [ROTA-12]
   const setor = setores.find((s) => s.id === lanterna.setorId)
 

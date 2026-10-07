@@ -34,9 +34,9 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. “S
 
 **Arquivos:** `app/(site)/lanternas/page.tsx:18`, `app/(site)/lanternas/[id]/page.tsx:13`, `app/(site)/sobre/page.tsx:9`, `lib/lanternas.ts:7`.
 
-**Como funciona:** a página lê `searchParams` com `await`, valida o filtro, busca setores e lanternas em paralelo; a rota `[id]` busca o perfil e usa `notFound()` para um ID ausente. Não há chamada de sessão nas páginas públicas.
+**Como funciona:** a página lê `searchParams` com `await`, valida o filtro, busca setores e lanternas em paralelo; a rota `[id]` busca o perfil e usa `notFound()` para um ID ausente. Erro HTTP 401 leva ao login, 403 ao acesso negado e 5xx à tela de erro. Não há chamada de sessão nas páginas públicas.
 
-**Por que assim:** ROTA-10 usa o **slide de Rotas, p. 17, 18 e 22**, complementado pelas **Docs do Next 16** (params assíncronos). API-07 usa o **slide de Consumo de APIs, p. 13 e 23**. ROTA-12 usa o **slide de Rotas, p. 17 e 22**.
+**Por que assim:** ROTA-10 usa o **slide de Rotas, p. 17, 18 e 22**, complementado pelas **Docs do Next 16** (params assíncronos). API-07 usa o **slide de Consumo de APIs, p. 13 e 23**. ROTA-12 usa o **slide de Rotas, p. 17 e 21**.
 
 **Trecho para mostrar:** `app/(site)/lanternas/page.tsx:18`.
 
@@ -90,7 +90,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. “S
 
 **Arquivos:** `app/(painel)/painel/ocorrencias/page.tsx:20`, `app/(painel)/painel/ocorrencias/_components/FiltroOcorrencias.tsx:14`, `lib/schemas/ocorrencia.ts:67`, `components/TabelaOcorrencias.tsx:15`.
 
-**Como funciona:** a página valida os parâmetros de URL; o filtro cliente altera a URL por `router.push`, preservando compartilhamento, F5 e histórico; `lib/ocorrencias.ts` faz a consulta.
+**Como funciona:** página e seletor usam a mesma normalização de parâmetros; repetidos, inválidos e setores desconhecidos são ignorados. O filtro cliente altera a URL por `router.push`, preservando compartilhamento, F5 e histórico; `lib/ocorrencias.ts` faz a consulta. Para Lanterna, o setor efetivo continua vindo da sessão.
 
 **Por que assim:** ROTA-14 vem do **slide de Rotas, p. 18 e 22**. API-01 vem do **slide de Consumo de APIs, p. 3, 14 e 23**. O filtro de gravidade segue a regra local ROTA-14; paginação ficou fora do escopo do trabalho.
 
@@ -118,7 +118,7 @@ Como usar: a pessoa que apresentar cada parte pode abrir o trecho indicado. “S
 
 **Arquivos:** `app/(painel)/painel/ocorrencias/[id]/page.tsx:20`, `app/(painel)/painel/ocorrencias/_components/FormStatus.tsx:20`, `app/(painel)/painel/ocorrencias/actions.ts:46`, `lib/schemas/ocorrencia.ts:53`.
 
-**Como funciona:** ID inexistente vira 404; setor alheio vira acesso negado. O formulário pede explicação quando o status é resolvida; o schema repete a regra no servidor e associa o erro ao campo `resolucao`.
+**Como funciona:** ID inexistente vira 404; erro HTTP 401 redireciona ao login, 403 a acesso negado e 5xx segue à tela de erro. Setor alheio também vira acesso negado. O formulário pede explicação quando o status é resolvida; o schema repete a regra no servidor e associa o erro ao campo `resolucao`.
 
 **Por que assim:** FORM-14 vem do **slide de Formulários, p. 14, 19 e 21**. FORM-21 usa `useWatch` para um campo, conforme **slide de Formulários, p. 10 e 21**, com ajuste da **doc do React Hook Form** para o ESLint atual.
 

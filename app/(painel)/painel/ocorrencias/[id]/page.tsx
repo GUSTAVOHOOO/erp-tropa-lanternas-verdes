@@ -5,6 +5,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { BadgeGravidade } from '@/components/BadgeGravidade'
 import { BadgeStatus } from '@/components/BadgeStatus'
 import { verificarSessao } from '@/lib/dal'
+import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { formatarData } from '@/lib/formatar'
 import { listarLanternas } from '@/lib/lanternas'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
@@ -20,7 +21,12 @@ type OcorrenciaPageProps = { params: Promise<{ id: string }> }
 export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
   const sessao = await verificarSessao() // [AUTH-04]
   const { id } = await params // [ROTA-10]
-  const [ocorrencia, setores, lanternas] = await Promise.all([buscarOcorrencia(id), listarSetores(), listarLanternas()]) // [API-07]
+  let ocorrencia, setores, lanternas
+  try {
+    ;[ocorrencia, setores, lanternas] = await Promise.all([buscarOcorrencia(id), listarSetores(), listarLanternas()]) // [API-07]
+  } catch (erro) {
+    tratarErroDetalhe(erro) // [API-12]
+  }
   if (!ocorrencia) notFound() // [ROTA-12]
   if (!podeAcessarSetor(sessao, ocorrencia.setorId)) redirect('/acesso-negado') // [AUTH-07]
 

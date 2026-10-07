@@ -19,7 +19,9 @@ Links de referência passados pelo professor:
 Por isso o projeto é gerado como `erp-tropa` numa pasta temporária fora do repositório
 (`npx create-next-app@latest erp-tropa --yes --use-npm --skip-install --disable-git`) e os arquivos
 são copiados para a raiz de `TrabalhoWeb`. Padrão atual do create-next-app: TypeScript, Tailwind CSS,
-ESLint, App Router, Turbopack, alias `@/*`, sem pasta `src/`. Node.js 20.9 ou mais novo.
+ESLint, App Router, Turbopack, alias `@/*`, sem pasta `src/`. O Next.js admite Node.js 20.9 ou mais novo;
+para instalar e testar esta stack completa, o projeto exige Node.js 26 ou mais novo (`package.json`),
+verificado em 26.7.0 por causa das faixas de Vitest e jsdom.
 Scripts: `dev`, `build`, `start`, `lint`, `test`, `test:run`, `api`.
 **✅ Certo:** importar com alias: `import { listarSetores } from '@/lib/setores'`
 **❌ Errado:** `import { listarSetores } from '../../../lib/setores'`; script `next lint` (removido no Next 16).

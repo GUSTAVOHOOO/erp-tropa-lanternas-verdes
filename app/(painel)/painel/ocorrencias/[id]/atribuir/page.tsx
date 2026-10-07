@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { EstadoVazio } from '@/components/EstadoVazio'
 import { exigirPapel } from '@/lib/dal'
+import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { listarLanternas } from '@/lib/lanternas'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
 import { FormAtribuir } from '@/app/(painel)/painel/ocorrencias/_components/FormAtribuir'
@@ -15,9 +16,19 @@ type AtribuirPageProps = { params: Promise<{ id: string }> }
 export default async function AtribuirPage({ params }: AtribuirPageProps) {
   await exigirPapel('guardiao') // [AUTH-06]
   const { id } = await params // [ROTA-10]
-  const ocorrencia = await buscarOcorrencia(id)
+  let ocorrencia
+  try {
+    ocorrencia = await buscarOcorrencia(id)
+  } catch (erro) {
+    tratarErroDetalhe(erro) // [API-12]
+  }
   if (!ocorrencia) notFound() // [ROTA-12]
-  const lanternas = await listarLanternas({ setorId: ocorrencia.setorId })
+  let lanternas
+  try {
+    lanternas = await listarLanternas({ setorId: ocorrencia.setorId })
+  } catch (erro) {
+    tratarErroDetalhe(erro) // [API-12]
+  }
 
   return (
     <section className="max-w-xl">

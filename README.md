@@ -5,7 +5,8 @@ Trabalho da disciplina Desenvolvimento Web com React & Next.js (Prof. Wellington
 
 ## Como rodar
 
-Requisitos: Node.js 20.9 ou mais novo.
+Requisitos: Node.js 26 ou mais novo (verificado em 26.7.0). O Next.js aceita versões anteriores,
+mas Vitest e jsdom desta instalação exigem uma faixa mais recente para executar os testes.
 
 ```bash
 npm install
@@ -38,6 +39,7 @@ npm run dev                  # terminal 2: aplicação em http://localhost:3000
 - `app/(painel)`: Central de Comando, protegida.
 - `proxy.ts`: o "middleware" do enunciado (no Next.js 16 o arquivo se chama `proxy.ts`).
 - `lib/`: camada de serviço (uma função por operação), sessão e schemas Zod.
+- `lib/erro-detalhe.ts`: classifica falhas HTTP nas páginas de detalhe; `lib/filtro-ocorrencias.ts` normaliza os filtros da lista.
 - `components/`: componentes reutilizáveis; `components/ui` é gerado pelo shadcn/ui.
 - `.claude/skills/padroes-wellington`: as regras de código com a fonte de cada uma (slide, doc ou decisão).
 - `docs/AUDITORIA.md` e `docs/ROTEIRO.md`: evidências dos requisitos e roteiro da apresentação.

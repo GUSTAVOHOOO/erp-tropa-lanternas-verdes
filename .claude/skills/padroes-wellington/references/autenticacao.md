@@ -55,7 +55,7 @@ codemod oficial é `npx @next/codemod@canary middleware-to-proxy .`.
 **Fonte:** [DOCS] https://nextjs.org/docs/app/guides/authentication ("Setting cookies (recommended options)": HttpOnly, Secure, SameSite, Expires, Path; "Cookies should be set on the server")
 **Regra:** A sessão é gravada só por Server Action, com `await cookies()` de `next/headers`, com
 `httpOnly: true`, `sameSite: 'lax'`, `path: '/'`, `expires` e `secure` em produção. O conteúdo é o
-mínimo: `id`, `nome`, `papel`, `setorId`, `expiraEm`. Nunca senha nem e-mail.
+mínimo: `id`, `nome`, `papel`, `setorId`, `lanternaId`, `expiraEm`. Nunca senha nem e-mail.
 **✅ Certo:**
 ```ts
 // lib/dal.ts

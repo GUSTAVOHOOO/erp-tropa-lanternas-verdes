@@ -53,7 +53,7 @@ if (!res.ok) throw new ApiError(res.status) // [API-02][API-03]
 const res = await fetch(url)
 return res.json() // um 404 vira "dado"
 ```
-**Como verificar:** `rg -l "fetch\(" lib | xargs rg -L "res\.ok"` deve retornar vazio; para cada fetch, `rg -n -A3 "await fetch\(" lib` mostra o `if (!res.ok)` nas linhas seguintes.
+**Como verificar (PowerShell):** `rg -l -F 'fetch(' lib | ForEach-Object { rg --files-without-match -F 'res.ok' -- $_ }` deve retornar vazio. É triagem por arquivo: confira cada chamada e seu tratamento, inclusive quando houver mais de um fetch na mesma função.
 
 ### API-03: ApiError com status em lib/api-error.ts
 **Fonte:** [SLIDE] APIS p. 22 (`lib/api-error.ts`: `export class ApiError extends Error { constructor(public status: number) {...} }`), p. 14 (`throw new ApiError(res.status)`)
@@ -152,7 +152,7 @@ prefixo, lidos só em `lib/` (servidor). `.env.local` não vai para o Git; um `.
 chaves vazias vai. O projeto não precisa de nenhuma variável `NEXT_PUBLIC_`.
 **✅ Certo:** `const API_URL = process.env.API_URL // [API-08]` em `lib/ocorrencias.ts`
 **❌ Errado:** `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SESSION_SECRET`, `process.env` lido em arquivo `'use client'`.
-**Como verificar:** `rg -n "NEXT_PUBLIC_" .` (fora de `node_modules`) deve retornar vazio; `rg -l "^['\"]use client['\"]" app components | xargs rg -n "process\.env"` deve retornar vazio.
+**Como verificar (PowerShell):** `rg -n 'NEXT_PUBLIC_' app components lib` deve retornar vazio; `rg -l 'use client' app components | ForEach-Object { rg -n -F 'process.env' -- $_ }` deve retornar vazio. Confirme a diretiva no arquivo e revise também as variáveis declaradas em `.env.example`; a busca é triagem.
 
 ### API-09: Toda tela com dados tem quatro estados
 **Fonte:** [SLIDE] APIS p. 20 ("Toda tela com dados tem quatro estados": Carregando, Vazio, Erro, Sucesso; "Regra de projeto: desenhe os quatro estados antes de escrever o fetch")

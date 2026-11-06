@@ -49,7 +49,7 @@ app/(painel)/painel/ocorrencias/nova/page.tsx → /painel/ocorrencias/nova
 export default async function OcorrenciasPage() { ... }
 ```
 **❌ Errado:** `app/ocorrencias/Ocorrencias.tsx` esperando virar rota, ou página com export nomeado só.
-**Como verificar:** `rg -L "export default" -g "page.tsx" -g "layout.tsx" -g "loading.tsx" -g "error.tsx" -g "not-found.tsx" app` deve retornar vazio.
+**Como verificar:** `rg --files-without-match "export default" -g "page.tsx" -g "layout.tsx" -g "loading.tsx" -g "error.tsx" -g "not-found.tsx" app` deve retornar vazio; confira se a exportação é o componente esperado.
 
 ### ROTA-03: Pastas com _ são privadas (colocation)
 **Fonte:** [SLIDE] ROTAS p. 11 ("_pasta = privada", "Colocation segura", `_components/Header.tsx`)
@@ -328,7 +328,7 @@ export default function Erro({ error, retry }: { error: Error & { digest?: strin
 **Nota de versão:** o slide (ROTAS p. 21) usa `reset()`. No Next 16.4 a doc recomenda `retry()`:
 `reset()` só re-renderiza, sem buscar os dados de novo, então o "Tentar de novo" não funcionaria
 depois que a API voltasse. Fonte: `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md`.
-**Como verificar:** para cada `page.tsx` com `await listar|await buscar`, existe `loading.tsx` e `error.tsx` na mesma pasta ou em pasta ancestral do mesmo grupo; `rg -L "^['\"]use client['\"]" app -g error.tsx` deve retornar vazio.
+**Como verificar:** para cada `page.tsx` com busca de dados, confira a fronteira de loading/error na pasta ou ancestral do mesmo grupo; `rg --files-without-match 'use client' app -g error.tsx` deve retornar vazio. Confira que é a diretiva no início do arquivo e teste o botão de nova tentativa.
 
 ### ROTA-22: not-found.tsx para 404 com saída clara
 **Fonte:** [SLIDE] ROTAS p. 21 ("not-found.tsx: Exibido quando nenhuma rota casa com a URL ou quando você chama notFound()"); ROTAS p. 12

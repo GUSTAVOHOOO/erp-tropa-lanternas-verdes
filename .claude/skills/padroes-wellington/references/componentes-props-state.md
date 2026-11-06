@@ -139,7 +139,7 @@ useEffect(() => { fetch(...).then(...) }, [])
 **Como verificar:** `rg -n "useState" app components` e revisar cada um contra as três exceções acima.
 O enunciado pede "estado local" explicitamente: o projeto precisa de pelo menos um `useState`
 legítimo (ex.: abrir/fechar o menu no celular, botão "mostrar senha" no login). Se não houver,
-a auditoria acusa pendência (REQ-06 da skill `auditoria-apresentacao`).
+há uma pendência no requisito de estado local do enunciado (REQ-06).
 
 ### COMP-10: Nunca mutar o estado diretamente
 **Fonte:** [SLIDE] PROPS p. 7 ("Imutabilidade: Nunca mutar diretamente. Use spread operator para objetos/arrays")

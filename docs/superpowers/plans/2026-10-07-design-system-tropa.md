@@ -1,5 +1,10 @@
 # Design system da Tropa — plano de implementação
 
+> **Atualização em 2026-11-06:** a skill `auditoria-apresentacao` foi removida.
+> Os passos abaixo que alteram ou executam essa skill são históricos e não devem
+> ser executados ou recriados. As regras atuais estão em
+> `.claude/skills/padroes-wellington/`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Substituir o visual padrão do shadcn por um design system próprio da Tropa (tema Noite), sem mudar o comportamento do ERP.

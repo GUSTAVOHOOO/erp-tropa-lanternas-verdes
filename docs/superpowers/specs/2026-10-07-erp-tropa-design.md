@@ -1,5 +1,10 @@
 # ERP da Tropa dos Lanternas Verdes: design
 
+> **Atualização em 2026-11-06:** a skill `auditoria-apresentacao` foi removida.
+> Suas referências e comandos abaixo são históricos e não devem ser executados
+> ou recriados. Os requisitos continuam descritos na seção 2; as regras atuais
+> estão em `.claude/skills/padroes-wellington/`.
+
 **Data:** 2026-10-07
 **Disciplina:** Desenvolvimento Web com React & Next.js (Prof. Wellington de Souza Ferreira)
 **Status:** aguardando revisão do grupo

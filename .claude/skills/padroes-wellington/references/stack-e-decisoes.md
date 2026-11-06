@@ -217,8 +217,8 @@ e passada por props. Não crie `createContext`, Zustand nem Redux.
 **Regra:** Homepage = `app/(site)/page.tsx` ("/"), com links para Lanternas, Sobre e Central de Comando
 (`/painel`). Páginas públicas = `/lanternas` (listagem com filtro por setor), `/lanternas/[id]`
 (detalhe) e `/sobre` (institucional). Login = `/login`. Acesso negado = `/acesso-negado`. Área
-privada = tudo sob `/painel`. A skill `auditoria-apresentacao` usa este mapa para achar os arquivos
-de cada requisito. Vitrine do design system = `/design-system` (DEC-12), fora do menu, com link no rodapé público.
+privada = tudo sob `/painel`. Use este mapa para localizar os arquivos de cada requisito.
+Vitrine do design system = `/design-system` (DEC-12), fora do menu, com link no rodapé público.
 **Como verificar:** os arquivos listados em STACK-05 para essas rotas existem.
 
 ### DEC-10: Sem Cache Components, React Compiler ou flags experimentais

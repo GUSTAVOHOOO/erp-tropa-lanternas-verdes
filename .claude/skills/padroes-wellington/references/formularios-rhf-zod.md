@@ -61,7 +61,7 @@ const [titulo, setTitulo] = useState('')
 const [erroTitulo, setErroTitulo] = useState('')
 ```
 ou `register('titulo', { required: true })` com schema Zod existente mas sem resolver.
-**Como verificar:** todo arquivo com `useForm(` contém `zodResolver(` (`rg -l "useForm\(" app components | xargs rg -L "zodResolver"` deve retornar vazio).
+**Como verificar (PowerShell):** `rg -l -F 'useForm(' app components | ForEach-Object { rg --files-without-match -F 'zodResolver' -- $_ }` deve retornar vazio. Confira o resolver usado em cada chamada, não apenas o import.
 
 ### FORM-02: Schemas ficam em lib/schemas/
 **Fonte:** [SLIDE] FORMS p. 14 (arquivo `lib/schemas/cadastro.ts`), p. 15 ("Coloque os schemas em lib/schemas/ e importe-os no componente cliente e na Server Action"), p. 21
@@ -98,14 +98,14 @@ useForm<NovaOcorrenciaData>({ resolver: zodResolver(schemaComCoerce) }) // erro 
 para select, `false` para checkbox).
 **✅ Certo:** `defaultValues: { email: '', senha: '' }`
 **❌ Errado:** `useForm({ resolver })` sem `defaultValues`.
-**Como verificar:** `rg -l "useForm\(" app components | xargs rg -L "defaultValues"` deve retornar vazio.
+**Como verificar (PowerShell):** `rg -l -F 'useForm(' app components | ForEach-Object { rg --files-without-match -F 'defaultValues' -- $_ }` deve retornar vazio; confira os valores de cada formulário.
 
 ### FORM-05: mode 'onBlur' + reValidateMode 'onChange'
 **Fonte:** [SLIDE] FORMS p. 12 ("configuração recomendada"; "não acuse erro enquanto a pessoa ainda está digitando pela primeira vez; depois que ela erra, corrija em tempo real"), p. 21
 **Regra:** Todo `useForm` usa `mode: 'onBlur'` e `reValidateMode: 'onChange'`.
 **✅ Certo:** ver FORM-01.
 **❌ Errado:** `mode: 'onChange'` (acusa erro na primeira tecla) ou modo omitido.
-**Como verificar:** `rg -l "useForm\(" app components | xargs rg -L "mode: 'onBlur'"` deve retornar vazio.
+**Como verificar (PowerShell):** `rg -l -F 'useForm(' app components | ForEach-Object { rg --files-without-match -F 'onBlur' -- $_ }` deve retornar vazio. Confirme que o resultado é a opção `mode` de cada formulário.
 
 ### FORM-06: Sempre handleSubmit; nunca chamar onSubmit direto
 **Fonte:** [SLIDE] FORMS p. 10 ("handleSubmit(onValid, onInvalid): Valida tudo; se passar, chama onValid(dados) já com os dados tipados"), p. 11, p. 21 (armadilha)
@@ -180,7 +180,7 @@ de um campo específico (FORM-21), não `useState` + `onChange`.
 const [titulo, setTitulo] = useState('')
 <Input {...register('titulo')} value={titulo} onChange={(e) => setTitulo(e.target.value)} />
 ```
-**Como verificar:** arquivos com `register(` e `useState` ao mesmo tempo merecem revisão manual (`rg -l "register\(" app components | xargs rg -l "useState"`).
+**Como verificar (PowerShell):** arquivos com `register(` e `useState` ao mesmo tempo merecem revisão manual: `rg -l -F 'register(' app components | ForEach-Object { rg -l -F 'useState' -- $_ }`. Estado não relacionado ao valor do campo pode ser legítimo.
 
 ### FORM-13: Número vindo de input passa por z.coerce
 **Fonte:** [SLIDE] FORMS p. 5 ("Números chegam como string... A conversão é responsabilidade da validação"), p. 14 (`idade: z.coerce.number().int().min(18, ...)`), p. 15, p. 21 (armadilha)
@@ -262,7 +262,7 @@ export async function registrarOcorrencia(dados: unknown): Promise<ResultadoAcao
 }
 ```
 **❌ Errado:** `export async function registrarOcorrencia(dados: NovaOcorrenciaData) { await salvar(dados) }` (o tipo não existe em tempo de execução).
-**Como verificar:** todo arquivo com `'use server'` contém `safeParse` (exceto `sair`, que não recebe dados): `rg -l "^['\"]use server['\"]" app | xargs rg -L "safeParse"`.
+**Como verificar (PowerShell):** `rg -l 'use server' app | ForEach-Object { rg --files-without-match -F 'safeParse' -- $_ }` aponta arquivos para revisão. Confirme a diretiva e confira **cada action com dados**, não só a presença da palavra no arquivo; `sair`, sem dados, é exceção.
 
 ### FORM-18: Erros do servidor com z.flattenError (Zod 4)
 **Fonte:** [SLIDE] FORMS p. 20 (`z.flattenError(parsed.error).fieldErrors`, comentário "Zod 4: z.flattenError(err) | Zod 3: parsed.error.flatten()")

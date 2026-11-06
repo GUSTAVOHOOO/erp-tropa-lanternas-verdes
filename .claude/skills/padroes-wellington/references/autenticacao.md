@@ -207,7 +207,7 @@ export default async function PainelPage() {
   const sessao = await verificarSessao() // [AUTH-04]
 ```
 **❌ Errado:** página do painel que confia só no `proxy.ts`.
-**Como verificar:** `rg -L "verificarSessao|exigirPapel" "app/(painel)" -g page.tsx` deve retornar vazio.
+**Como verificar:** `rg --files-without-match "verificarSessao|exigirPapel" "app/(painel)" -g page.tsx` deve retornar vazio. Confirme que o helper é chamado no corpo de cada página, não apenas importado ou citado em comentário.
 
 ### AUTH-05: Toda Server Action confere sessão (e papel) antes de agir
 **Fonte:** [DOCS] https://nextjs.org/docs/app/api-reference/file-conventions/proxy ("Always verify authentication and authorization inside each Server Function rather than relying on Proxy alone") e https://nextjs.org/docs/app/guides/authentication ("Treat Server Actions with the same security considerations as public-facing API endpoints") + [SLIDE] FORMS p. 20 ("Uma Server Action é um endpoint público")

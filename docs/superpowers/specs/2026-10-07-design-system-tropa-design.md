@@ -1,5 +1,10 @@
 # Design system da Tropa — spec
 
+> **Atualização em 2026-11-06:** a skill `auditoria-apresentacao` foi removida.
+> As referências abaixo a essa automação são históricas; seus comandos e passos
+> não devem ser executados ou recriados. As regras atuais estão em
+> `.claude/skills/padroes-wellington/`.
+
 Data: 2026-10-07. Aprovado no brainstorming (direção visual "B revisado", tema Noite).
 Projeto base: `docs/superpowers/specs/2026-10-07-erp-tropa-design.md`.
 

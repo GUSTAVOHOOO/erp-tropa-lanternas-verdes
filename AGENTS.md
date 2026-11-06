@@ -7,3 +7,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Padrões acadêmicos do projeto
+
+Ao escrever, revisar ou explicar código deste ERP, leia
+[padroes-wellington](.claude/skills/padroes-wellington/SKILL.md) e consulte as
+referências pertinentes ao pedido. O arquivo nesse caminho é a fonte canônica.

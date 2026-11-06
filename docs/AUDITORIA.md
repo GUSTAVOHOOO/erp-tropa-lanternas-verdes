@@ -3,9 +3,9 @@
 - **Data:** 2026-10-07
 - **Versão auditada:** branch `feat/design-system`, commit `a9c1314` (antes desta atualização)
 - **Gerado por:** skill `auditoria-apresentacao`, com regras da skill `padroes-wellington`
-- **Como reproduzir:** `bash .claude/skills/auditoria-apresentacao/scripts/verificar.sh .`
+- **Automação removida em 2026-11-06:** este relatório preserva os resultados históricos; o script que o gerou não está mais disponível. Para uma nova avaliação, execute os scripts atuais de teste, lint e build e confira manualmente os requisitos e evidências das seções abaixo.
 
-Legenda de origem: **Slide** = material do professor (sigla do deck e página); **Docs** = documentação oficial atual; **Decisão** = escolha do grupo. As siglas dos decks estão no `SKILL.md` de `padroes-wellington`. O texto dos requisitos é o repassado pelo grupo (`references/requisitos-enunciado.md`); o PDF original do enunciado não foi conferido.
+Legenda de origem: **Slide** = material do professor (sigla do deck e página); **Docs** = documentação oficial atual; **Decisão** = escolha do grupo. As siglas dos decks estão em `references/fontes-e-manutencao.md` de `padroes-wellington`. O texto dos requisitos é o repassado pelo grupo, resumido na seção 2; o PDF original do enunciado não foi conferido.
 
 ## 1. Resumo
 

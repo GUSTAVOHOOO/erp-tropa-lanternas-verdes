@@ -50,9 +50,9 @@ oferecida pelo json-server.
 | Listagem e filtros privados | `app/(painel)/painel/ocorrencias/page.tsx`, `_components/FiltroOcorrencias.tsx` | `lib/filtro-ocorrencias.ts`, schema e serviço de ocorrências |
 | Criar, alterar status ou atribuir | `app/(painel)/painel/ocorrencias/actions.ts` | Formulário correspondente, schemas, DAL e serviços |
 | Detalhe e atribuição | `app/(painel)/painel/ocorrencias/[id]/` | `tratarErroDetalhe`, autorização e formulários |
-| Visual compartilhado | `components/`, `components/ui/`, `app/globals.css` | Spec do design system e `/design-system` |
+| UI oficial e assets | `components/oanet/`, `app/globals.css`, `app/laboratorio/` | `docs/UI.md` (D28), `docs/agents/HANDOFF-OANET.md`; `/design-system` antigo é histórico |
 | Dados de demonstração | `db.json` | Schemas e testes que importam os dados (saem na migração) |
-| Redesign visual | `components/oanet/`, `app/laboratorio/`, `docs/UI.md`, `docs/design/oanet/` | Trabalho em andamento de outro responsável |
+| Adoção nas rotas reais | Layouts `(site)`/`(painel)`, páginas e componentes OANET | UI-01/UI-02 em `docs/PLANO.md`; propriedade transferida pelo handoff, conferir alterações locais |
 | Regras, rotas e dados da API | `docs/backend/` (`ESCOPO`, `REGRAS-DE-NEGOCIO`, `API`, `MODELO-DE-DADOS`, `ARQUITETURA`) | Skill `backend-api`; o código virá em `backend/` |
 | Telas atuais e planejadas | `docs/frontend/TELAS.md` | `docs/frontend/ARQUITETURA.md` |
 
@@ -145,9 +145,11 @@ usa Base UI sob os componentes shadcn já personalizados. Preserve exports e pro
 quando a alteração for apenas visual.
 
 Tokens estão em [globals.css](../../app/globals.css); fontes no
-[layout raiz](../../app/layout.tsx). Há um tema escuro e uma
-[vitrine estática](../../app/(site)/design-system/page.tsx). As decisões estão em
-STACK-02/03, DEC-05/11/12/13 e nas regras CSS/FORM pertinentes da skill.
+[layout raiz](../../app/layout.tsx). O escopo `.oa-lab` e as três folhas
+`movimento-*.css` compõem a UI oficial OANET (D28); sua extração para as rotas
+reais segue [UI.md](../UI.md) e o [handoff](HANDOFF-OANET.md).
+A vitrine `/design-system` antiga é histórica. STACK-02/03, DEC-05/11/12/13 e
+as regras de formulário/semântica continuam aplicáveis.
 
 ## Testes e documentação existentes
 
@@ -161,8 +163,9 @@ cobertura completa ou resultado aprovado.
 |---|---|
 | [Escopo e decisões](../backend/ESCOPO.md) | Enunciado do back-end e decisões D1 a D18 |
 | [Índice da documentação](../README.md) | Todos os documentos e se descrevem o estado atual ou o destino |
-| [Spec visual](../superpowers/specs/2026-10-07-design-system-tropa-design.md) | Intenção do design system |
-| [UI.md](../UI.md) | Redesign OANET em andamento |
+| [Spec visual antiga](../superpowers/specs/2026-10-07-design-system-tropa-design.md) | Histórico; não orienta o design novo |
+| [UI.md](../UI.md) | UI oficial OANET, assets e movimento aprovados (D28) |
+| [Handoff OANET](HANDOFF-OANET.md) | Próximo incremento e evidências para implementação |
 
 Em divergência entre documentação e implementação, registre a diferença e
 confira a decisão em `ESCOPO.md` antes de mudar ambos.

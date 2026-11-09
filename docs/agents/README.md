@@ -17,6 +17,8 @@ ou agentes; os arquivos de documentação não iniciam processos nem agentes.
    em `node_modules/next/dist/docs/` da instalação usada. As decisões do projeto
    estão em [backend/ESCOPO.md](../backend/ESCOPO.md) e o índice de toda a
    documentação em [docs/README.md](../README.md).
+   Para interface, leia também [UI.md](../UI.md): o laboratório OANET é a
+   referência oficial D28. A continuação atual está em [HANDOFF-OANET.md](HANDOFF-OANET.md).
 4. Registre objetivo, arquivos, responsável, contratos e aceite usando
    [TAREFA.md](TAREFA.md), no registro de tarefa que o grupo estiver usando.
    Entregue a outro agente apenas o contexto e os arquivos necessários.

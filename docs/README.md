@@ -1,6 +1,6 @@
 # Documentação
 
-Atualizada em 2026-11-06, no início da migração para um back-end real. Cada documento diz se descreve o **estado atual** do código ou o **destino**.
+Atualizada em 2026-11-09: OANET é a UI oficial (D28); back-end e adoção nas rotas reais continuam em migração. Cada documento distingue **estado atual** e **destino**.
 
 ## Por onde começar
 
@@ -11,14 +11,15 @@ Atualizada em 2026-11-06, no início da migração para um back-end real. Cada d
 | Saber o que fazer e em que ordem | [PLANO.md](PLANO.md), [CONTRIBUINDO.md](CONTRIBUINDO.md) |
 | Trabalhar no back-end | [backend/](backend/): `ARQUITETURA`, `MODELO-DE-DADOS`, `REGRAS-DE-NEGOCIO`, `API`, `DTOS`, `CENARIOS-DE-TESTE`, `SEED` |
 | Trabalhar no front-end | [frontend/](frontend/): `ARQUITETURA`, `TELAS`, `MIGRACAO` |
+| Continuar agora a adoção da UI oficial | [agents/HANDOFF-OANET.md](agents/HANDOFF-OANET.md) |
 | Dividir ou receber uma tarefa | [agents/README.md](agents/README.md), [agents/MAPA.md](agents/MAPA.md), [agents/TAREFA.md](agents/TAREFA.md) |
-| Seguir a direção visual | [UI.md](UI.md), [design/oanet/](design/oanet/), [../DESIGN.md](../DESIGN.md) |
+| Implementar design e assets | [UI.md](UI.md) (canônico), [design/oanet/movimento-cinematografico.md](design/oanet/movimento-cinematografico.md) (evidências) |
 
 ## Mapa dos documentos
 
 | Pasta ou arquivo | Conteúdo | Descreve |
 |---|---|---|
-| `backend/ESCOPO.md` | Enunciado do professor e decisões D1 a D27 | Destino |
+| `backend/ESCOPO.md` | Enunciado do professor e decisões D1 a D28 | Decisões; implementação de destino indicada por tarefa |
 | `backend/MODELO-DE-DADOS.md` | Entidades, relacionamentos, seed | Destino |
 | `backend/REGRAS-DE-NEGOCIO.md` | Regras RN-01 a RN-52 | Destino |
 | `backend/API.md` | Rotas, envelope, erros, permissões | Destino |
@@ -35,7 +36,9 @@ Atualizada em 2026-11-06, no início da migração para um back-end real. Cada d
 | `adr/` | Decisões difíceis de reverter | Permanente |
 | `research/lanternas/` | Pesquisa dos 25 Lanternas para o seed | Insumo (aceito em D18) |
 | `research/2026-11-06-skill-frontend-web-mapeamento.md` | Como a skill de front-end foi refeita | Histórico |
-| `design/oanet/`, `UI.md`, `superpowers/` | Redesign visual OANET e spec do design system | Em andamento |
+| `UI.md` | Contrato visual oficial OANET, assets e regras de reutilização | Base atual; adoção em migração |
+| `agents/HANDOFF-OANET.md` | Transferência de responsabilidade e primeiro incremento executável | Continuação atual |
+| `design/oanet/`, `superpowers/`, `../DESIGN.md` | Evidências de implementação e estudos históricos identificados como tais | Referência e histórico |
 
 ## Regras para manter a documentação
 

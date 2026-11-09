@@ -16,6 +16,14 @@ pertinentes ao pedido; para o back-end, leia
 [backend-api](.claude/skills/backend-api/SKILL.md). Os arquivos nesses caminhos
 são as fontes canônicas.
 
+## UI oficial
+
+Ao criar ou migrar uma tela, siga [docs/UI.md](docs/UI.md): o laboratório OANET
+é a referência visual oficial (decisão D28). Use seus componentes, vetores,
+tokens e animações. O front antigo serve para recuperar fluxos e regras,
+não como modelo de design. Para continuar a migração, comece pelo
+[handoff OANET](docs/agents/HANDOFF-OANET.md).
+
 ## Trabalho com agentes
 
 - Ao iniciar uma tarefa, leia [docs/agents/README.md](docs/agents/README.md)

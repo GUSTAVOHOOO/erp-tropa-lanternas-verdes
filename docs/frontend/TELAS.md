@@ -15,8 +15,8 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Login | `/login` | Existe | **Muda:** chama a API; link para o cadastro; aviso de 429 |
 | Cadastro | `/cadastro` | **Nova** | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
 | Acesso negado | `/acesso-negado` | Existe | Só para 403 de papel |
-| Design system | `/design-system` | Existe | Vitrine interna de componentes |
-| Laboratório | `/laboratorio` | Existe | Redesign OANET com dados ilustrativos; não usa a API |
+| Design system | `/design-system` | Existe, histórico visual | Atualizar ou redirecionar para a referência OANET na adoção |
+| Laboratório | `/laboratorio` | Existe, UI oficial D28 | Referência de design, assets e movimento; dados ilustrativos, sem API |
 
 ## Painel (autenticado)
 

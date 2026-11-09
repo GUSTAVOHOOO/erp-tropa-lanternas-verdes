@@ -66,9 +66,9 @@ Telas novas que seguem esse padrão: cadastro, registrar ocorrência, mudar stat
 
 ## Interface
 
-- Componentes: `components/ui` (shadcn sobre Base UI, DEC-11), compartilhados em `components/` e a casca OANET em `components/oanet/`, em construção pelo redesign.
+- Base visual oficial: OANET em `components/oanet/` e [UI.md](../UI.md), conforme D28. Componentes Base UI permanecem como fundamento semântico; as rotas reais recebem a apresentação do laboratório por extração/composição, preservando Server Components, serviços, Actions e permissões.
 - Tema único escuro por tokens em `app/globals.css` (DEC-13, PROD-10). Fontes: Barlow, Barlow Condensed e IBM Plex Mono.
-- A vitrine de componentes fica em `/design-system` e o laboratório do redesign em `/laboratorio` (DEC-12). O laboratório não chama a API.
+- `/laboratorio` é a referência oficial de componentes, assets e movimento; continua demonstrativo e sem API. `/design-system` antigo é histórico e deve ser atualizado ou redirecionado na adoção. Novas telas, inclusive as de gestão ainda sem protótipo, usam a linguagem de [UI.md](../UI.md).
 - Acessibilidade verificável, não declarada: foco visível, estados com rótulo além da cor, movimento reduzido (PROD-08). Dashboard e gráficos têm equivalente textual.
 
 ## Produção

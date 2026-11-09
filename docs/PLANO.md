@@ -47,7 +47,40 @@ Ajuste ao gosto; a ideia é ninguém ficar parado esperando a API.
 | **Dev 1 (back-end)** | BE-01 a BE-06 | BE-08 a BE-12 |
 | **Dev 2 (front e dados)** | FE-00, BE-07 (seed, depende de BE-06), depois assume o FE conforme a API aparece | FE-01 a FE-10 |
 
-Enquanto o Dev 1 faz BE-01 a BE-06, o Dev 2 faz FE-00 e prepara o seed sobre a pesquisa. O redesign OANET (`components/oanet`, `docs/UI.md`) é uma frente à parte: suas telas são integradas ao FE na ordem das tarefas, sem bloquear a lógica.
+Enquanto o Dev 1 faz BE-01 a BE-06, o Dev 2 pode fazer UI-01/UI-02 e FE-00,
+além de preparar o seed sobre a pesquisa. A base OANET já está implementada
+e orienta visualmente as tarefas FE.
+
+**Atualização D28 (2026-11-09):** a direção visual está aprovada e implementada
+no laboratório. OANET passa a ser a base obrigatória de todas as tarefas FE;
+comece por UI-01 abaixo, conforme o [handoff](agents/HANDOFF-OANET.md). A extração visual
+anda em paralelo ao back-end; a troca de contratos continua dependente da API.
+
+## Adoção da UI oficial
+
+### UI-01 Casca OANET nas rotas reais — próximo incremento
+**Depende de:** base local do laboratório (já existe); não depende da API nova.
+**Responsável:** agente que recebe [HANDOFF-OANET.md](agents/HANDOFF-OANET.md).
+**Arquivos:** casca reutilizável em `components/oanet/`, layouts público/privado,
+`app/globals.css`, testes correspondentes. Sem dependências novas ou escrita no seed.
+Extrair fundo, cabeçalho, navegação, sidebar sticky e ciclo de movimento; usar
+rotas/Links e dados da sessão atual, mantendo logout e checagens no servidor.
+**Aceite:** casca oficial nas rotas públicas e privadas; navegação por URL,
+nome/papel/setor reais, saída funcional, foco/menu acessíveis, movimento reduzido
+e modo calmo preservados, sem importar `dados-demo.ts` nos fluxos reais.
+
+### UI-02 Conteúdo e estados no vocabulário OANET
+**Depende de:** UI-01. Migrar as rotas existentes de [TELAS.md](frontend/TELAS.md)
+(portal, Sobre, login, catálogo/ficha, painel, ocorrências e formulários) e
+seus estados carregando/erro/vazio/404/acesso negado. Atualizar ou redirecionar
+`/design-system`. Reutilizar a arte vetorial e os controles; dados e permissões
+continuam reais, mesmo durante a fase json-server.
+**Aceite:** nenhuma rota concluída usa o design antigo como referência; sem
+mock de login/escrita, com validação, teclado, celular e movimento reduzido
+conferidos. Cada entrega atualiza `TELAS.md` com seu estado real.
+
+UI-01/UI-02 não substituem FE-00 a FE-10. FE-02 em diante adotam a casca UI-01;
+o marco final M4 exige também UI-02 e a linguagem OANET nas features novas.
 
 ## Back-end
 

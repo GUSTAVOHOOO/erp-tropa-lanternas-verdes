@@ -2,13 +2,19 @@
 
 De 2026-11-06. É o **passo 5** da ordem de [backend/ARQUITETURA.md](../backend/ARQUITETURA.md): só começa quando a API correspondente existe e passa nos testes. A lista abaixo foi feita lendo a estrutura atual; **confira cada arquivo antes de editar**, porque ela pode ter mudado. Destino em [ARQUITETURA.md](ARQUITETURA.md), contrato em [backend/API.md](../backend/API.md).
 
-Esta migração mexe em dependências, configuração e dados compartilhados; por isso precisa constar no escopo da tarefa, como `AGENTS.md` exige. O agente de UI trabalha em `components/oanet/`, `app/laboratorio/` e `app/globals.css`; a migração evita esses arquivos.
+Esta migração mexe em dependências, configuração e dados compartilhados; por isso precisa constar no escopo da tarefa, como `AGENTS.md` exige. Desde D28 (2026-11-09), a UI usa a base OANET oficial de [UI.md](../UI.md); não há uma frente de design concorrente que deva ser evitada. Atribua responsável para `components/oanet/` e `app/globals.css` quando extrair e integrar os componentes.
+
+A dependência de API desta página se aplica à **migração de dados e sessão**.
+A adoção visual UI-01/UI-02 de [PLANO.md](../PLANO.md) pode começar agora,
+preservando os fluxos atuais até a API correspondente estar pronta. Comece pelo
+[handoff](../agents/HANDOFF-OANET.md). Nenhum dado simulado do laboratório vira
+fonte da aplicação real.
 
 ## Antes de começar
 
 - API rodando com seed e testes e2e passando (passos 1 a 4).
 - Decisões já fechadas (D21): o usuário atual é `GET /auth/me`, o login devolve `expiresIn` e a ordenação é `?ordenar=` e `?ordem=`.
-- `git status --short` limpo nos arquivos que serão tocados.
+- `git status --short` conferido, com alterações existentes preservadas e responsáveis definidos; o pacote OANET local ainda pode estar sem commit.
 
 ## Camada de dados (`lib/`)
 

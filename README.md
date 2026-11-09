@@ -9,12 +9,14 @@ O projeto está **em migração** de uma API de demonstração (json-server) par
 | Parte | Estado |
 |---|---|
 | Front-end Next.js (site público e painel) | Pronto, ainda consumindo o json-server |
-| Redesign visual OANET | Em andamento (laboratório em `/laboratorio`) |
+| UI OANET oficial (D28) | Base aprovada e implementada em `/laboratorio`; adoção nas rotas reais em migração |
 | Back-end NestJS (`backend/`) | Documentado, **ainda não implementado** |
 | Migração do front para a API real | Planejada, depois do back-end |
 | Features novas (linha do tempo, comentários, dashboard, fila, Ficha completa) | Especificadas, ainda não implementadas |
 
 Documentação completa em [docs/README.md](docs/README.md).
+Continuação da implementação: [handoff OANET](docs/agents/HANDOFF-OANET.md).
+Todo design novo parte de [docs/UI.md](docs/UI.md) e dos assets em código do laboratório.
 
 ## Pré-requisitos
 

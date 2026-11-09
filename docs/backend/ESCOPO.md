@@ -54,6 +54,12 @@ Back-end da aplicação do trabalho anterior, atendendo a todas as funcionalidad
 | D25 | `Lanterna.setorId` é opcional. Os 4 Lanternas originais sem Setor verificado (John Stewart, Guy Gardner, Salaak, Arisia Rrab) mantêm o do `db.json` como dado de demonstração; os outros 12 ficam sem Setor, aparecem com "Setor não verificado", não recebem Atribuição e não têm conta. O seed tem 7 Setores, não os 8 de D12, porque um oitavo só existiria por invenção. |
 | D27 | O Usuário tem `setorId` próprio (escopo, RN-05). O cadastro cria a conta sem Ficha; o Guardião vincula conta e Ficha em `PATCH /usuarios/:id/lanterna` (RN-07). Sem vínculo, a conta registra e comenta, mas não tem Minha fila. |
 
+## Decisão de interface — 2026-11-09
+
+| # | Decisão |
+|---|---|
+| D28 | O laboratório OANET (`/laboratorio`, `components/oanet/`, tokens e estilos OANET) é a base visual oficial de todo o sistema. Novas telas e migrações usam os assets e o movimento gerados em código. O front anterior deixa de orientar o design; seus fluxos, contratos e permissões continuam sendo preservados até a substituição funcional. Pranchas raster e o design system antigo são históricos. A migração visual pode começar sem a API nova; a integração de dados continua dependente do back-end e dos testes correspondentes. Fonte visual canônica: `docs/UI.md`. |
+
 ## Em aberto
 
 - Papel de Supervisor de setor (descartado do escopo; só volta por nova decisão).

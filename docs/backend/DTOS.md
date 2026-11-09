@@ -1,131 +1,93 @@
 # DTOs e validações
 
-Versão de 2026-11-06. Campo a campo, o que cada rota de [API.md](API.md) aceita. Aplica-se `ValidationPipe` global com `whitelist`, `forbidNonWhitelisted` e `transform`: campo desconhecido é 400 `DADOS_INVALIDOS`, e query e route param chegam como texto e são convertidos antes de validar. Texto é aparado (`trim`) antes de medir. Os limites seguem os schemas Zod que o front já usa, para o mesmo erro aparecer nos dois lados.
+Contrato alvo **1.0.0 — 2026-11-09**. A fonte normativa de campos, tipos, obrigatoriedade, nulabilidade, enums, limites e formas de resposta é [openapi.json](../contratos/openapi.json). Este guia explica a aplicação da validação e as condições que dependem de papel/estado; não é um segundo schema. [API.md](API.md) governa semântica HTTP, acesso e códigos; decisões D e regras RN governam domínio. Divergência entre as fontes bloqueia a tarefa até correção conjunta, conforme [o pacote de contratos](../contratos/README.md).
 
-Legenda: **obr** obrigatório · **opt** opcional · **nulo** aceita `null`.
+## Esteira de entrada
 
-## Corpo
+Aplicar ValidationPipe com whitelist, forbidNonWhitelisted e transform. Campo desconhecido no corpo ou na query é **400 DADOS_INVALIDOS**. Converter query/path antes de validar: inteiros decimais para pagina, limite, dias, Setor; somente true/false para vencida, sem coerção de texto arbitrário para verdadeiro. Nas fixtures os valores já estão convertidos; o HTTP os serializa como texto.
 
-### `POST /auth/cadastro`
+Texto é aparado antes de medir, **exceto `senha`**, que preserva o conteúdo; email é normalizado para minúsculas. Manter o mesmo comportamento no schema de formulário e no DTO da API. A contagem máxima de palavras de citacao está em x-max-palavras no contrato.
 
-| Campo | Tipo | Regra |
-|---|---|---|
-| `nome` | texto, obr | 2 a 100 |
-| `email` | texto, obr | e-mail válido, até 254, convertido para minúsculas |
-| `senha` | texto, obr | 8 a 72 (limite do bcrypt) |
-| `setorId` | inteiro, obr | Setor existente (404 se não existir) |
+Senha (D36): além do limite de caracteres, o schema declara `x-max-bytes: 72` (UTF-8). O DTO mede os bytes e recusa o excesso com 400 `DADOS_INVALIDOS`, detalhe `campo: senha`, no cadastro **e no login**, antes de qualquer comparação com o hash; nunca trunca. Cadastro exige ao menos 8 caracteres Unicode, login ao menos 1. O validador documental confere o limite no schema e nos exemplos; a verificação real com bcrypt é do teste do provedor.
 
-Sem `papel`: enviar o campo é 400 (RN-01).
+Validação de formato/tipo/campo extra é 400, com detalhes no formato definido pelo schema Erro400: lista de objetos com campo e mensagens (lista de textos). Os demais status não contêm detalhes. Não retornar senhaHash, senha, stack nem mensagens do banco.
 
-### `POST /auth/login`
+Ordem das etapas (D40): autenticação (401) → papel da rota (403) → formato de DTO/params/query (400) → existência e escopo do recurso da rota → autoria/permissão da ação → regras de estado e de domínio. As regras de formato que dependem do papel ou do destino (o JSON Schema não as decide) também são 400 com detalhe do campo: Lanterna que envia `setorId` ou Guardião que o omite em `POST /ocorrencias`; `setorId` com destino `guardiao` em `/papel`. Detalhes completos em [API.md](API.md).
 
-| Campo | Tipo | Regra |
-|---|---|---|
-| `email` | texto, obr | e-mail válido |
-| `senha` | texto, obr | 1 a 72 |
+## Schemas de corpo por operação
 
-### `PATCH /usuarios/:id/papel`
+Os nomes abaixo são chaves de components.schemas em [openapi.json](../contratos/openapi.json); os limites ficam somente lá.
 
-| Campo | Tipo | Regra |
-|---|---|---|
-| `papel` | `guardiao` \| `lanterna`, obr | |
-
-### `PATCH /usuarios/:id/lanterna`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `lanternaId` | slug | `null`, obr | Ficha existente do mesmo Setor da conta; `null` desvincula (RN-07) |
-
-### Setor: `POST /setores`, `PATCH /setores/:id`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `id` | inteiro, obr no POST; proibido no PATCH | 0 a 9999; único |
-| `nome` | texto, obr no POST | 2 a 60 |
-| `descricao` | texto, obr no POST | 10 a 300 |
-
-No `PATCH` todos os campos são opcionais e ao menos um é exigido.
-
-### Lanterna: `POST /lanternas`, `PATCH /lanternas/:id`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `id` | slug, obr no POST; proibido no PATCH | `^[a-z0-9]+(-[a-z0-9]+)*$`, 2 a 40; único |
-| `codinome` | texto, obr no POST | 2 a 60 |
-| `identidadeCivil` | texto, opt, nulo | 2 a 80 |
-| `especie` | texto, obr no POST | 2 a 50 |
-| `planetaNatal` | texto, obr no POST | 2 a 60 |
-| `setorId` | inteiro, opt, nulo | Setor existente (D25) |
-| `anoIngresso` | inteiro, opt, nulo | 1900 a 2100 |
-| `primeiraAparicao` | texto, opt, nulo | até 120 |
-| `habilidades` | lista de textos, opt | até 10 itens de 2 a 60 |
-| `mentorId` | slug, opt, nulo | Lanterna existente, não ele mesmo, sem ciclo (422 `MENTOR_INVALIDO`) |
-| `citacao` | texto, opt, nulo | até 15 palavras |
-| `biografia` | texto, opt, nulo | até 1200 |
-| `fontes` | objeto, opt | por campo: `{ estado: "verificado" \| "nao_verificado", url?: texto }` |
-
-O `status` não vai aqui: `em_missao` é do sistema (RN-20), e afastar ou reativar tem rota própria.
-
-### `PATCH /lanternas/:id/status`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `status` | `ativo` \| `afastado`, obr | `em_missao` nunca é aceito |
-
-### Ocorrência: `POST /ocorrencias`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `titulo` | texto, obr | 5 a 100 |
-| `descricao` | texto, obr | 10 a 2000 |
-| `planeta` | texto, obr | 2 a 100 |
-| `gravidade` | `baixa` \| `media` \| `alta` \| `critica`, obr | |
-| `envolvidos` | inteiro, obr | 1 a 1.000.000 |
-| `setorId` | inteiro | Obrigatório para o Guardião; **proibido** para o Lanterna (o servidor usa o dele; enviar é 400) |
-
-### `PATCH /ocorrencias/:id`
-
-Os mesmos campos de `titulo` a `envolvidos`, todos opcionais, ao menos um exigido. `setorId` e `status` não entram.
-
-### `PATCH /ocorrencias/:id/status`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `status` | `aberta` \| `em_andamento` \| `resolvida`, obr | A transição é validada no service |
-| `resolucao` | texto | Exigida e 10 a 2000 quando `status = resolvida`; ignorada nos demais |
-| `motivo` | texto | Exigido e 10 a 500 quando é uma reabertura; ignorado nos demais |
-
-### `PATCH /ocorrencias/:id/responsavel`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `responsavelId` | slug \| `null`, obr | `null` libera o Responsável |
-
-### `POST /ocorrencias/:id/comentarios`
-
-| Campo | Tipo | Regra |
-|---|---|---|
-| `texto` | texto, obr | 1 a 1000 |
-
-## Query
-
-Comuns às listas: `pagina` inteiro ≥ 1 (padrão 1) e `limite` inteiro de 1 a 50 (padrão 20).
-
-| Rota | Parâmetros |
+| Operação | Schema de entrada |
 |---|---|
-| `GET /usuarios` | `busca` (até 100, nome ou e-mail), `ordenar` = `nome` \| `criadoEm`, `ordem` |
-| `GET /lanternas` | `setor` inteiro, `status` enum, `busca` (até 100, codinome), `ordenar` = `codinome` \| `setor` \| `anoIngresso`, `ordem` |
-| `GET /ocorrencias` | `status`, `gravidade`, `setor` (ignorado para o Lanterna), `responsavel` slug, `vencida` = `true` \| `false`, `busca` (até 100, título), `ordenar` = `prazo` \| `criadaEm` \| `gravidade`, `ordem` |
-| `GET /ocorrencias/minha-fila` | só paginação; a ordem é fixa (Prazo, depois Gravidade) |
-| `GET /ocorrencias/:id/eventos`, `…/comentarios` | só paginação |
-| `GET /dashboard` | `setor` inteiro (só Guardião), `dias` inteiro de 7 a 90 (padrão 30) |
+| POST /auth/cadastro | CadastroEntrada |
+| POST /auth/login | LoginEntrada |
+| PATCH /usuarios/:id/papel | PapelEntrada |
+| PATCH /usuarios/:id/lanterna | VinculoEntrada |
+| POST /setores | SetorCriacao |
+| PATCH /setores/:id | SetorEdicao |
+| POST /lanternas | LanternaCriacao |
+| PATCH /lanternas/:id | LanternaEdicao |
+| PATCH /lanternas/:id/status | LanternaStatusEntrada |
+| POST /ocorrencias | OcorrenciaCriacaoLanterna ou OcorrenciaCriacaoGuardiao |
+| PATCH /ocorrencias/:id | OcorrenciaEdicao |
+| PATCH /ocorrencias/:id/status | OcorrenciaStatusEntrada |
+| PATCH /ocorrencias/:id/responsavel | ResponsavelEntrada |
+| POST /ocorrencias/:id/comentarios | ComentarioEntrada |
 
-Padrões: `ordem` é `asc` ou `desc`. Quando `ordenar` é omitido, usa-se `codinome` asc em Lanternas, `nome` asc em Usuários e `criadaEm` desc em Ocorrências. O desempate é sempre pelo `id`. Um valor fora da lista permitida é 400, nunca vira SQL.
+Atualizações parciais de Setor, Lanterna e Ocorrência exigem ao menos um campo. O id não é editável. Status de Lanterna é alterado só na rota própria; em_missao é calculado. Na criação de Ficha, status nasce ativo, opcionais escalares ficam null, habilidades fica [] e fontes fica {} se omitidos. especie e planetaNatal são obrigatórios no POST; respostas de registros da pesquisa podem conter null nesses campos (D14/D25). PATCH não aceita null para esses dois campos.
 
-## Parâmetros de rota
+fontes aceita somente os campos documentais enumerados em FontesLanterna. Cada entrada tem estado e URL HTTP(S) opcional; campo ausente em fontes equivale a nao_verificado. Dados não pesquisados não devem ser inventados para preencher a resposta.
 
-`:id` de Ocorrência, Comentário, Evento e Usuário é UUID (400 se malformado). `:id` de Lanterna é slug e o de Setor é inteiro (400 se malformado, 404 se não existir).
+## Regras complementares ao schema
 
-## Respostas
+| Entrada | Condição que depende do sistema |
+|---|---|
+| Cadastro | Papel nunca vem do corpo; cria conta lanterna sem vínculo. Setor deve existir (404); email repetido dá409. Sem token, segue para /login (D21/D27). |
+| Alterar Papel | setorId só é aceito com destino lanterna; com guardiao é400. Omitido preserva Setor anterior; sem Setor disponível dá422 SETOR_OBRIGATORIO. Setor inexistente404; incompatível com Ficha422 SETOR_DIFERENTE. Promoção preserva Setor/vínculo, mas G ignora escopo. Último G409 após formato válido e conta da rota existente, antes dessas regras (RN-08). Destino lanterna em conta já Lanterna pode trocar o Setor, com as mesmas restrições. |
+| Vincular Lanterna | lanternaId presente pode ser null (desvincular, inclusive Guardião promovido). Não nulo, nesta ordem: Ficha existente404; alvo Lanterna (Guardião: 422 VINCULO_NAO_PERMITIDO); conta e Ficha com Setor e iguais (422 SETOR_DIFERENTE; Ficha sem Setor também); vínculo único409 LANTERNA_JA_VINCULADA (RN-07, D38). |
+| Editar Setor da Ficha | Setor inexistente404. Troca/null incompatível com conta ou Ocorrência histórica/excluída sob responsabilidade dá409 LANTERNA_EM_USO; outros campos continuam editáveis (RN-34). |
+| Mentor | Inexistente, próprio ou ciclo são422 MENTOR_INVALIDO. |
+| Criar Ocorrência | G exige setorId; L proíbe esse campo, usa o Setor do Usuário. Uma união JSON Schema não decide o papel: o service valida a variante autorizada e a violação é 400 com detalhe `setorId`. Setor informado por G que não existe: 404. |
+| Resolver/Reabrir | Ausência ou menos de10 caracteres em resolucao ao resolver e motivo ao reabrir são422 RESOLUCAO_OBRIGATORIA/MOTIVO_OBRIGATORIO. Se presentes, tipo não textual ou tamanho máximo excedido é400. Nos demais destinos os campos são ignorados. Lanterna pedindo aberta: Ocorrência resolvida é tentativa de reabrir (403), qualquer outro estado é 422 TRANSICAO_INVALIDA. |
+| Atribuir | responsavelId é slug da Ficha, ou null para liberar. null em Ocorrência em_andamento é 422 SEM_RESPONSAVEL (sem mudança); em aberta libera; resolvida é 409 em qualquer caso. Ficha inexistente404, Setor/sem Setor422, afastado409 (RN-15, D34). Sem mudança efetiva, 200 e nenhum Evento. |
 
-Nunca saem: `senhaHash`, `excluidaEm` de registro excluído (o registro some das listas), nem o `fontes` quando a rota é de lista (só na Ficha). `usuario` devolve `id`, `nome`, `email`, `papel`, `lanternaId`, `setorId`.
+Assim o campo curto de resolução não é recusado primeiro por MinLength no DTO: o service retorna o código422 exigido por RN-13. As transições e a falta de Responsável seguem RN-11/12.
+
+## Query e path
+
+Cada parâmetro permitido e seu default estão na própria operação em openapi.json. Listas paginadas aceitam pagina (padrão1) e limite (padrão20, máximo50); Setores é lista não paginada. Ordenações aceitam somente as enumerações da operação, com desempate por id. Consulta por valor fora da lista dá400, nunca SQL dinâmico livre.
+
+- Usuários: busca (nome ou e-mail), paginação, ordenar por nome/criadoEm, ordem. Default nome asc; `nome` ordena pela forma normalizada de busca.
+- Lanternas: setor, status, busca (codinome), paginação, ordenar por codinome/setor/anoIngresso, ordem. Default codinome asc (forma normalizada); em `setor` e `anoIngresso` os nulos ficam no fim, em asc e desc.
+- Ocorrências: status, gravidade, setor, responsavel, vencida, busca (título), paginação, ordenar por prazo/criadaEm/gravidade, ordem. Default criadaEm desc. Gravidade usa ordem de domínio baixa→critica em asc, inversa em desc.
+- Minha fila: somente paginação; só pendentes (não resolvidas/não excluídas), prazo asc, Gravidade critica→baixa, id asc.
+- Eventos/comentários: somente paginação; criadoEm asc, id asc.
+- Dashboard: setor e dias (default30, de7 a90). dias afeta só a série UTC, conforme API.md/D33.
+
+L pode enviar setor nas queries documentadas de Ocorrências/Dashboard; o servidor o ignora e usa setorId do Usuário. Isso não transforma um parâmetro desconhecido em parâmetro permitido.
+
+Path :id de Ocorrência, Comentário e Usuário é UUID; de Lanterna é slug; de Setor é inteiro0–9999. Formato inválido400, sem consultar o recurso; referência inexistente404. Guard de autenticação/papel executa antes da validação: requisição sem sessão pode retornar401, e papel insuficiente403, antes de um400 de formato.
+
+`busca` (D35): substring literal; termo aparado, vazio ignorado; comparação sem caixa e sem acento (NFD, remover marcas combinantes, minúsculas) no termo e no armazenado; `%`, `_` e `\` literais; limite de 100 caracteres. Os campos pesquisados são fixos por lista e não se pesquisa a descrição das Ocorrências.
+
+## Respostas e consumo
+
+Todos os campos declarados nos objetos de resposta estão presentes, mesmo quando null. `tempoMedioResolucaoHoras` usa 2 casas decimais, metade para cima. `fontes` enviado em `PATCH /lanternas/:id` substitui o objeto inteiro. Campo opcional de entrada não implica campo opcional de saída. UUIDs são textos; números de Setor são inteiros. Datas têm fuso, exemplos em UTC. Registro excluído some das consultas: excluidaEm/excluidoEm não são expostos.
+
+| Uso | Schema de dados/resposta |
+|---|---|
+| Conta, cadastro, /auth/me e mutações de usuário | Usuario, com criadoEm para ordenação, sem credenciais |
+| Login | LoginDados: token, expiresIn=28800, usuario |
+| Setor | Setor; lista não paginada SetoresResposta |
+| Lista de Lanternas | LanternaLista (sem fontes); paginação LanternasPagina |
+| Relações de Ficha | LanternaResumo para mentor/aprendizes, sem recursão |
+| Detalhe e mutações de Lanterna | LanternaFicha, inclui fontes e estatisticas |
+| Lista, detalhe e mutações de Ocorrência | Ocorrencia completa, inclui prazoEm/vencida |
+| Evento | Evento, união discriminada por tipo e payload dados específico |
+| Comentário | Comentario, inclui autorId e autor resumo |
+| Dashboard | Dashboard, contagens com todas as chaves, média null sem amostra |
+
+Cada resposta HTTP usa seu schema de envelope, listado na operação. Listas paginadas usam dados.itens e dados.meta; lista vazia mantém metadados. 204 não tem corpo, nem JSON null. O cliente não deve tentar fazer parse JSON de um204.
+
+O Next valida a resposta com o tipo exato do contrato (frontend-web/API-04). Simulações validam exemplos no processo server/test; não substituem prova da API real nem criam sessão de produto. Execute [validar.py](../contratos/validar.py) e os testes de cada lado antes do marco de [integração](../INTEGRACAO.md).

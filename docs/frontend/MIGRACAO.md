@@ -1,16 +1,17 @@
 # Migração do front-end para a API real
 
-De 2026-11-06. É o **passo 5** da ordem de [backend/ARQUITETURA.md](../backend/ARQUITETURA.md): só começa quando a API correspondente existe e passa nos testes. A lista abaixo foi feita lendo a estrutura atual; **confira cada arquivo antes de editar**, porque ela pode ter mudado. Destino em [ARQUITETURA.md](ARQUITETURA.md), contrato em [backend/API.md](../backend/API.md).
+De 2026-11-06, esclarecido em 2026-11-09 (D29). A **ativação** da migração só ocorre quando a API correspondente existe e passa nos testes. A preparação independente pode começar antes, contra o [pacote de contrato](../contratos/README.md), seguindo o [plano FE](PLANO-IMPLEMENTACAO.md) e os [gates de integração](../INTEGRACAO.md). A lista abaixo foi feita lendo a estrutura atual; **confira cada arquivo antes de editar**. Destino em [ARQUITETURA.md](ARQUITETURA.md), sem afirmar que a troca já ocorreu.
 
 Esta migração mexe em dependências, configuração e dados compartilhados; por isso precisa constar no escopo da tarefa, como `AGENTS.md` exige. Desde D28 (2026-11-09), a UI usa a base OANET oficial de [UI.md](../UI.md); não há uma frente de design concorrente que deva ser evitada. Atribua responsável para `components/oanet/` e `app/globals.css` quando extrair e integrar os componentes.
 
-A dependência de API desta página se aplica à **migração de dados e sessão**.
-A adoção visual UI-01/UI-02 de [PLANO.md](../PLANO.md) pode começar agora,
-preservando os fluxos atuais até a API correspondente estar pronta. Comece pelo
-[handoff](../agents/HANDOFF-OANET.md). Nenhum dado simulado do laboratório vira
-fonte da aplicação real.
+A dependência de API desta página se aplica à **ativação real da migração de dados e sessão**.
+A adoção visual UI-01/UI-02 de [PLANO.md](../PLANO.md) preserva os fluxos atuais
+até a API correspondente estar pronta e só começa quando o usuário encerrar a
+pausa da implementação (DOC-03); a sequência está no [plano FE](PLANO-IMPLEMENTACAO.md)
+e o [handoff](../agents/HANDOFF-OANET.md) é histórico. Nenhum dado simulado do
+laboratório vira fonte da aplicação real.
 
-## Antes de começar
+## Antes de ativar a API real
 
 - API rodando com seed e testes e2e passando (passos 1 a 4).
 - Decisões já fechadas (D21): o usuário atual é `GET /auth/me`, o login devolve `expiresIn` e a ordenação é `?ordenar=` e `?ordem=`.
@@ -24,8 +25,8 @@ fonte da aplicação real.
 | `lib/api-error.ts` | `ApiError` com status | Acrescenta `codigo` e `detalhes` do envelope |
 | `lib/erro-detalhe.ts` | 401/403 navegam, 404 `notFound` | 404 passa a cobrir "outro Setor"; 401 encerra a sessão pelo Route Handler (AUTH-13) |
 | `lib/erros-formulario.ts` | Aplica `errors` por campo | Mapeia também `codigo` da API para campo ou erro geral (API-18) |
-| `lib/sessao.ts` | Cookie assinado com HMAC e `SESSION_SECRET` | **Removido** (AUTH-03 foi aposentada). A sessão é o JWT da API |
-| `lib/dal.ts` | Cria e lê o cookie assinado; `verificarSessao` não consulta a API | Grava o JWT em cookie `httpOnly`; `verificarSessao` chama `GET /auth/me`; `exigirPapel` e `podeAcessarSetor` usam o que a API devolve |
+| `lib/sessao.ts` | Cookie assinado com HMAC e `SESSION_SECRET` | **Removido** (AUTH-03 foi aposentada). A sessão é o JWT da API. `podeAcessarSetor` e `setorParaFiltro` migram para `lib/escopo.ts` (novo, FE-02) com seus testes |
+| `lib/dal.ts` | Cria e lê o cookie assinado; `verificarSessao` não consulta a API | Grava o JWT em cookie `httpOnly`; `verificarSessao` chama `GET /auth/me`; `exigirPapel` usa o que a API devolve |
 | `lib/usuarios.ts` | `buscarUsuarioPorEmail` devolve senha para comparar no login | **Removido**. O login é `POST /auth/login`; nenhuma senha chega ao front |
 | `lib/setores.ts`, `lib/lanternas.ts`, `lib/ocorrencias.ts` | Filtros do json-server, ids numéricos ou texto | Chamam o cliente único; abrem `dados.itens` e `dados.meta`; filtros e ordenação conforme `API.md` |
 | `lib/filtro-ocorrencias.ts` | `status`, `gravidade`, `setor` | Acrescenta `responsavel`, `vencida`, `busca`, `ordenar`, `pagina`, `limite` |
@@ -78,14 +79,16 @@ fonte da aplicação real.
 
 ## Ordem sugerida
 
-1. Cliente HTTP, `ApiError`, sessão por JWT e login/cadastro/sair. Marco: entrar e sair contra a API real.
+Esta é a ordem de **preparação**. A ativação real é um corte único: passos 1 a 3 e o dashboard entram juntos, sem publicação intermediária ([INTEGRACAO §3](../INTEGRACAO.md#3-matriz-de-recursos-e-gates)); passos 4 (exceto o dashboard) e 5 são aditivos depois dele.
+
+1. Cliente HTTP, `ApiError`, sessão por JWT e login/cadastro/sair. Marco de preparação: entrar e sair demonstrados no consumidor contra o fake e no provedor isolado.
 2. Setores, Lanternas e Ficha (leitura).
 3. Ocorrências: lista, detalhe, registrar, status, atribuir.
 4. Linha do tempo, Comentários, fila e dashboard.
 5. Gestão de Setores, Lanternas e Usuários.
 6. Remover json-server, `db.json` e os marcadores obsoletos; E2E.
 
-Cada passo termina com `npm run test:run`, `npm run lint` e `npm run build` relatados, e o fluxo conferido no navegador contra a API real.
+Cada passo termina com `npm run test:run`, `npm run lint` e `npm run build` relatados; o fluxo é conferido no navegador contra a API real no corte integrado e em cada aditivo.
 
 ## Documentação
 

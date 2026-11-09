@@ -1,6 +1,7 @@
 # Mapa da codebase
 
 Levantamento conferido em 2026-11-06, a partir de `f819c48` e do estado local.
+Planejamento documental atualizado em 2026-11-09; a UI-01 local é parcial e ainda não recebeu aceite. A pausa para planejamento está registrada em [DOC-03](DOC-03-PLANEJAMENTO.md).
 Use este mapa para encontrar os arquivos; confirme contratos no código antes
 de alterá-los. As regras de código estão nas skills
 [`frontend-web`](../../.claude/skills/frontend-web/SKILL.md) e
@@ -55,6 +56,10 @@ oferecida pelo json-server.
 | Adoção nas rotas reais | Layouts `(site)`/`(painel)`, páginas e componentes OANET | UI-01/UI-02 em `docs/PLANO.md`; propriedade transferida pelo handoff, conferir alterações locais |
 | Regras, rotas e dados da API | `docs/backend/` (`ESCOPO`, `REGRAS-DE-NEGOCIO`, `API`, `MODELO-DE-DADOS`, `ARQUITETURA`) | Skill `backend-api`; o código virá em `backend/` |
 | Telas atuais e planejadas | `docs/frontend/TELAS.md` | `docs/frontend/ARQUITETURA.md` |
+| Trabalho independente FE/BE | `docs/frontend/PLANO-IMPLEMENTACAO.md`, `docs/backend/PLANO-IMPLEMENTACAO.md` | `docs/PLANO.md`, `docs/INTEGRACAO.md` |
+| Contrato verificável e exemplos | `docs/contratos/` | `docs/backend/API.md`, `DTOS.md`; mock e API reais ainda precisam ser implementados |
+| Componentes compartilhados (cabeçalho, tabela, badges, campos, estados) | `components/*.tsx`, `components/ui/*` | Inventário e destino em UI-02.00 do plano FE; consumidores em `app/` |
+| Ordem de ativação real (Corte 1 e aditivos) e fixture de integração | `docs/INTEGRACAO.md` §3 e §4 | Planos FE/BE; `backend/` e `fixture:integracao` ainda não existem |
 
 `(site)` e `(painel)` organizam layouts sem aparecer na URL. `_components`
 contém componentes locais da rota. `components/` concentra os compartilhados.
@@ -161,11 +166,11 @@ cobertura completa ou resultado aprovado.
 
 | Documento | Uso |
 |---|---|
-| [Escopo e decisões](../backend/ESCOPO.md) | Enunciado do back-end e decisões D1 a D18 |
+| [Escopo e decisões](../backend/ESCOPO.md) | Enunciado e decisões vigentes; números antigos não limitam as decisões aplicáveis |
 | [Índice da documentação](../README.md) | Todos os documentos e se descrevem o estado atual ou o destino |
 | [Spec visual antiga](../superpowers/specs/2026-10-07-design-system-tropa-design.md) | Histórico; não orienta o design novo |
 | [UI.md](../UI.md) | UI oficial OANET, assets e movimento aprovados (D28) |
-| [Handoff OANET](HANDOFF-OANET.md) | Próximo incremento e evidências para implementação |
+| [Handoff OANET](HANDOFF-OANET.md) | Histórico da transferência da UI-01 parcial e evidências; a sequência vigente está no plano FE |
 
 Em divergência entre documentação e implementação, registre a diferença e
 confira a decisão em `ESCOPO.md` antes de mudar ambos.

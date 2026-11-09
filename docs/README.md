@@ -1,48 +1,67 @@
-# Documentação
+# Documentação do projeto
 
-Atualizada em 2026-11-09: OANET é a UI oficial (D28); back-end e adoção nas rotas reais continuam em migração. Cada documento distingue **estado atual** e **destino**.
+Atualizada em 2026-11-09. **Atual:** Next + json-server e laboratório OANET aprovado. **Parcial:** casca UI-01 herdada, sem aceite final. **Destino:** NestJS, JWT, novas funcionalidades e migração completa. A [DOC-03](agents/DOC-03-PLANEJAMENTO.md) está concluída com planos e contrato revisados; [G-1](INTEGRACAO.md#g-1--aceite-do-contrato) identifica a revisão consumível. Implementação permanece suspensa até tarefa explícita.
 
-## Por onde começar
+## Comece pelo seu trabalho
 
-| Quero | Leia |
-|---|---|
-| Entender o produto e a linguagem | [PRODUCT.md](../PRODUCT.md), [GLOSSARY.md](../GLOSSARY.md) |
-| Saber o que foi decidido e por quê | [backend/ESCOPO.md](backend/ESCOPO.md), [adr/](adr/) |
-| Saber o que fazer e em que ordem | [PLANO.md](PLANO.md), [CONTRIBUINDO.md](CONTRIBUINDO.md) |
-| Trabalhar no back-end | [backend/](backend/): `ARQUITETURA`, `MODELO-DE-DADOS`, `REGRAS-DE-NEGOCIO`, `API`, `DTOS`, `CENARIOS-DE-TESTE`, `SEED` |
-| Trabalhar no front-end | [frontend/](frontend/): `ARQUITETURA`, `TELAS`, `MIGRACAO` |
-| Continuar agora a adoção da UI oficial | [agents/HANDOFF-OANET.md](agents/HANDOFF-OANET.md) |
-| Dividir ou receber uma tarefa | [agents/README.md](agents/README.md), [agents/MAPA.md](agents/MAPA.md), [agents/TAREFA.md](agents/TAREFA.md) |
-| Implementar design e assets | [UI.md](UI.md) (canônico), [design/oanet/movimento-cinematografico.md](design/oanet/movimento-cinematografico.md) (evidências) |
-
-## Mapa dos documentos
-
-| Pasta ou arquivo | Conteúdo | Descreve |
+| Papel ou objetivo | Ordem de leitura | Resultado esperado |
 |---|---|---|
-| `backend/ESCOPO.md` | Enunciado do professor e decisões D1 a D28 | Decisões; implementação de destino indicada por tarefa |
-| `backend/MODELO-DE-DADOS.md` | Entidades, relacionamentos, seed | Destino |
-| `backend/REGRAS-DE-NEGOCIO.md` | Regras RN-01 a RN-52 | Destino |
-| `backend/API.md` | Rotas, envelope, erros, permissões | Destino |
-| `backend/ARQUITETURA.md` | Camadas, pastas, testes, ordem de implementação | Destino |
-| `backend/DTOS.md` | Campos e limites de cada rota | Destino |
-| `backend/CENARIOS-DE-TESTE.md` | Um cenário "dado, quando, então" por regra | Destino |
-| `backend/SEED.md` | O que o seed grava e de onde vem | Destino |
-| `PLANO.md` | Backlog por tarefa (BE, FE, DOC), dependências, aceite e marcos | Destino |
-| `CONTRIBUINDO.md` | Guia do dev: ambiente, fluxo, definição de pronto | Atual |
-| `frontend/ARQUITETURA.md` | Camadas do front, sessão, dados, formulários | Destino, com o atual indicado |
-| `frontend/TELAS.md` | Cada tela: acesso, dados, estados, features | Atual e planejado |
-| `frontend/MIGRACAO.md` | Arquivo por arquivo, do json-server à API real | Atual para destino |
-| `agents/` | Fluxo de trabalho, mapa do código, modelo de tarefa | Atual |
-| `adr/` | Decisões difíceis de reverter | Permanente |
-| `research/lanternas/` | Pesquisa dos 25 Lanternas para o seed | Insumo (aceito em D18) |
-| `research/2026-11-06-skill-frontend-web-mapeamento.md` | Como a skill de front-end foi refeita | Histórico |
-| `UI.md` | Contrato visual oficial OANET, assets e regras de reutilização | Base atual; adoção em migração |
-| `agents/HANDOFF-OANET.md` | Transferência de responsabilidade e primeiro incremento executável | Continuação atual |
-| `design/oanet/`, `superpowers/`, `../DESIGN.md` | Evidências de implementação e estudos históricos identificados como tais | Referência e histórico |
+| Conhecer o produto | [PRODUCT](../PRODUCT.md) → [GLOSSARY](../GLOSSARY.md) → [PLANO](PLANO.md) | Entender domínio, estado atual e marcos |
+| Dev de front | [Guia dos agentes](agents/README.md) → [plano FE/UI](frontend/PLANO-IMPLEMENTACAO.md) → [UI](UI.md) → [contrato](contratos/README.md) | Escolher incremento e carregar somente referências/arquivos necessários |
+| Dev de back | [Guia dos agentes](agents/README.md) → [plano BE](backend/PLANO-IMPLEMENTACAO.md) → [contrato](contratos/README.md) → RN/modelo da tarefa | Implementar e testar o recurso sem esperar a UI |
+| Integrar as duas frentes | [INTEGRACAO](INTEGRACAO.md) → revisão contratual usada por ambos → evidências das tarefas | Aprovar o gate contra API real com dados isolados |
+| Agente novo | [AGENTS](../AGENTS.md) → [guia](agents/README.md) → [MAPA](agents/MAPA.md) → tarefa atribuída | Conhecer propriedade, restrições e primeiro passo executável |
+| Entender a UI-01 parcial | [Plano FE](frontend/PLANO-IMPLEMENTACAO.md) (UI-01, UI-02.00) → [Handoff](agents/HANDOFF-OANET.md) como histórico | Preservar o parcial; a implementação só recomeça quando o usuário autorizar |
+| Revisar contratos ou planos | [DOC-03](agents/DOC-03-PLANEJAMENTO.md) → [revisões](agents/revisoes/README.md) | Localizar achados, decisões e evidências de correção |
 
-## Regras para manter a documentação
+As skills canônicas de [front](../.claude/skills/frontend-web/SKILL.md) e [back](../.claude/skills/backend-api/SKILL.md) são lidas ao escrever/revisar/explicar o respectivo código. Next exige o guia pertinente instalado em `node_modules/next/dist/docs/` antes de escrever código.
 
-- Documento de destino não afirma que algo existe; documento de estado atual não promete o que ainda não foi feito.
-- Decisão nova entra em `backend/ESCOPO.md` (ou em um ADR, se for difícil de reverter, surpreendente e fruto de um trade-off real) no mesmo dia.
-- Termo novo do domínio entra em `GLOSSARY.md`.
-- Ao implementar uma parte, atualize o documento correspondente de "Destino" para "Atual".
+## Mapa de todas as pastas
+
+| Pasta | Conteúdo e finalidade | Autoridade/estado |
+|---|---|---|
+| `docs/` | Este índice, [PLANO](PLANO.md), [CONTRIBUINDO](CONTRIBUINDO.md), [INTEGRACAO](INTEGRACAO.md) e [UI](UI.md) | Entradas de execução e contrato visual |
+| `docs/agents/` | [Fluxo](agents/README.md), [mapa](agents/MAPA.md), [modelo de tarefa](agents/TAREFA.md), [handoff](agents/HANDOFF-OANET.md), [registro DOC-03](agents/DOC-03-PLANEJAMENTO.md) | Operação e estado datado; não redefine produto |
+| `docs/agents/revisoes/` | [Índice](agents/revisoes/README.md), relatórios e correções por rodada | Evidência, não fonte de contrato |
+| `docs/contratos/` | [Entrada](contratos/README.md), OpenAPI JSON, exemplos e validador documental | Formato HTTP acordado de destino; não API implementada |
+| `docs/contratos/exemplos/` | Requisições/respostas e cenários identificados por operação | Fixtures sintéticas de contrato; não dados do produto |
+| `docs/backend/` | Decisões, dados, regras, API, DTOs, arquitetura, seed, cenários e plano BE | Destino, com decisões vigentes explícitas |
+| `docs/frontend/` | Arquitetura, telas, migração e plano FE/UI | Atual/destino distinguidos em cada documento |
+| `docs/adr/` | Decisões arquiteturais com consequências e alternativas | Permanente; [ADR 0001](adr/0001-token-jwt-fica-no-servidor-do-next.md) mantém JWT no Next |
+| `docs/research/` | Pesquisa primária datada e recomendações | Insumo; [pesquisa para agentes](research/2026-11-09-documentacao-para-agentes.md) orienta esta organização |
+| `docs/research/lanternas/` | Pesquisa aceita em D18 para os 25 membros | Insumo canônico do [seed](backend/SEED.md), não vem das ilustrações |
+| `docs/design/` | Agrupa estudos e evidências de design | Consulta por direção; OANET é a oficial |
+| `docs/design/oanet/` | [Índice OANET](design/oanet/README.md), histórico visual e evidências de implementação | Referência; regras atuais em [UI](UI.md) |
+| `docs/design/oanet/verificacao/` | PNGs e JSONs de inspeções datadas | Evidências; assets executáveis ficam em `components/oanet/` |
+| `docs/superpowers/` | Agrupa specs e planos das etapas anteriores | Arquivo histórico, sem plano concorrente ativo |
+| `docs/superpowers/specs/` | Spec antiga do design system | Histórico superado visualmente por D28 |
+| `docs/superpowers/plans/` | Planos históricos de incrementos | Consulta histórica; plano ativo é [PLANO](PLANO.md) |
+
+Novas subpastas de exemplos/artefatos devem ser descritas no README da pasta responsável e referenciadas aqui. Diretórios de código e arquivos de saída temporários não são documentação de produto.
+
+## Fontes canônicas
+
+| Pergunta | Fonte responsável |
+|---|---|
+| O que foi decidido? | [ESCOPO](backend/ESCOPO.md) e [ADRs](adr/) |
+| Qual regra vale e por quê? | [REGRAS-DE-NEGOCIO](backend/REGRAS-DE-NEGOCIO.md), com origem D identificada |
+| Qual formato HTTP implementar? | [Contrato estruturado e procedimento de mudança](contratos/README.md); OpenAPI governa formatos, [API](backend/API.md) governa comportamento/acesso e [DTOs](backend/DTOS.md) explica validações |
+| Como persistir? | [MODELO-DE-DADOS](backend/MODELO-DE-DADOS.md), [SEED](backend/SEED.md) |
+| Como organizar o back e testar regras? | [ARQUITETURA BE](backend/ARQUITETURA.md), [CENARIOS-DE-TESTE](backend/CENARIOS-DE-TESTE.md), [plano BE](backend/PLANO-IMPLEMENTACAO.md) |
+| Como organizar e migrar o front? | [ARQUITETURA FE](frontend/ARQUITETURA.md), [TELAS](frontend/TELAS.md), [MIGRACAO](frontend/MIGRACAO.md), [plano FE](frontend/PLANO-IMPLEMENTACAO.md) |
+| Como a interface deve parecer e se mover? | [UI](UI.md), D28 e fontes SVG/CSS/Canvas OANET |
+| Onde editar e quem possui o arquivo? | [MAPA](agents/MAPA.md) + registro da tarefa; confirme assinaturas no código atual |
+| O que já foi verificado? | Registro datado da tarefa e evidências; plano não é resultado de teste |
+
+Divergência entre fontes canônicas bloqueia somente a parte afetada até uma correção sincronizada. Um exemplo, mock ou Swagger gerado não muda o acordo silenciosamente. A revisão contratual usada precisa constar na entrega das duas frentes.
+
+## Manutenção e verificações
+
+1. Mantenha uma fonte por assunto; índices apontam para ela, sem copiar tabelas inteiras de campos/regras.
+2. Mudança de contrato inclui API/DTO, OpenAPI, exemplos e impactos no consumidor/provedor na mesma tarefa. Siga o [acordo de integração](INTEGRACAO.md).
+3. Atualize “Atual”, “Parcial” ou “Destino” apenas com evidência. Pesquisa e captura histórica não demonstram aceite de uma tela real.
+4. Mudança de domínio entra em ESCOPO/RN/modelo conforme o impacto; termo novo entra em [GLOSSARY](../GLOSSARY.md).
+5. Registre comandos, diretório, resultado e limites no [modelo de tarefa](agents/TAREFA.md). Validação documental não substitui teste de consumidor, provedor ou integração.
+6. Ao criar/remover uma pasta de documentação, atualize este mapa e o [README raiz](../README.md#pastas-da-documentação).
+
+Verificação disponível da raiz: `node docs/agents/validar-documentacao.mjs --ancoras`. Confere destinos dos links locais, presença das pastas neste índice e âncoras de títulos Markdown/IDs HTML. Omita `--ancoras` para conferir somente arquivos/pastas. A checagem de títulos cobre o padrão usado neste repositório (cabeçalhos `#` e IDs explícitos); não é renderizador completo de Markdown e não acessa URLs externas nem verifica significado dos contratos. O validador do contrato tem escopo separado, descrito no [pacote](contratos/README.md).

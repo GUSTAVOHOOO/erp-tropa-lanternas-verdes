@@ -22,6 +22,12 @@ Quando o back-end existir, o fluxo será: `npm install` em cada projeto, copiar 
 
 ## Fluxo de trabalho
 
+### Desenvolvimento independente por contrato
+
+O [plano FE](frontend/PLANO-IMPLEMENTACAO.md) e o [plano BE](backend/PLANO-IMPLEMENTACAO.md) permitem preparação independente usando o mesmo [contrato v1](contratos/README.md). O fake HTTP do front é tarefa futura FE-00, restrito ao servidor/ambiente de teste e desenvolvimento. O dev BE implementa e testa o provedor sem esperar telas. A ativação real é um primeiro corte integrado único e a retirada do json-server fecha depois dos aditivos ([gates reais](INTEGRACAO.md)), com banco isolado e variáveis da tarefa no ambiente do processo, nunca em `.env.local`. Antes de abrir uma tarefa, leia o registro G-1 do contrato.
+
+Antes de desenvolver, registre versão/hash do contrato e exemplos usados. Depois de uma mudança de contrato, alinhe OpenAPI, API/DTO, exemplos e consumidores na mesma tarefa. Um teste contra mock não encerra integração. Scripts futuros de mock, e2e e banco só podem ser executados depois de criados na tarefa correspondente; consulte `package.json` real.
+
 1. Confira `git status --short` e preserve alterações de outras pessoas. Trabalhe em uma branch por tarefa: `be-03-autenticacao`, `fe-05-ciclo-de-vida`.
 2. Registre a tarefa com [agents/TAREFA.md](agents/TAREFA.md) na descrição da PR: objetivo, arquivos, aceite, verificações.
 3. Escreva o teste junto com o código. Para regras de negócio, o roteiro é [backend/CENARIOS-DE-TESTE.md](backend/CENARIOS-DE-TESTE.md).

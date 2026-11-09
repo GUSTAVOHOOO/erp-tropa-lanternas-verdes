@@ -27,9 +27,14 @@ se houver, indicar responsável e motivo>
 - Código e testes de referência: <caminhos e símbolos relevantes>.
 - Regras das skills: <IDs de `frontend-web` ou regras de `backend-api` aplicáveis, e decisões D de `docs/backend/ESCOPO.md`>.
 - Contrato da API: <rotas e códigos de erro de `docs/backend/API.md` afetados>.
+- Revisão do contrato: <versão e hash do conjunto de `py -3 docs/contratos/validar.py --hash`; exemplos/cenários usados; consumidor ou provedor que será verificado>.
+- Ciência do contrato (G-1): <versão e SHA-256 do registro G-1 de `docs/INTEGRACAO.md` que quem executa leu; hash diferente do registro = parar>.
+- Fixture de integração: <etapa BE-FX usada, comando `fixture:integracao` e manifesto, quando a tarefa depender dela>.
+- Posse na sequência UI: <linha UI-02.xx que entregou os arquivos de página/formulário antes desta tarefa assumi-los>.
 - Guia Next local: <arquivo/seção pertinente, quando envolver Next.js>.
 - Contratos com outras tarefas: <assinaturas, schemas, props, retorno e consumidores>.
 - Estado/dados: <fixture e portas isoladas quando houver teste de escrita>.
+- Modo da entrega: <preparação independente com contrato simulado | provedor aceito | ativação no Corte 1 ou gate aditivo de `docs/INTEGRACAO.md`>.
 
 ### Critérios de aceite
 
@@ -37,6 +42,7 @@ se houver, indicar responsável e motivo>
 - [ ] <Erro, permissão ou caso de borda relevante>.
 - [ ] <Consumidores afetados continuam compatíveis ou foram atualizados>.
 - [ ] <Verificações adequadas ao impacto foram executadas e registradas>.
+- [ ] <Dependências realmente existentes e arquivos planejados distinguidos; gate de integração e evidência definidos>.
 
 ### Retorno do responsável
 
@@ -46,6 +52,8 @@ se houver, indicar responsável e motivo>
 cenário e observação>  
 **Limites/pendências:** <o que não foi verificado, falhas anteriores ou impedimentos>  
 **Integração:** <commit/branch ou diff; dependências e decisões para o próximo responsável>
+
+**Reprodução:** <revisão do contrato, cenário, comando, ambiente/porta e resultado esperado versus observado; artefato de evidência>.
 
 Em bloqueio, registre a evidência e a informação/dependência exata necessária
 para continuar. Na revisão, confira o diff contra o aceite. Conclusão depende

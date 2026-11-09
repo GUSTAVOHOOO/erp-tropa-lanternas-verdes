@@ -11,6 +11,8 @@ foram migradas integralmente. Não confundir aprovação do design com integraç
 pronta. [Handoff de implementação](agents/HANDOFF-OANET.md),
 [plano](PLANO.md), [migração de dados](frontend/MIGRACAO.md).
 
+Em 2026-11-09, a casca UI-01 herdada permanece parcial, sem aceite final. O usuário suspendeu a implementação para estruturar e revisar a [DOC-03](agents/DOC-03-PLANEJAMENTO.md); a decomposição por tela está no [plano FE/UI](frontend/PLANO-IMPLEMENTACAO.md).
+
 **Direção aprovada em 2026-11-06:** uma Central de Oa cinematográfica,
 com componentes arrojados e visuais produzidos integralmente em código.
 **Entrega atual:** laboratório navegável em `/laboratorio`.

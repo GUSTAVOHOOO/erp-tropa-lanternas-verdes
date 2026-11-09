@@ -11,16 +11,49 @@ O projeto está **em migração** de uma API de demonstração (json-server) par
 | Front-end Next.js (site público e painel) | Pronto, ainda consumindo o json-server |
 | UI OANET oficial (D28) | Base aprovada e implementada em `/laboratorio`; adoção nas rotas reais em migração |
 | Back-end NestJS (`backend/`) | Documentado, **ainda não implementado** |
-| Migração do front para a API real | Planejada, depois do back-end |
+| Migração do front para a API real | Preparação independente por contrato; ativação após aceite da API |
 | Features novas (linha do tempo, comentários, dashboard, fila, Ficha completa) | Especificadas, ainda não implementadas |
+| Planos separados e contrato v1 (DOC-03) | Consolidados, revisados e com aceite técnico documental G-1; implementação ainda planejada |
 
 Documentação completa em [docs/README.md](docs/README.md).
-Continuação da implementação: [handoff OANET](docs/agents/HANDOFF-OANET.md).
+Planejamento atual: [plano por frente](docs/PLANO.md). A [DOC-03](docs/agents/DOC-03-PLANEJAMENTO.md) está concluída; a implementação permanece suspensa até a atribuição de uma nova tarefa. O contrato consumível está identificado em [G-1](docs/INTEGRACAO.md#g-1--aceite-do-contrato).
+O [handoff OANET](docs/agents/HANDOFF-OANET.md) preserva o contexto da UI-01 parcial; não comprova seu aceite.
 Todo design novo parte de [docs/UI.md](docs/UI.md) e dos assets em código do laboratório.
+
+## Guia para os dois desenvolvedores
+
+1. Ambos leem o [plano geral](docs/PLANO.md), o [pacote de contrato](docs/contratos/README.md) e o [acordo de integração](docs/INTEGRACAO.md).
+2. O dev de front segue [PLANO-IMPLEMENTACAO do front](docs/frontend/PLANO-IMPLEMENTACAO.md): UI OANET e preparação das funcionalidades contra o contrato, com simulações restritas ao ambiente de desenvolvimento/teste.
+3. O dev de back segue [PLANO-IMPLEMENTACAO do back](docs/backend/PLANO-IMPLEMENTACAO.md): API NestJS, migrations e testes do provedor, usando o mesmo contrato, sem esperar telas prontas.
+4. A primeira ativação reúne todos os consumidores existentes no **Corte 1**, depois das evidências de cada frente. Histórico/comentários, fila e gestão entram como incrementos aditivos. Simulação aprovada não equivale a integração real; persistência, sessão e permissões são verificadas contra a API.
+
+A ativação do back real no app é um corte integrado único (login, cadastro, catálogo, ocorrências e dashboard juntos), seguido de recursos aditivos; ver [INTEGRACAO](docs/INTEGRACAO.md). Cada tarefa tem um responsável por arquivo. Contratos mudam nos dois lados no mesmo incremento; o código atual continua com json-server até a troca aceita. Os planos descrevem trabalho futuro, não afirmam que os adaptadores de teste ou o back-end já existem.
+
+### Pastas da documentação
+
+| Pasta | Para que serve | Entrada |
+|---|---|---|
+| `docs/` | Índice, sequência de trabalho, contrato visual e integração | [Índice completo](docs/README.md), [PLANO](docs/PLANO.md) |
+| `docs/agents/` | Instruções de execução, mapa do código, escopo e passagem de tarefas | [Guia de agentes](docs/agents/README.md) |
+| `docs/agents/revisoes/` | Achados, decisões e provas de correção das revisões documentais | [Índice de revisões](docs/agents/revisoes/README.md) |
+| `docs/contratos/` | OpenAPI, exemplos de requisição/resposta e verificação de compatibilidade documental | [Contrato v1](docs/contratos/README.md) |
+| `docs/contratos/exemplos/` | Fixtures sintéticas por operação para os dois desenvolvedores | [Guia do contrato](docs/contratos/README.md) |
+| `docs/backend/` | Decisões, regras, dados, API, DTOs, seed, cenários e plano do dev de back | [Plano BE](docs/backend/PLANO-IMPLEMENTACAO.md) |
+| `docs/frontend/` | Arquitetura, inventário de telas, migração e plano do dev de front | [Plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md) |
+| `docs/adr/` | Decisões de arquitetura e consequências | [JWT no servidor Next](docs/adr/0001-token-jwt-fica-no-servidor-do-next.md) |
+| `docs/research/` | Pesquisa com fontes e recomendações; não substitui contratos/decisões | [Documentação para agentes](docs/research/2026-11-09-documentacao-para-agentes.md) |
+| `docs/research/lanternas/` | Pesquisa aceita para converter os 25 Lanternas no seed | [Especificação do seed](docs/backend/SEED.md) |
+| `docs/design/` | Estudos e evidências visuais organizados por direção | [Contrato visual](docs/UI.md) |
+| `docs/design/oanet/` | Histórico do design aprovado e registros da implementação visual | [Índice OANET](docs/design/oanet/README.md) |
+| `docs/design/oanet/verificacao/` | Capturas e resultados datados de inspeção; não são assets da aplicação | [Registro de movimento](docs/design/oanet/movimento-cinematografico.md) |
+| `docs/superpowers/` | Specs e planos históricos agrupados | [Índice e autoridade](docs/README.md) |
+| `docs/superpowers/specs/` | Specs históricas; decisões recentes prevalecem em caso de divergência | [Índice e autoridade](docs/README.md) |
+| `docs/superpowers/plans/` | Planos históricos de incrementos; o plano ativo é `docs/PLANO.md` | [Plano do laboratório](docs/superpowers/plans/2026-11-06-laboratorio-oanet.md) |
 
 ## Pré-requisitos
 
 - Node.js 26 ou mais novo, npm e Git.
+- Para verificar o pacote documental de contratos: Python 3.10+ (neste Windows, `py -3`), sem bibliotecas adicionais; [comandos e limites](docs/contratos/README.md#verificação-documental).
 
 ```bash
 node --version
@@ -56,7 +89,7 @@ Quando o back-end existir, estas instruções passam a iniciar `backend/` no lug
 | Hal Jordan | Lanterna | 2814 | `hal@oa.tropa` | `lanterna123` |
 | Kilowog | Lanterna | 674 | `kilowog@oa.tropa` | `lanterna123` |
 
-O json-server grava em `db.json`. Para descartar alterações de uma demonstração: `git restore db.json` (só se não houver alterações suas para manter).
+O json-server grava em `db.json`. Para testes manuais de escrita, use uma cópia isolada e outra porta, conforme o [guia de agentes](docs/agents/README.md#estado-local-servidores-e-dados). Preserve a persistência compartilhada e as alterações locais.
 
 ## Páginas
 

@@ -21,8 +21,9 @@ são as fontes canônicas.
 Ao criar ou migrar uma tela, siga [docs/UI.md](docs/UI.md): o laboratório OANET
 é a referência visual oficial (decisão D28). Use seus componentes, vetores,
 tokens e animações. O front antigo serve para recuperar fluxos e regras,
-não como modelo de design. Para continuar a migração, comece pelo
-[handoff OANET](docs/agents/HANDOFF-OANET.md).
+não como modelo de design. A implementação da migração está suspensa até o
+usuário autorizar; depois disso, siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md)
+(UI-01 e UI-02.00 primeiro). O [handoff OANET](docs/agents/HANDOFF-OANET.md) é só o histórico da UI-01 parcial.
 
 ## Trabalho com agentes
 
@@ -30,6 +31,7 @@ não como modelo de design. Para continuar a migração, comece pelo
   para definir escopo, responsáveis, dependências e verificações.
 - Para localizar uma funcionalidade ou alterar contratos entre camadas, consulte
   [docs/agents/MAPA.md](docs/agents/MAPA.md). Confira os arquivos atuais antes de editar.
+- Para implementar front/back em paralelo ou integrar HTTP, use o [plano da frente](docs/PLANO.md), o [pacote de contrato](docs/contratos/README.md) e os [gates de integração](docs/INTEGRACAO.md). Registre a revisão do contrato usada (G-1: versão e SHA-256); simulação não comprova integração real, e a ativação real é um corte único descrito em INTEGRACAO.
 - Ao dividir trabalho ou passar uma tarefa para outro agente, use
   [docs/agents/TAREFA.md](docs/agents/TAREFA.md). Cada arquivo tem um responsável
   por tarefa; testes acompanham o código do respectivo responsável.

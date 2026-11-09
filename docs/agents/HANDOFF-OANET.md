@@ -1,17 +1,23 @@
 # Handoff — adoção da UI oficial OANET
 
 **Data:** 2026-11-09. **Tarefa inicial:** UI-01 de [PLANO.md](../PLANO.md).
-**Estado:** pronta para execução; o agente iniciado pelo Orca assume a implementação.
-**Preparação:** Codex. **Responsável seguinte e integração:** novo agente Codex
-com modelo `gpt-6.1-sol`, conforme pedido do usuário, via `orca agent launch`
-neste workspace.
+**Estado atualizado em 2026-11-09:** planos, contratos e revisão documental da [DOC-03](DOC-03-PLANEJAMENTO.md) concluídos. Implementação permanece suspensa até tarefa explícita. Este handoff preserva o contexto e os arquivos parciais, sem autorizar retomada automática. A sequência vigente está em [PLANO.md](../PLANO.md).
+**Histórico observado na DOC-03:** HEAD avançou externamente a `949b1e8`, após `5377e39` incorporar pacote/casca. As condições de checkout abaixo são o retrato da transferência; consulte `git status` e o registro DOC-03 para o estado posterior. Commit do parcial não equivale ao aceite UI-01.
+> **Este documento é histórico.** Descreve a transferência de 2026-11-09, escrita no
+> pretérito. Nenhuma frase abaixo autoriza começar ou retomar a implementação: ela
+> depende de o usuário encerrar a pausa da DOC-03 e segue o
+> [plano FE](../frontend/PLANO-IMPLEMENTACAO.md) (UI-01, depois UI-02.00).
 
-### Reatribuição solicitada pelo usuário
+**Preparação à época:** Codex. **Receptor então previsto:** um novo agente Codex, a
+pedido do usuário; esse lançamento foi superado pela pausa e o receptor não consta
+mais como responsável. A responsabilidade de implementação é atribuída na retomada.
+
+### Reatribuição solicitada pelo usuário (histórico)
 
 O primeiro agente Claude foi interrompido e seu terminal encerrado pelo Orca
-(recibo `ptyKilled: true`), preservando o trabalho parcial. A checkout contém
+(recibo `ptyKilled: true`), preservando o trabalho parcial. A checkout continha
 `components/oanet/CascaOa.tsx`, alterações nos layouts público/privado e
-`__tests__/components/casca-oanet.test.tsx`. O novo Codex deve inspecionar o
+`__tests__/components/casca-oanet.test.tsx`. Quem retomar a UI-01 deve inspecionar o
 estado atual e continuar, sem sobrescrever ou recomeçar esse trabalho.
 O antecessor relatou build interrompido pelo aviso de segurança conhecido do
 Next; faltam confirmar build/lint, verificar fluxos no navegador e atualizar o
@@ -26,10 +32,11 @@ dele. O front anterior deixa de ser referência de design. Essa decisão está
 registrada como D28 em [ESCOPO.md](../backend/ESCOPO.md); o contrato visual
 canônico está em [UI.md](../UI.md).
 
-O pedido de handoff autoriza começar a implementação, sem nova aprovação da
-direção visual. A preparação documental não afirma que as rotas reais já foram
-migradas. O agente receptor começa por UI-01, entrega um incremento funcional,
-atualiza os registros e continua a sequência acordada do plano.
+Na época, o pedido de handoff previa começar a implementação sem nova aprovação da
+direção visual; essa aprovação D28 continua válida e não se pede de novo. A preparação
+documental não afirma que as rotas reais já foram migradas. A suspensão posterior
+substituiu o plano de começar de imediato: o início da implementação agora depende
+da autorização do usuário e da sequência do [plano FE](../frontend/PLANO-IMPLEMENTACAO.md).
 
 ## Estado confirmado na transferência
 
@@ -87,9 +94,11 @@ PNG de `public/assets/oanet/` e pranchas antigas são históricos. Capturas em
 Specs antigas sobre brilho apenas no foco e movimento apenas por estado
 foram superadas visualmente por D28; foco, contraste e acessibilidade permanecem.
 
-## Primeiro incremento: UI-01 (começar agora)
+## Primeiro incremento: UI-01 (escopo original da transferência)
 
-**Propriedade do receptor:** componentes de casca extraídos em `components/oanet/`,
+Histórico do escopo; a execução, quando autorizada, segue o UI-01 e o UI-02.00 do [plano FE](../frontend/PLANO-IMPLEMENTACAO.md), que prevalece sobre esta lista.
+
+**Propriedade prevista para quem retomar:** componentes de casca extraídos em `components/oanet/`,
 `app/(site)/layout.tsx`, `app/(painel)/layout.tsx`, ajustes necessários em
 `app/globals.css`, testes correspondentes e atualização de estado em docs.
 `app/layout.tsx` só se a composição exigir, preservando fontes e metadata.
@@ -117,6 +126,7 @@ papel e setor reais; rotas protegidas preservadas; nenhum consumidor real de
 
 ## Continuação após UI-01
 
+Antes das rotas, UI-02.00 trata os componentes compartilhados (inventário no plano FE).
 UI-02 migra conteúdo, formulários e estados das rotas existentes, reutilizando
 a mesma base (inclusive Sobre, loading/erro/vazio/404/acesso negado, ausentes
 como composições completas no laboratório). Cada tela nova do plano usa OANET.
@@ -153,7 +163,7 @@ executou o baseline acima; não migrou as rotas nem criou o back-end neste hando
 Verificação documental: 15 documentos, 169 links locais, nenhum destino ausente;
 `git diff --check` exit 0. As alterações executáveis presentes no status são
 o pacote aprovado das etapas anteriores, preservado nesta preparação.
-O prompt entregue pelo Orca autoriza o receptor a implementar UI-01 imediatamente.
-Após a entrega do prompt, Codex encerra sua edição; o receptor assume os arquivos
-do incremento e registra resultados/pendências. Não aguardar outro briefing nem
-pedir novamente aprovação para usar o design OANET já aprovado.
+À época, o prompt do Orca previa que o receptor implementasse UI-01 em seguida; a
+pausa da DOC-03 o suspendeu, e este parágrafo não é instrução vigente. Quem retomar
+assume os arquivos do incremento, registra resultados e pendências e não pede de novo
+aprovação do design OANET já aprovado (D28).

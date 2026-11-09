@@ -4,6 +4,21 @@ Este guia organiza tarefas neste projeto (front-end Next.js e, em construção, 
 `CLAUDE.md` aponta para ela. Os papéis abaixo distribuem trabalho entre pessoas
 ou agentes; os arquivos de documentação não iniciam processos nem agentes.
 
+## Leitura por tarefa
+
+Use [docs/README.md](../README.md) como índice, carregando as referências quando o assunto exigir. A pesquisa que orientou esta organização está em [documentação para agentes](../research/2026-11-09-documentacao-para-agentes.md).
+
+| Sua tarefa | Contexto a carregar | Saída verificável |
+|---|---|---|
+| Planejar ou distribuir trabalho | [PLANO](../PLANO.md), plano da frente e [TAREFA](TAREFA.md) | Responsável, arquivos, dependências e aceite definidos |
+| Implementar UI existente | [UI](../UI.md), item do [plano FE](../frontend/PLANO-IMPLEMENTACAO.md), arquivos atuais e skill front | Tela e estados com fluxo preservado; evidência visual e funcional |
+| Implementar cliente/API/mock ou mudar HTTP | [contratos](../contratos/README.md), operação OpenAPI, API/DTO/RN pertinentes | Exemplos compatíveis e testes de consumidor/provedor |
+| Implementar domínio/banco | Item do [plano BE](../backend/PLANO-IMPLEMENTACAO.md), modelo/RN/cenários pertinentes e skill back | Regra, migration e testes, incluindo integridade |
+| Juntar as frentes | [INTEGRACAO](../INTEGRACAO.md) e evidências das duas tarefas | Corte 1 (ativação única) e depois cada gate aditivo aprovados contra API real |
+| Revisar planos ou receber achados | [revisões](revisoes/README.md) e escopo da tarefa | Achados localizáveis, decisão e prova de correção |
+
+**Prioridade:** instruções explícitas da tarefa; decisões vigentes em ESCOPO; regras RN e contrato sincronizado; planos; evidências/histórico. Se duas fontes canônicas divergirem, registre o conflito e alinhe-as antes de implementar a parte afetada. Uma captura antiga ou um mock não altera regra de domínio.
+
 ## Começar uma tarefa
 
 1. Leia o pedido e execute `git status --short`. Identifique alterações existentes
@@ -18,18 +33,18 @@ ou agentes; os arquivos de documentação não iniciam processos nem agentes.
    estão em [backend/ESCOPO.md](../backend/ESCOPO.md) e o índice de toda a
    documentação em [docs/README.md](../README.md).
    Para interface, leia também [UI.md](../UI.md): o laboratório OANET é a
-   referência oficial D28. A continuação atual está em [HANDOFF-OANET.md](HANDOFF-OANET.md).
+   referência oficial D28. [HANDOFF-OANET.md](HANDOFF-OANET.md) é o histórico da UI-01 parcial; a sequência ativa está no [PLANO](../PLANO.md) e no [plano FE](../frontend/PLANO-IMPLEMENTACAO.md), e a implementação só começa quando o usuário a autorizar.
 4. Registre objetivo, arquivos, responsável, contratos e aceite usando
    [TAREFA.md](TAREFA.md), no registro de tarefa que o grupo estiver usando.
+   Anote a versão e o SHA-256 do contrato (G-1, [INTEGRACAO §2](../INTEGRACAO.md#g-1--aceite-do-contrato)) que você leu antes de abrir a tarefa.
    Entregue a outro agente apenas o contexto e os arquivos necessários.
 5. Divida o trabalho somente quando as dependências e os arquivos permitirem.
    Encerre a preparação quando cada tarefa tiver um responsável, limites
    explícitos e critérios de aceite verificáveis.
 
-## Divisão para três frentes
+## Responsabilidades dos dois desenvolvedores
 
-Esta é uma distribuição inicial. Para cada tarefa, atribua arquivos concretos;
-o papel não concede posse permanente sobre uma pasta inteira.
+O dev FE reúne domínio/dados do Next e interface; o dev BE reúne API e banco. A coordenação documental e a revisão são responsabilidades transversais, não exigem um terceiro desenvolvedor. Para cada tarefa, atribua arquivos concretos; o papel não concede posse permanente sobre uma pasta inteira.
 
 | Frente | Responsabilidade | Área usual e seus testes |
 |---|---|---|
@@ -58,17 +73,21 @@ do escopo registra o motivo e combina a mudança com o responsável.
 `package.json`, `package-lock.json`, configurações, `app/globals.css`, `db.json`
 (até ser removido) e o contrato da API ([API.md](../backend/API.md)) afetam várias
 frentes. A tarefa deve indicar quem os edita e quais consumidores serão conferidos.
-Reutilize as decisões STACK/DEC da skill de front-end e as D1 a D18 de
+Reutilize as decisões STACK/DEC da skill de front-end e as decisões vigentes de
 [ESCOPO.md](../backend/ESCOPO.md); uma proposta desta documentação não cria uma
 decisão do grupo. O contrato da API é o ponto de acordo entre back-end e front-end:
 mudar uma rota, um código de erro ou um formato de resposta exige atualizar
-`API.md` na mesma tarefa.
+`API.md`, `DTOS.md`, OpenAPI e exemplos na mesma tarefa, conforme o [procedimento de contrato](../contratos/README.md).
+
+O trabalho independente usa a mesma revisão do contrato. Front comprova seu consumidor com fixtures contratuais e HTTP simulado no servidor/teste; back comprova o provedor sem precisar do front. A [integração](../INTEGRACAO.md) exige depois ambas as provas e o fluxo real. O mock não pode virar fallback silencioso da aplicação.
 
 Se houver trabalho paralelo de implementação, prefira branch e worktree próprios
 por tarefa. Uma pasta compartilhada exige arquivos sem sobreposição e execução
 coordenada dos comandos que escrevem artefatos. Cada worktree precisa das suas
 dependências e configuração local. Use os recursos nativos do ambiente quando
 ele já administrar worktrees.
+
+Os assets OANET já estão no HEAD (commits `5377e39` e `949b1e8`); confirme com `git ls-files components/oanet`. O que ainda é só local são os entregáveis da DOC-03 (contrato, planos, INTEGRACAO, validador, revisões, pesquisa e as edições dos índices). **Antes de distribuir trabalho**, a base comum precisa conter todos eles, por commit autorizado pelo usuário ou por pacote que inclua os não rastreados, aplicado e verificado no destino (lista e verificações em [INTEGRACAO §2](../INTEGRACAO.md#2-preparar-sem-esperar-o-outro-dev)). Uma worktree só do HEAD não os traz. Preserve qualquer trabalho local restante.
 
 O responsável pela integração incorpora primeiro os contratos dos quais outras
 tarefas dependem, depois seus consumidores. Depois de resolver conflitos,
@@ -92,7 +111,7 @@ dos dados na pasta isolada da tarefa e uma API que aponte para ela. Depois da
 migração, o banco SQLite da API assume esse papel e o teste de escrita usa um
 arquivo de banco próprio da tarefa (`DATABASE_PATH`).
 Atribua portas diferentes quando houver várias aplicações/APIs simultâneas e
-ajuste `API_URL` só no ambiente local da tarefa. `scripts/iniciar.sh` usa as portas
+defina `API_URL`, `DATABASE_PATH` e portas **no ambiente do processo** que a tarefa inicia, sem editar `.env.local` (arquivo único da checkout). `scripts/iniciar.sh` usa as portas
 fixas 3000/3001; instâncias paralelas precisam de inicialização própria.
 
 Em uma pasta compartilhada, execute `next dev` e `next build` de forma coordenada,

@@ -3,7 +3,9 @@
 > **Referência oficial desde 2026-11-09:** o código do laboratório OANET e
 > [docs/UI.md](docs/UI.md), conforme D28. Os estudos abaixo são históricos;
 > suas cores, superfícies sólidas e PNGs não definem a implementação nova.
-> A migração começa pelo [handoff](docs/agents/HANDOFF-OANET.md).
+> A migração para as rotas reais segue o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md),
+> depois que o usuário encerrar a pausa da implementação; o
+> [handoff](docs/agents/HANDOFF-OANET.md) é histórico.
 
 > **Evolução em 2026-11-06:** o usuário solicitou visuais inteiramente gerados
 > em código e componentes com bordas mais arrojadas. A vitrine `/laboratorio`

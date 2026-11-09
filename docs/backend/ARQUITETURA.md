@@ -10,6 +10,8 @@ NestJS, TypeORM e SQLite (enunciado). Validação com `class-validator` e `class
 
 O controller traduz HTTP, o service decide, o repository guarda.
 
+Execução independente do front: [plano BE](PLANO-IMPLEMENTACAO.md). O provedor deve atender ao [contrato v1](../contratos/README.md); a integração das duas frentes segue [INTEGRACAO.md](../INTEGRACAO.md). O documento OpenAPI gerado pelo Nest é comparado ao contrato acordado, sem substituí-lo automaticamente.
+
 ```mermaid
 flowchart LR
   R[Requisição] --> M[Middleware de log]
@@ -98,7 +100,7 @@ O e2e usa o mesmo `ValidationPipe`, filtro e interceptor do `main.ts`, para test
 2. Setores, Lanternas e Ficha, com seed completo.
 3. Ocorrências: ciclo de vida, atribuição, Eventos e Prazo.
 4. Comentários e Dashboard.
-5. Migração do front: `lib/*`, Actions, `dal.ts`, `proxy.ts`, remoção de json-server e `db.json`.
-6. Telas das features novas.
+5. Ativação da migração do front por recurso aceito: `lib/*`, Actions, `dal.ts`, `proxy.ts`. Preparação de cliente e telas contra contrato pode ocorrer em paralelo antes, conforme D29.
+6. Aceite integrado das telas; remover json-server e `db.json` apenas no gate de limpeza, depois de todas as dependências reais verificadas.
 
-Cada passo termina com testes passando e o resultado relatado; o front só migra quando a API correspondente existe.
+Cada passo termina com verificações e resultados relatados; a ativação do front depende da API correspondente e acontece em um corte integrado único (BE-01 a BE-03, BE-05, BE-06, BE-07a/b, BE-08, BE-09 e BE-11), com a fixture de integração só de teste (BE-FX) entregue por etapas junto desses passos. A ordem técnica detalhada em `PLANO-IMPLEMENTACAO.md` inclui o Setor mínimo necessário ao cadastro e os Eventos gravados desde a primeira mutação, evitando dependências circulares.

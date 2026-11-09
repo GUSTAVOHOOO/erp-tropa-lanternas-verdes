@@ -2,6 +2,8 @@
 
 Documento de **destino**, de 2026-11-06. Onde o código de hoje difere, a seção diz o que muda e [MIGRACAO.md](MIGRACAO.md) lista os arquivos. As regras de código vêm da skill [`frontend-web`](../../.claude/skills/frontend-web/SKILL.md); os IDs abaixo (como API-17) são dela e devem ser consultados com `node .claude/skills/frontend-web/scripts/consultar.mjs <ID>`. O contrato da API está em [backend/API.md](../backend/API.md).
 
+Execução: [plano FE/UI](PLANO-IMPLEMENTACAO.md). Preparação independente usa o [contrato v1](../contratos/README.md); ativação segue [INTEGRACAO.md](../INTEGRACAO.md): um primeiro corte integrado único (cliente, JWT, consumidores existentes e dashboard) e, depois, recursos aditivos. Mock HTTP contratual, integração JWT e NestJS ainda são destino. A UI-01 está parcial, com aceite pendente.
+
 ## Visão
 
 Next.js (App Router) em TypeScript, Tailwind, shadcn/ui sobre Base UI, React Hook Form com Zod 4 e Vitest. O Next é a **camada servidora** entre o navegador e a API: o navegador nunca chama a API nem vê o token ([ADR 0001](../adr/0001-token-jwt-fica-no-servidor-do-next.md), AUTH-12).
@@ -50,7 +52,7 @@ Não há `?next=`: depois do login o usuário vai a `/painel` com `replace` (ROT
 
 ## Dados, cache e estados
 
-- Leitura em Server Components com `fetch` direto; **sem** TanStack Query, SWR, Context ou estado global (DEC-01, DEC-02, DEC-07, API-15).
+- Leitura em Server Components através de serviços e do cliente HTTP único; **sem** TanStack Query, SWR, Context ou estado global (DEC-01, DEC-02, DEC-07, API-15).
 - Cache explícito em todo `fetch` (API-06). Dados privados e de escrita frequente (ocorrências, eventos, comentários, dashboard) vão sem cache; Setores e Lanternas podem usar revalidação curta.
 - Buscas independentes em `Promise.all` (API-07). Ficha e Detalhe fazem várias (dados, eventos, comentários).
 - Toda tela com dados trata **quatro estados**: carregando, erro, vazio e com dados (API-09), com `loading.tsx` e `error.tsx` (API-10, API-11, ROTA-21).

@@ -7,6 +7,57 @@ vi.mock('@/components/oanet/GalaxiaProcedural', () => ({
   GalaxiaProcedural: () => <div aria-label="Mapa galáctico procedural" />,
 }))
 
+test('o arquivo permite explorar os 25 construtos sem alterar o cadastro de demonstração', () => {
+  render(<LaboratorioOa />)
+  fireEvent.click(screen.getByRole('button', { name: 'Construtos' }))
+  const seletor = screen.getByLabelText('Explorar construto por Lanterna')
+  expect(within(seletor).getAllByRole('option')).toHaveLength(25)
+  fireEvent.change(seletor, { target: { value: 'John Stewart' } })
+  const arquivo = screen.getByRole('heading', { level: 2, name: 'Arquivo de construtos' }).closest('section')!
+  expect(within(arquivo).getAllByText('John Stewart')).toHaveLength(2)
+  expect(arquivo.querySelector('svg[role="img"]')).not.toBeNull()
+  expect(within(arquivo).getByText(/Interpretações artísticas/)).toBeDefined()
+  fireEvent.change(seletor, { target: { value: 'Kilowog' } })
+  expect(within(arquivo).getByRole('img', { name: /Kilowog/ })).toBeDefined()
+  fireEvent.click(screen.getByRole('button', { name: 'Lanternas' }))
+  expect(screen.queryByText('Kyle Rayner')).toBeNull()
+})
+
+test('modo calmo permite suspender os efeitos da vitrine', () => {
+  const { container } = render(<LaboratorioOa />)
+  const controle = screen.getByRole('button', { name: 'Reduzir efeitos luminosos' })
+  fireEvent.click(controle)
+  expect(controle.getAttribute('aria-pressed')).toBe('true')
+  expect(container.querySelector('.oa-lab--quiet')).not.toBeNull()
+  fireEvent.click(controle)
+  expect(controle.getAttribute('aria-pressed')).toBe('false')
+})
+
+test('a confirmação mantém o modo calmo mesmo renderizada em portal', () => {
+  render(<LaboratorioOa />)
+  fireEvent.click(screen.getByRole('button', { name: 'Reduzir efeitos luminosos' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Componentes' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Testar confirmação' }))
+  expect(screen.getByRole('dialog').classList.contains('oa-lab--quiet')).toBe(true)
+})
+
+test('ocultar a aba pausa também o diálogo e voltar restaura o estado', () => {
+  const hidden = vi.spyOn(document, 'hidden', 'get').mockReturnValue(false)
+  try {
+    const { container } = render(<LaboratorioOa />)
+    fireEvent.click(screen.getByRole('button', { name: 'Componentes' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Testar confirmação' }))
+    hidden.mockReturnValue(true)
+    fireEvent(document, new Event('visibilitychange'))
+    expect(container.querySelector('.oa-lab--hidden')).not.toBeNull()
+    expect(screen.getByRole('dialog').classList.contains('oa-lab--hidden')).toBe(true)
+    hidden.mockReturnValue(false)
+    fireEvent(document, new Event('visibilitychange'))
+    expect(container.querySelector('.oa-lab--hidden')).toBeNull()
+    expect(screen.getByRole('dialog').classList.contains('oa-lab--hidden')).toBe(false)
+  } finally { hidden.mockRestore() }
+})
+
 test('a navegação troca a tela sem depender da API e identifica a demonstração', () => {
   render(<LaboratorioOa />)
   expect(screen.getByRole('heading', { level: 1, name: 'Central de Comando' })).toBeDefined()

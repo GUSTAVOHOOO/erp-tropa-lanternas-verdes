@@ -22,7 +22,7 @@ export function BateriaOa({ className }: ConstructoOaProps) {
   const luz = `${id}-luz`;
 
   return (
-    <svg viewBox="0 0 520 600" className={className} fill="none" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 520 600" className={className} data-oa-motion="bateria" fill="none" aria-hidden="true" focusable="false">
       <defs>
         <linearGradient id={metal} x1="140" y1="210" x2="366" y2="420" gradientUnits="userSpaceOnUse">
           <stop stopColor="var(--oa-energy-dim)" /><stop offset=".22" stopColor="var(--oa-surface)" />
@@ -48,12 +48,14 @@ export function BateriaOa({ className }: ConstructoOaProps) {
           <feMerge><feMergeNode in="aura" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
-      <ellipse cx="260" cy="295" rx="249" ry="263" fill={`url(#${atmosfera})`} />
-      <path d="m225 310-88 241h246l-88-241Z" fill={`url(#${atmosfera})`} opacity=".4" />
+      <ellipse className="oa-vec-bateria-atmosfera" cx="260" cy="295" rx="249" ry="263" fill={`url(#${atmosfera})`} />
+      <path className="oa-vec-bateria-cone" d="m225 310-88 241h246l-88-241Z" fill={`url(#${atmosfera})`} opacity=".4" />
       <g stroke="var(--oa-energy)" strokeWidth=".6" opacity=".32">
         <ellipse cx="260" cy="520" rx="211" ry="44" /><ellipse cx="260" cy="520" rx="179" ry="34" />
         <path d="M38 520h52M430 520h52M260 468v13M260 556v14M87 486l28 12M405 542l28 12" />
-        {marcasBase.map(({ id: marcaId, percurso }) => <path key={marcaId} d={percurso} />)}
+        <g className="oa-vec-bateria-base">
+          {marcasBase.map(({ id: marcaId, percurso }) => <path key={marcaId} d={percurso} />)}
+        </g>
       </g>
       <ellipse cx="260" cy="515" rx="124" ry="20" fill="var(--oa-ink)" opacity=".9" />
       <ellipse cx="260" cy="512" rx="102" ry="11" fill="var(--oa-energy)" opacity=".12" />
@@ -77,17 +79,20 @@ export function BateriaOa({ className }: ConstructoOaProps) {
       <path d="M245 183v-14h30v14" fill={`url(#${metal})`} stroke="var(--oa-line)" />
       <ellipse cx="260" cy="169" rx="15" ry="5" fill="var(--oa-energy-dim)" />
       <g opacity=".8">
-        {aletas.map(({ id: aletaId, x }) => (
+        {aletas.map(({ id: aletaId, x }, posicao) => (
           <g key={aletaId}>
             <path d={`M${260 + x} 274v138l${x < 0 ? 6 : -6} 10V278Z`} fill="var(--oa-ink)" stroke="var(--oa-line)" strokeWidth=".6" />
             <path d={`M${261 + x} 289v101`} stroke="var(--oa-energy)" strokeOpacity=".4" />
+            <path className={`oa-vec-bateria-fluxo oa-vec-bateria-fluxo-${posicao % 3}`} d={`M${261 + x} 289v101`} stroke="var(--oa-energy)" strokeWidth="1.6" strokeLinecap="round" />
           </g>
         ))}
       </g>
       <path d="m202 277 58-18 58 18 16 56-16 67-58 22-58-22-16-67Z" fill={`url(#${metal})`} stroke={`url(#${borda})`} strokeWidth="2" />
       <path d="m209 286 51-16 51 16 13 49-14 57-50 19-50-19-14-57Z" fill="var(--oa-ink)" stroke="var(--oa-energy-dim)" />
       <ellipse cx="260" cy="338" rx="59" ry="64" fill={`url(#${nucleo})`} filter={`url(#${luz})`} />
-      <ellipse cx="260" cy="338" rx="57" ry="62" stroke="var(--oa-energy)" strokeWidth="1.4" />
+      <ellipse className="oa-vec-bateria-onda" cx="260" cy="338" rx="57" ry="62" stroke="var(--oa-energy)" strokeWidth="1" />
+      <ellipse className="oa-vec-bateria-pulso" cx="260" cy="338" rx="57" ry="62" fill="var(--oa-energy)" />
+      <ellipse className="oa-vec-bateria-anel" cx="260" cy="338" rx="57" ry="62" stroke="var(--oa-energy)" strokeWidth="1.4" />
       <ellipse cx="260" cy="338" rx="48" ry="53" stroke="var(--oa-text)" strokeOpacity=".4" strokeWidth=".6" />
       <g fill="var(--oa-ink)">
         <path d="M234 300h52v10h-52zM234 366h52v10h-52z" />
@@ -97,7 +102,7 @@ export function BateriaOa({ className }: ConstructoOaProps) {
         <path d="M163 248c26 13 57 20 97 20s71-7 97-20v2c-26 14-57 21-97 21s-71-7-97-21Z" />
         <path d="m171 452 89 20 89-20v3l-89 20-89-20Z" />
       </g>
-      <g stroke="var(--oa-energy)" strokeWidth="1" opacity=".65">
+      <g className="oa-vec-bateria-contatos" stroke="var(--oa-energy)" strokeWidth="1" opacity=".65">
         <path d="M203 303h-9M326 303h-9M203 376h-9M326 376h-9M236 285v-5M284 285v-5M236 397v-5M284 397v-5" />
         <path d="M187 232h15M318 232h15M195 440l25 5M300 445l25-5" />
       </g>
@@ -125,7 +130,7 @@ type TorreOaProps = {
 function TorreOa({ x, base, altura, largura, face, distante = false }: TorreOaProps) {
   const topo = base - altura;
   const lado = largura * .36;
-  const andares = Array.from({ length: Math.floor(altura / 18) }, (_, andar) => ({ id: `andar-${andar}`, y: topo + 14 + andar * 18 }));
+  const andares = Array.from({ length: Math.floor(altura / 18) }, (_, andar) => ({ id: `andar-${andar}`, andar, y: topo + 14 + andar * 18 }));
   return (
     <g opacity={distante ? ".48" : "1"}>
       <path d={`M${x} ${base}V${topo + 14}l${largura / 2} -14 ${largura / 2} 14v${altura - 14}Z`} fill={face} stroke="var(--oa-line)" strokeWidth=".7" />
@@ -133,11 +138,16 @@ function TorreOa({ x, base, altura, largura, face, distante = false }: TorreOaPr
       <path d={`M${x} ${topo + 14}l${largura / 2} -14 ${lado} -11 -${largura / 2} 14Z`} fill="var(--oa-energy-dim)" opacity=".35" />
       <path d={`M${x + largura / 2} ${topo}l${lado} -11 ${largura / 2} 14 -${lado} 11Z`} fill="var(--oa-surface)" stroke="var(--oa-line)" strokeWidth=".5" />
       <path d={`M${x + largura / 2} ${topo}v-24M${x + 4} ${base - 3}V${topo + 20}`} stroke="var(--oa-energy)" strokeOpacity=".4" strokeWidth=".7" />
-      {andares.map(({ id: andarId, y }) => (
+      {andares.map(({ id: andarId, andar, y }) => (
         <g key={andarId}>
           <path d={`M${x + 7} ${y}h${largura - 14}`} stroke="var(--oa-energy)" strokeOpacity={distante ? ".22" : ".32"} strokeWidth="1" />
           <path d={`M${x + largura + 3} ${y - 1}l${lado - 6} -8`} stroke="var(--oa-energy)" strokeOpacity=".17" />
-          <path d={`M${x + largura / 2 - 1} ${y + 4}h2v5h-2Z`} fill="var(--oa-energy)" opacity=".45" />
+          <path
+            className={(andar + x) % 2 === 0 ? `oa-vec-cidade-janela oa-vec-cidade-janela-${(andar * 7 + x) % 3}` : undefined}
+            d={`M${x + largura / 2 - 1} ${y + 4}h2v5h-2Z`}
+            fill="var(--oa-energy)"
+            opacity=".45"
+          />
         </g>
       ))}
       <path d={`M${x - 4} ${base}h${largura + 8}v6h-${largura + 8}Z`} fill="var(--oa-surface)" stroke="var(--oa-line)" strokeWidth=".5" />
@@ -180,7 +190,7 @@ export function CidadeOa({ className }: ConstructoOaProps) {
   const fade = `${id}-fade`;
 
   return (
-    <svg viewBox="0 0 1440 720" className={className} fill="none" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid slice">
+    <svg viewBox="0 0 1440 720" className={className} data-oa-motion="cidade" fill="none" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid slice">
       <defs>
         <linearGradient id={ceu} x1="0" y1="0" x2="0" y2="720" gradientUnits="userSpaceOnUse">
           <stop stopColor="var(--oa-ink)" /><stop offset=".58" stopColor="var(--oa-surface)" /><stop offset="1" stopColor="var(--oa-ink)" />
@@ -205,15 +215,19 @@ export function CidadeOa({ className }: ConstructoOaProps) {
         </filter>
       </defs>
       <path d="M0 0h1440v720H0z" fill={`url(#${ceu})`} />
-      <ellipse cx="925" cy="280" rx="550" ry="420" fill={`url(#${halo})`} />
+      <ellipse className="oa-vec-cidade-halo" cx="925" cy="280" rx="550" ry="420" fill={`url(#${halo})`} />
       <g fill="var(--oa-text)" opacity=".5">
-        {estrelas.map(({ id: estrelaId, x, y, raio }) => <circle key={estrelaId} cx={x} cy={y} r={raio} />)}
+        {[0, 1, 2].map((grupo) => (
+          <g key={`grupo-estrelas-${grupo}`} className={`oa-vec-cidade-estrelas oa-vec-cidade-estrelas-${grupo}`}>
+            {estrelas.filter((_, posicao) => posicao % 3 === grupo).map(({ id: estrelaId, x, y, raio }) => <circle key={estrelaId} cx={x} cy={y} r={raio} />)}
+          </g>
+        ))}
       </g>
       <g stroke="var(--oa-energy)" strokeWidth=".7">
         <circle cx="925" cy="280" r="229" strokeOpacity=".13" />
         <circle cx="925" cy="280" r="239" strokeOpacity=".05" />
-        <circle cx="925" cy="280" r="215" strokeDasharray="1 10" strokeOpacity=".3" />
-        <path d="M708 203a229 229 0 0 1 412-48M1101 427a229 229 0 0 1-315 36" strokeOpacity=".4" />
+        <g className="oa-vec-cidade-anel"><circle cx="925" cy="280" r="215" strokeDasharray="1 10" strokeOpacity=".3" /></g>
+        <g className="oa-vec-cidade-arcos"><path d="M708 203a229 229 0 0 1 412-48M1101 427a229 229 0 0 1-315 36" strokeOpacity=".4" /></g>
         <path d="M925 29v24M674 280h23M1153 280h23M750 103l17 17M1084 439l17 17" strokeOpacity=".45" />
       </g>
       <g opacity=".3" fill="var(--oa-energy-dim)">
@@ -255,7 +269,15 @@ export function CidadeOa({ className }: ConstructoOaProps) {
           <path d="M813 493v-84l12-43 12 43v84M1015 493v-84l12-43 12 43v84" />
           <path d="M805 493h40v5h-40zM1007 493h40v5h-40z" />
         </g>
-        <path d="m909 542-38 79h111l-39-79Z" fill="var(--oa-energy)" opacity=".09" />
+        <g className="oa-vec-cidade-sinal" stroke="var(--oa-energy)" strokeWidth="1.2" strokeLinecap="round">
+          <path className="oa-vec-cidade-fluxo oa-vec-cidade-fluxo-0" d="M925 318V180" />
+          <path className="oa-vec-cidade-fluxo oa-vec-cidade-fluxo-1" d="M910 316V193M940 316V193" />
+          <path className="oa-vec-cidade-fluxo oa-vec-cidade-fluxo-2" d="M866 481V365M984 481V365" />
+          <circle className="oa-vec-cidade-ping" cx="925" cy="48" r="10" />
+          <circle className="oa-vec-cidade-ping oa-vec-cidade-ping-atrasado" cx="925" cy="48" r="10" />
+          <circle className="oa-vec-cidade-farol" cx="925" cy="48" r="2.5" fill="var(--oa-energy)" stroke="none" />
+        </g>
+        <path className="oa-vec-cidade-cone" d="m909 542-38 79h111l-39-79Z" fill="var(--oa-energy)" opacity=".09" />
         <path d="m916 549-13 72M935 549l13 72" stroke="var(--oa-energy)" strokeOpacity=".5" />
         {[0, 1, 2, 3, 4].map((etapa) => <path key={`marche-${etapa}`} d={`M${858 - etapa * 8} ${552 + etapa * 12}h${138 + etapa * 16}`} stroke="var(--oa-energy-dim)" strokeWidth="2" />)}
       </g>
@@ -266,7 +288,9 @@ export function CidadeOa({ className }: ConstructoOaProps) {
       <path d="M0 572h1440v148H0z" fill={`url(#${fade})`} />
       <path d="M0 499h1440" stroke="var(--oa-energy)" strokeOpacity=".08" />
       <g stroke="var(--oa-energy)" strokeWidth="1" opacity=".45">
-        <path d="m1157 156 42-14 18 2-42 14ZM591 304l31-10 12 2-31 10ZM304 209l24-8 10 2-24 8Z" />
+        <g className="oa-vec-cidade-veiculo oa-vec-cidade-veiculo-0"><path d="m1157 156 42-14 18 2-42 14Z" /></g>
+        <g className="oa-vec-cidade-veiculo oa-vec-cidade-veiculo-1"><path d="M591 304l31-10 12 2-31 10Z" /></g>
+        <g className="oa-vec-cidade-veiculo oa-vec-cidade-veiculo-2"><path d="M304 209l24-8 10 2-24 8Z" /></g>
       </g>
     </svg>
   );

@@ -1,3 +1,5 @@
+'use client'
+
 import type { ComponentProps, ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { IconeOa, type IconeOaNome } from './IconeOa'

@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "../components/oanet/movimento-vetores.css";
+@import "../components/oanet/movimento-componentes.css";
+@import "../components/oanet/movimento-construtos.css";
 
 /* Design system da Tropa, tema único "Noite". Spec: docs/superpowers/specs/2026-10-07-design-system-tropa-design.md */
 /* [CSS-09][DEC-13] todas as cores do projeto ficam neste arquivo */
@@ -333,3 +336,80 @@
 @media (prefers-reduced-motion: reduce) {
   .oa-lab *, .oa-lab *::before, .oa-lab *::after { scroll-behavior: auto; transition: none; animation: none; }
 }
+
+/* OANET: céu distante + vidro. Escopo restrito à vitrine. */
+@property --oa-edge {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 2px;
+}
+.oa-lab { position: relative; --oa-void: oklch(0 0 0); --oa-glass: oklch(0.16 0.025 165 / .76); --oa-glass-dense: oklch(0.14 0.023 165 / .91); background: var(--oa-void); }
+.oa-cosmos { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--oa-void); }
+.oa-cosmos > svg { width: 100%; height: 100%; }
+.oa-nebula-esmeralda { color: oklch(0.56 0.15 151); }
+.oa-nebula-energia { color: oklch(0.61 0.18 151); }
+.oa-nebula-floresta { color: oklch(0.43 0.11 151); }
+.oa-cosmos-stars { color: oklch(0.88 0.035 151); }
+.oa-cosmos-beacons { color: oklch(0.85 0.07 151); opacity: .65; }
+.oa-cosmos-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at 65% 40%, transparent 25%, oklch(0 0 0 / .6)); }
+.oa-lab .oa-sidebar, .oa-lab .oa-topbar { background: var(--oa-glass); backdrop-filter: blur(18px); border-color: color-mix(in oklch, var(--oa-energy) 35%, transparent); }
+.oa-lab .oa-sidebar--open { background: var(--oa-glass-dense); }
+@media (min-width: 1100px) {
+  .oa-lab .oa-sidebar { position: sticky; top: 18px; height: calc(100dvh - 36px); align-self: start; overflow-y: auto; overflow-x: hidden; }
+}
+.oa-lab .oa-panel { padding: 3px; background: color-mix(in oklch, var(--oa-energy) 35%, transparent); backdrop-filter: blur(14px); }
+.oa-lab .oa-panel::before { inset: var(--oa-edge); background: linear-gradient(125deg, oklch(0.22 0.035 165 / .84), var(--oa-glass)); animation: oa-frame-breathe 7s ease-in-out infinite; }
+.oa-lab .oa-panel:nth-child(2n)::before { animation-delay: -3.5s; }
+.oa-lab .oa-panel::after { height: 3px; width: 88px; background: linear-gradient(90deg, var(--oa-energy), transparent); }
+.oa-lab .oa-panel-corners i { border-top-width: 2px; width: 20px; opacity: .85; }
+.oa-lab .oa-panel-heading { background: oklch(0.13 0.02 165 / .32); }
+.oa-lab .oa-button--linha { background: var(--oa-glass); border-width: 2px; }
+.oa-lab .oa-input, .oa-lab .oa-select { background: var(--oa-glass-dense); }
+.oa-lab .oa-panel:focus-within { background: color-mix(in oklch, var(--oa-energy) 65%, transparent); }
+.oa-lab .oa-system-footer { background: var(--oa-glass-dense); }
+.oa-lab--quiet .oa-cosmos { opacity: .5; }
+.oa-lab--quiet *, .oa-lab--quiet *::before, .oa-lab--quiet *::after { animation: none !important; }
+.oa-lab--hidden *, .oa-lab--hidden *::before, .oa-lab--hidden *::after { animation-play-state: paused !important; }
+@keyframes oa-frame-breathe { 0%, 100% { --oa-edge: 1.5px; } 50% { --oa-edge: 3px; } }
+.oa-construct-gallery { display: grid; grid-template-columns: minmax(0,1fr); }
+.oa-construct-index { padding: 26px; border-bottom: 1px solid var(--oa-line); }
+.oa-construct-index > p { font: 2rem/1.1 var(--font-barlow-condensed), sans-serif; margin: 28px 0 20px; }
+.oa-construct-index > p strong { color: var(--oa-energy); font-weight: 500; }
+.oa-construct-index > span { font: .5625rem var(--font-plex-mono), monospace; color: var(--oa-muted); letter-spacing: .08em; }
+.oa-construct-figure { min-width: 0; padding: 12px 24px 24px; }
+.oa-construct-projection { background: radial-gradient(ellipse at 50% 65%, color-mix(in oklch, var(--oa-energy) 8%, transparent), transparent 65%); }
+.oa-lantern-construct { color: var(--oa-energy); width: 100%; height: auto; max-height: 340px; }
+.oa-construct-figure figcaption > span { color: var(--oa-energy); font-size: .75rem; }
+.oa-construct-figure h3 { font: 600 1.875rem/1.2 var(--font-barlow-condensed), sans-serif; margin: 8px 0; }
+.oa-construct-figure figcaption > p, .oa-construct-disclaimer { color: var(--oa-muted); font-size: .8125rem; line-height: 1.6; max-width: 65ch; }
+.oa-construct-disclaimer { padding: 16px 26px; border-top: 1px solid var(--oa-line); max-width: none; }
+.oa-profile-construct { margin-block: 12px 24px; color: var(--oa-energy); }
+.oa-profile-construct .oa-lantern-construct { max-height: 230px; }
+.oa-profile-construct figcaption { font-size: .875rem; }
+.oa-profile-construct small { display: block; font: .5625rem var(--font-plex-mono), monospace; color: var(--oa-muted); margin-top: 6px; }
+.oa-lab .oa-panel[data-offscreen=true]::before { animation-play-state: paused; }
+@media (min-width: 768px) {
+  .oa-construct-gallery { grid-template-columns: minmax(220px,.7fr) minmax(0,1.3fr); }
+  .oa-construct-index { border-bottom: 0; border-right: 1px solid var(--oa-line); }
+  .oa-construct-index > p { font-size: 2.5rem; margin-top: 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .oa-lab *, .oa-lab *::before, .oa-lab *::after { animation: none !important; }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .oa-lab .oa-sidebar, .oa-lab .oa-topbar, .oa-lab .oa-panel::before { background: var(--oa-glass-dense); }
+}
+
+/* Política única: inclusive camadas internas dos novos construtos SVG. */
+.oa-lab [data-offscreen=true],
+.oa-lab [data-offscreen=true] *,
+.oa-lab [data-offscreen=true]::before,
+.oa-lab [data-offscreen=true]::after,
+.oa-lab [data-offscreen=true] *::before,
+.oa-lab [data-offscreen=true] *::after { animation-play-state: paused !important; }
+
+/* UI-01: casca OANET nas rotas reais. O conteúdo das páginas ainda usa o tema Tailwind até UI-02. */
+.oa-lab .oa-main--real { padding-top: 24px; min-width: 0; }
+.oa-lab .oa-back-button { width: 100%; background: transparent; border: 0; border-top: 1px solid var(--oa-line); color: var(--oa-muted); font: inherit; text-align: left; }
+.oa-lab .oa-back-button:hover { color: var(--oa-text); background: var(--oa-raised); }
+.oa-lab .oa-back-form { margin: 0; }

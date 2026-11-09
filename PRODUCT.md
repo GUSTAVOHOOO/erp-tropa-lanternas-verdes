@@ -36,8 +36,9 @@ como dados reais do ERP.
   substituindo os assets raster da primeira exploração.
 - Dar às ações e informações operacionais uma hierarquia clara dentro da ficção.
 - Manter continuidade visual entre apresentação, acesso e operação.
-- Desenvolver a identidade primeiro em uma vitrine navegável no próprio site,
-  com telas demonstrativas, antes de integrar o redesign aos fluxos reais.
+- Adotar o laboratório OANET aprovado como identidade oficial de todas as telas,
+  conforme D28 (2026-11-09) e [docs/UI.md](docs/UI.md). A implementação dos fluxos
+  reais deve reutilizar seus componentes, vetores e movimento.
 
 ## Accessibility & Inclusion
 

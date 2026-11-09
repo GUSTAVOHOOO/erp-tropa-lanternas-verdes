@@ -1,5 +1,9 @@
 # OANET — estudos cinematográficos
 
+> **2026-11-09:** a UI em código do laboratório é a base oficial (D28).
+> Para implementar, siga [UI.md](../../UI.md) e o
+> [handoff](../../agents/HANDOFF-OANET.md). Os estudos abaixo são históricos.
+
 > A direção evoluiu para visuais inteiramente gerados em código, aprovados
 > pelo usuário. Veja o [guia do redesign](../../UI.md) e o
 > [laboratório implementado](laboratorio-codigo.md). Esta página preserva

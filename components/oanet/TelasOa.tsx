@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { IconeOa } from './IconeOa'
 import { EmblemaOa } from './EmblemaOa'
 import { BateriaOa, CidadeOa } from './ConstructosOa'
+import { ConstructoDoLanterna } from './GaleriaConstructos'
 import { BotaoOa, MedidorOa, MolduraOa, SeloOa } from './PainelOa'
 import { lanternasDemo, ocorrenciasDemo, type TelaOa } from './dados-demo'
 
@@ -33,7 +34,7 @@ export function OcorrenciasOa({ navegar }: Pick<Acoes, 'navegar'>) {
 export function LanternasOa() {
   const [indice, setIndice] = useState(0)
   const lanterna = lanternasDemo[indice]
-  return <div className="oa-personnel-layout"><MolduraOa titulo="Efetivo da Tropa" icone="pessoal"><ul className="oa-personnel-list">{lanternasDemo.map((membro, i) => <li key={membro.nome}><button onClick={() => setIndice(i)} aria-pressed={indice === i}><span className="oa-avatar">{membro.sigla}</span><span><strong>{membro.nome}</strong><small>{membro.papel}</small></span><span className="oa-personnel-sector">{membro.setor}<IconeOa nome="seta" /></span></button></li>)}</ul><p className="oa-list-note">Selecione um Lanterna para acessar o dossiê.</p></MolduraOa><MolduraOa className="oa-profile-panel"><div className="oa-profile" aria-live="polite"><span className="oa-profile-code">ARQUIVO DA TROPA / {lanterna.setor}</span><EmblemaOa className="oa-profile-emblem" /><SeloOa>Em serviço</SeloOa><h2>{lanterna.nome}</h2><p>{lanterna.papel}</p><blockquote>“{lanterna.frase}”</blockquote><dl><div><dt>Setor de atuação</dt><dd>{lanterna.setor}</dd></div><div><dt>Designação atual</dt><dd>{lanterna.missao}</dd></div></dl><div className="oa-profile-energy"><MedidorOa valor={lanterna.energia} legenda="Energia do anel" /><div><strong>Anel operacional</strong><p>Conexão estabelecida com a Bateria Central de Oa.</p></div></div></div></MolduraOa></div>
+  return <div className="oa-personnel-layout"><MolduraOa titulo="Efetivo da Tropa" icone="pessoal"><ul className="oa-personnel-list">{lanternasDemo.map((membro, i) => <li key={membro.nome}><button onClick={() => setIndice(i)} aria-pressed={indice === i}><span className="oa-avatar">{membro.sigla}</span><span><strong>{membro.nome}</strong><small>{membro.papel}</small></span><span className="oa-personnel-sector">{membro.setor}<IconeOa nome="seta" /></span></button></li>)}</ul><p className="oa-list-note">Selecione um Lanterna para acessar o dossiê.</p></MolduraOa><MolduraOa className="oa-profile-panel"><div className="oa-profile" aria-live="polite"><span className="oa-profile-code">ARQUIVO DA TROPA / {lanterna.setor}</span><ConstructoDoLanterna nome={lanterna.nome} /><SeloOa>Em serviço</SeloOa><h2>{lanterna.nome}</h2><p>{lanterna.papel}</p><blockquote>“{lanterna.frase}”</blockquote><dl><div><dt>Setor de atuação</dt><dd>{lanterna.setor}</dd></div><div><dt>Designação atual</dt><dd>{lanterna.missao}</dd></div></dl><div className="oa-profile-energy"><MedidorOa valor={lanterna.energia} legenda="Energia do anel" /><div><strong>Anel operacional</strong><p>Conexão estabelecida com a Bateria Central de Oa.</p></div></div></div></MolduraOa></div>
 }
 
 export function PortalOa({ navegar }: Pick<Acoes, 'navegar'>) {

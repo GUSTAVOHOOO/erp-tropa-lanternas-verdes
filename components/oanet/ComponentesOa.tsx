@@ -10,7 +10,7 @@ import { BotaoOa, MedidorOa, MolduraOa, SeloOa } from './PainelOa'
 
 const icones: IconeOaNome[] = ['painel', 'pessoal', 'setores', 'ocorrencias', 'missoes', 'equipamentos', 'hierarquia', 'relatorios', 'comunicacoes', 'escudo', 'energia', 'alvo', 'busca', 'sino', 'configuracao', 'codigo', 'seta', 'mais', 'menos', 'sair', 'menu', 'fechar', 'verificado', 'olho', 'pausa', 'play']
 
-export function ComponentesOa({ notificar }: { notificar: (mensagem: string) => void }) {
+export function ComponentesOa({ notificar, efeitosReduzidos = false, abaOculta = false }: { notificar: (mensagem: string) => void; efeitosReduzidos?: boolean; abaOculta?: boolean }) {
   const [aba, setAba] = useState('Geral')
   const [icone, setIcone] = useState<IconeOaNome>('energia')
   const [confirmar, setConfirmar] = useState(false)
@@ -26,7 +26,7 @@ export function ComponentesOa({ notificar }: { notificar: (mensagem: string) => 
     </div>
     <details className="oa-source-note"><summary><IconeOa nome="codigo" />Como esta interface foi construída</summary><p>As molduras são recortadas em CSS. Os ícones, emblemas e constructos são SVGs originais. A galáxia é desenhada ponto a ponto em Canvas e os gráficos usam coordenadas vetoriais. Nenhum PNG, fotografia ou biblioteca de ícones é usado neste laboratório.</p></details>
     <Dialog.Root open={confirmar} onOpenChange={setConfirmar}>
-      <Dialog.Portal><Dialog.Backdrop className="oa-dialog-backdrop" /><Dialog.Popup className="oa-dialog oa-lab" aria-describedby="oa-confirm-description"><div className="oa-dialog-symbol"><IconeOa nome="escudo" /></div><Dialog.Title className="oa-dialog-title">Confirmar envio da patrulha?</Dialog.Title><Dialog.Description id="oa-confirm-description" className="oa-dialog-description">A equipe receberá o sinal de mobilização para o setor 2814. Esta ação é apenas uma demonstração.</Dialog.Description><div className="oa-dialog-actions"><Dialog.Close render={<BotaoOa tom="linha" />}>Cancelar</Dialog.Close><BotaoOa onClick={() => { setConfirmar(false); notificar('Patrulha mobilizada na simulação. Nenhum dado real foi alterado.') }}>Confirmar envio<IconeOa nome="seta" /></BotaoOa></div></Dialog.Popup></Dialog.Portal>
+      <Dialog.Portal><Dialog.Backdrop className="oa-dialog-backdrop" /><Dialog.Popup className={`oa-dialog oa-lab ${efeitosReduzidos ? 'oa-lab--quiet' : ''} ${abaOculta ? 'oa-lab--hidden' : ''}`} aria-describedby="oa-confirm-description"><div className="oa-dialog-symbol"><IconeOa nome="escudo" /></div><Dialog.Title className="oa-dialog-title">Confirmar envio da patrulha?</Dialog.Title><Dialog.Description id="oa-confirm-description" className="oa-dialog-description">A equipe receberá o sinal de mobilização para o setor 2814. Esta ação é apenas uma demonstração.</Dialog.Description><div className="oa-dialog-actions"><Dialog.Close render={<BotaoOa tom="linha" />}>Cancelar</Dialog.Close><BotaoOa onClick={() => { setConfirmar(false); notificar('Patrulha mobilizada na simulação. Nenhum dado real foi alterado.') }}>Confirmar envio<IconeOa nome="seta" /></BotaoOa></div></Dialog.Popup></Dialog.Portal>
     </Dialog.Root>
   </div>
 }

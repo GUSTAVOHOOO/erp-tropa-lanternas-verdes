@@ -1,5 +1,10 @@
 # OANET — direção visual cinematográfica
 
+> **Referência oficial desde 2026-11-09:** o código do laboratório OANET e
+> [docs/UI.md](docs/UI.md), conforme D28. Os estudos abaixo são históricos;
+> suas cores, superfícies sólidas e PNGs não definem a implementação nova.
+> A migração começa pelo [handoff](docs/agents/HANDOFF-OANET.md).
+
 > **Evolução em 2026-11-06:** o usuário solicitou visuais inteiramente gerados
 > em código e componentes com bordas mais arrojadas. A vitrine `/laboratorio`
 > implementa essa evolução em HTML/CSS/SVG/Canvas, sem consumir as imagens

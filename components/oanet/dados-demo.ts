@@ -1,10 +1,11 @@
-export type TelaOa = 'central' | 'ocorrencias' | 'lanternas' | 'componentes' | 'portal' | 'acesso' | 'nova'
+export type TelaOa = 'central' | 'ocorrencias' | 'lanternas' | 'construtos' | 'componentes' | 'portal' | 'acesso' | 'nova'
 
 export const titulosTela: Record<TelaOa, string> = {
   central: 'Central de Comando', ocorrencias: 'Registro de ocorrências',
   lanternas: 'Lanternas da Tropa', componentes: 'Arsenal de interface',
   portal: 'A vontade protege o universo.', acesso: 'Identifique-se, Lanterna.',
   nova: 'Registrar ocorrência',
+  construtos: 'Arquivo de construtos',
 }
 
 export const ocorrenciasDemo = [

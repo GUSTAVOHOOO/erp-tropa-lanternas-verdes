@@ -5,16 +5,20 @@ import Link from 'next/link'
 import { IconeOa, type IconeOaNome } from './IconeOa'
 import { EmblemaOa } from './EmblemaOa'
 import { CidadeOa } from './ConstructosOa'
+import { FundoCosmico } from './FundoCosmico'
+import { GaleriaConstructos } from './GaleriaConstructos'
 import { BotaoOa } from './PainelOa'
 import { CentralOa } from './CentralOa'
 import { ComponentesOa } from './ComponentesOa'
 import { AcessoOa, LanternasOa, NovaOcorrenciaOa, OcorrenciasOa, PortalOa } from './TelasOa'
 import { titulosTela, type TelaOa } from './dados-demo'
+import { useMovimentoOa } from './useMovimentoOa'
 
 const links: { tela: TelaOa; nome: string; icone: IconeOaNome; codigo: string }[] = [
   { tela: 'central', nome: 'Visão geral', icone: 'painel', codigo: '01' },
   { tela: 'ocorrencias', nome: 'Ocorrências', icone: 'ocorrencias', codigo: '02' },
   { tela: 'lanternas', nome: 'Lanternas', icone: 'pessoal', codigo: '03' },
+  { tela: 'construtos', nome: 'Construtos', icone: 'energia', codigo: '07' },
   { tela: 'componentes', nome: 'Componentes', icone: 'equipamentos', codigo: '04' },
   { tela: 'portal', nome: 'Portal de Oa', icone: 'setores', codigo: '05' },
   { tela: 'acesso', nome: 'Acesso à Central', icone: 'escudo', codigo: '06' },
@@ -22,6 +26,8 @@ const links: { tela: TelaOa; nome: string; icone: IconeOaNome; codigo: string }[
 
 /** Vitrine isolada: navegação e interações locais, sem escrever na API do ERP. */
 export function LaboratorioOa() {
+  const laboratorioRef = useRef<HTMLDivElement>(null)
+  useMovimentoOa(laboratorioRef)
   const [tela, setTela] = useState<TelaOa>('central') // [COMP-09] estado da demonstração visual
   const [menuAberto, setMenuAberto] = useState(false)
   const [mensagem, setMensagem] = useState('')
@@ -30,6 +36,13 @@ export function LaboratorioOa() {
   const mainRef = useRef<HTMLElement>(null)
   const menuRef = useRef<HTMLButtonElement>(null)
   const navRef = useRef<HTMLElement>(null)
+  const [abaOculta, setAbaOculta] = useState(false)
+  useEffect(() => {
+    const atualizar = () => setAbaOculta(document.hidden)
+    atualizar()
+    document.addEventListener('visibilitychange', atualizar)
+    return () => document.removeEventListener('visibilitychange', atualizar)
+  }, [])
   function navegar(destino: TelaOa) {
     setTela(destino)
     setMenuAberto(false)
@@ -48,7 +61,8 @@ export function LaboratorioOa() {
     return () => window.removeEventListener('keydown', fecharMenu)
   }, [menuAberto])
   useEffect(() => { if (!mensagem) return; const timer = window.setTimeout(() => setMensagem(''), 6500); return () => window.clearTimeout(timer) }, [mensagem])
-  return <div className={`oa-lab ${modoCalmo ? 'oa-lab--quiet' : ''}`}>
+  return <div ref={laboratorioRef} className={`oa-lab ${modoCalmo ? 'oa-lab--quiet' : ''} ${abaOculta ? 'oa-lab--hidden' : ''}`}>
+    <FundoCosmico />
     <a className="oa-skip-link" href="#oa-conteudo">Ir para o conteúdo</a>
     <div className="oa-shell">
       <aside className={`oa-sidebar ${menuAberto ? 'oa-sidebar--open' : ''}`}>
@@ -65,7 +79,8 @@ export function LaboratorioOa() {
           {tela === 'central' && <CentralOa navegar={navegar} efeitosReduzidos={modoCalmo} />}
           {tela === 'ocorrencias' && <OcorrenciasOa navegar={navegar} />}
           {tela === 'lanternas' && <LanternasOa />}
-          {tela === 'componentes' && <ComponentesOa notificar={setMensagem} />}
+          {tela === 'construtos' && <GaleriaConstructos />}
+          {tela === 'componentes' && <ComponentesOa notificar={setMensagem} efeitosReduzidos={modoCalmo} abaOculta={abaOculta} />}
           {tela === 'portal' && <PortalOa navegar={navegar} />}
           {tela === 'acesso' && <AcessoOa navegar={navegar} notificar={setMensagem} />}
           {tela === 'nova' && <NovaOcorrenciaOa navegar={navegar} notificar={setMensagem} />}

@@ -40,7 +40,8 @@ export function GalaxiaProcedural({ className = '', compact = false, efeitosRedu
   const anguloRef = useRef(-0.38)
   const ponteiroRef = useRef({ x: 0, y: 0 })
   const setor = SETORES.find((item) => item.id === setorId) ?? SETORES[0]
-  const parada = pausada || reduzirMovimento
+  const movimentoLimitado = reduzirMovimento || efeitosReduzidos
+  const parada = pausada || movimentoLimitado
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -295,7 +296,7 @@ export function GalaxiaProcedural({ className = '', compact = false, efeitosRedu
           <button type="button" className="oa-galaxy-control" aria-label="Diminuir zoom" title="Diminuir zoom" disabled={zoom <= 0.7} onClick={() => setZoom((valor) => Math.max(0.7, Number((valor - 0.15).toFixed(2))))}><IconeOa nome="menos" /></button>
           <output className="oa-galaxy-zoom" aria-label="Zoom atual">{Math.round(zoom * 100)}%</output>
           <button type="button" className="oa-galaxy-control" aria-label="Aumentar zoom" title="Aumentar zoom" disabled={zoom >= 1.75} onClick={() => setZoom((valor) => Math.min(1.75, Number((valor + 0.15).toFixed(2))))}><IconeOa nome="mais" /></button>
-          <button type="button" className="oa-galaxy-control" aria-label={parada ? 'Retomar animação' : 'Pausar animação'} title={reduzirMovimento ? 'Movimento reduzido pelo sistema' : parada ? 'Retomar animação' : 'Pausar animação'} disabled={reduzirMovimento} onClick={() => setPausada((valor) => !valor)}><IconeOa nome={parada ? 'play' : 'pausa'} /></button>
+          <button type="button" className="oa-galaxy-control" aria-label={parada ? 'Retomar animação' : 'Pausar animação'} title={movimentoLimitado ? 'Movimento reduzido pelas preferências' : parada ? 'Retomar animação' : 'Pausar animação'} disabled={movimentoLimitado} onClick={() => setPausada((valor) => !valor)}><IconeOa nome={parada ? 'play' : 'pausa'} /></button>
           <button type="button" className="oa-galaxy-control" aria-label="Recentralizar mapa" title="Recentralizar mapa" onClick={() => { setZoom(1); setSetorId('2814'); ponteiroRef.current = { x: 0, y: 0 }; anguloRef.current = -0.38; setEnquadramento((valor) => valor + 1) }}><IconeOa nome="alvo" /></button>
         </div>
       </div>

@@ -1,6 +1,9 @@
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import DesignSystemPage from '@/app/(site)/design-system/page'
+
+// A vitrine renderiza todos os componentes de uma vez: passa de 5 s com a suíte completa em paralelo.
+vi.setConfig({ testTimeout: 20_000 })
 
 test('vitrine tem um h1 e uma seção para cada parte do sistema', () => {
   render(<DesignSystemPage />)

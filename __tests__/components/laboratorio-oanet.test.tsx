@@ -2,6 +2,9 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
 import { LaboratorioOa } from '@/components/oanet/LaboratorioOa'
 
+// Cada caso renderiza a vitrine inteira com os construtos SVG: 5–14 s na suíte completa, acima dos 5 s padrão.
+vi.setConfig({ testTimeout: 20_000 })
+
 // Canvas é verificado no navegador; estes casos cobrem a interação da vitrine.
 vi.mock('@/components/oanet/GalaxiaProcedural', () => ({
   GalaxiaProcedural: () => <div aria-label="Mapa galáctico procedural" />,

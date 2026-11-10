@@ -4,6 +4,11 @@ import { CascaOa, linkAtivo, type LinkCascaOa } from '@/components/oanet/CascaOa
 
 const caminho = '/painel/ocorrencias/7'
 vi.mock('next/navigation', () => ({ usePathname: () => caminho }))
+// Vetores decorativos (aria-hidden, centenas de nós) deixam o getByRole lento a ponto de estourar o
+// tempo na suíte completa. Aqui se testa o comportamento da casca; os SVGs reais ficam em casca-vetores.test.tsx.
+vi.mock('@/components/oanet/FundoCosmico', () => ({ FundoCosmico: () => null }))
+vi.mock('@/components/oanet/EmblemaOa', () => ({ EmblemaOa: () => null }))
+vi.mock('@/components/oanet/ConstructosOa', () => ({ CidadeOa: () => null }))
 
 const links: LinkCascaOa[] = [
   { href: '/painel', nome: 'Resumo', icone: 'painel', codigo: '01' },
@@ -46,8 +51,35 @@ test('menu móvel abre, fecha com Escape e devolve o foco', () => {
   const menu = screen.getByRole('button', { name: 'Abrir menu' })
   fireEvent.click(menu)
   expect(menu.getAttribute('aria-expanded')).toBe('true')
+  expect(document.activeElement).toBe(screen.getByRole('link', { name: /Resumo/ })) // foco entra na navegação
   fireEvent.keyDown(window, { key: 'Escape' })
   expect(screen.getByRole('button', { name: 'Abrir menu' }).getAttribute('aria-expanded')).toBe('false')
+  expect(document.activeElement).toBe(menu) // e volta ao controle que abriu o menu
+})
+
+test('escolher um link fecha o menu móvel', () => {
+  montar()
+  fireEvent.click(screen.getByRole('button', { name: 'Abrir menu' }))
+  fireEvent.click(screen.getByRole('link', { name: /Resumo/ }))
+  expect(screen.getByRole('button', { name: 'Abrir menu' }).getAttribute('aria-expanded')).toBe('false')
+})
+
+test('o pulo para o conteúdo aponta para o main focável', () => {
+  montar()
+  const pulo = screen.getByRole('link', { name: 'Ir para o conteúdo' })
+  const alvo = document.querySelector(pulo.getAttribute('href') ?? '')
+  expect(alvo?.tagName).toBe('MAIN')
+  expect(alvo?.getAttribute('tabindex')).toBe('-1')
+})
+
+test('sem slot de saída, a casca não mostra botão Sair', () => {
+  render(
+    <CascaOa links={links} rotuloNavegacao="Navegação teste" identidade={{ titulo: 'Visitante', detalhe: 'Portal público' }}>
+      <p>conteúdo</p>
+    </CascaOa>,
+  )
+  expect(screen.getByText('Visitante')).toBeDefined()
+  expect(screen.queryByRole('button', { name: 'Sair' })).toBeNull()
 })
 
 test('modo calmo alterna na casca real', () => {

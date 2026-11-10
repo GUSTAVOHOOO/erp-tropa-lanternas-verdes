@@ -1,0 +1,363 @@
+/*
+ * Movimento autoral dos 25 construtos OANET (SVG + CSS, sem SMIL nem JS).
+ * Escopo: .oa-lab. Cada SVG raiz carrega data-oa-motion="<id>".
+ * Grupos animados são envoltórios; transform geométrico existente nunca é sobrescrito.
+ * Parâmetros por construto: --m-ox/--m-oy (pivô, unidades do viewBox), --m-d (duração),
+ * --m-x/--m-y (deslocamento), --m-a (ângulo), --m-s (escala), --m-f (passo do traço),
+ * --m-ciclo (ciclo de golpe, sincroniza corpo e onda de impacto).
+ */
+
+/* ---------- base: pivôs no viewBox ---------- */
+.oa-lab [data-oa-motion] :is(
+  .oa-m-corpo, .oa-m-flutua, .oa-m-suspensao, .oa-m-estrutura, .oa-m-voo, .oa-m-aleta,
+  .oa-m-cabeca, .oa-m-articulacao, .oa-m-lamina, .oa-m-orbitando, .oa-m-sino, .oa-m-brotar,
+  .oa-m-folhas, .oa-m-cauda, .oa-m-forquilha, .oa-m-escudo, .oa-m-respira, .oa-m-prisma,
+  .oa-m-torso, .oa-m-penas, .oa-m-petalas, .oa-m-bracos, .oa-m-pernas, .oa-m-asas,
+  .oa-m-recuo, .oa-m-soco, .oa-m-golpe, .oa-m-lanca, .oa-m-impacto, .oa-m-ressoa,
+  .oa-m-roda, .oa-m-bolota, .oa-m-elastico, .oa-m-tensao, .oa-m-chifres,
+  .oa-m-varredura-estrutura, .oa-m-varredura-vertical
+) {
+  transform-box: view-box;
+  transform-origin: var(--m-ox, 240px) var(--m-oy, 160px);
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-delay: var(--m-z, 0s);
+}
+
+/* ---------- movimento: corpo flutuando ---------- */
+.oa-lab [data-oa-motion] :is(.oa-m-corpo, .oa-m-flutua, .oa-m-suspensao, .oa-m-estrutura, .oa-m-tensao) {
+  animation-name: oa-motion-flutuar;
+  animation-duration: var(--m-d, 5.5s);
+  animation-direction: alternate;
+}
+.oa-lab [data-oa-motion] .oa-m-voo {
+  animation-name: oa-motion-voo;
+  animation-duration: var(--m-d, 7s);
+  animation-direction: alternate;
+}
+.oa-lab [data-oa-motion] :is(
+  .oa-m-aleta, .oa-m-cabeca, .oa-m-articulacao, .oa-m-lamina, .oa-m-orbitando, .oa-m-sino,
+  .oa-m-brotar, .oa-m-folhas, .oa-m-cauda, .oa-m-forquilha
+) {
+  animation-name: oa-motion-balanco;
+  animation-duration: var(--m-d, 4.5s);
+  animation-direction: alternate;
+}
+.oa-lab [data-oa-motion] :is(
+  .oa-m-escudo, .oa-m-respira, .oa-m-prisma, .oa-m-torso, .oa-m-penas, .oa-m-petalas,
+  .oa-m-bracos, .oa-m-pernas, .oa-m-chifres, .oa-m-asas
+) {
+  animation-name: oa-motion-respirar;
+  animation-duration: var(--m-d, 5s);
+  animation-direction: alternate;
+}
+.oa-lab [data-oa-motion] :is(.oa-m-recuo) {
+  animation-name: oa-motion-recuo;
+  animation-duration: var(--m-ciclo, 5s);
+}
+.oa-lab [data-oa-motion] :is(.oa-m-soco, .oa-m-golpe, .oa-m-lanca) {
+  animation-name: oa-motion-soco;
+  animation-duration: var(--m-ciclo, 5s);
+}
+.oa-lab [data-oa-motion] .oa-m-roda {
+  animation-name: oa-motion-giro;
+  animation-duration: var(--m-d, 1.6s);
+  animation-timing-function: linear;
+}
+.oa-lab [data-oa-motion] .oa-m-ressoa {
+  animation-name: oa-motion-ressoa;
+  animation-duration: var(--m-d, 3.8s);
+  animation-timing-function: ease-out;
+}
+.oa-lab [data-oa-motion] .oa-m-impacto {
+  opacity: 0;
+  animation-name: oa-motion-impacto;
+  animation-duration: var(--m-ciclo, 5s);
+  animation-timing-function: ease-out;
+  --m-ox: 240px;
+  --m-oy: 263px;
+}
+.oa-lab [data-oa-motion] .oa-m-bolota {
+  animation-name: oa-motion-bolota;
+  animation-duration: var(--m-ciclo, 3.8s);
+}
+.oa-lab [data-oa-motion] .oa-m-elastico {
+  animation-name: oa-motion-elastico;
+  animation-duration: var(--m-ciclo, 3.8s);
+}
+
+/* ---------- energia: pulsos e variação verde sutil ---------- */
+.oa-lab [data-oa-motion] :is(
+  .oa-m-nucleo, .oa-m-pulso, .oa-m-junta, .oa-m-sinal, .oa-m-brilho, .oa-m-cantos,
+  .oa-m-sinais, .oa-m-luz-base, .oa-m-grade, .oa-m-barras, .oa-m-onda-impacto
+) {
+  animation-name: oa-motion-pulso;
+  animation-duration: var(--m-pd, 3.4s);
+  animation-delay: var(--m-z, 0s);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+.oa-lab [data-oa-motion] .oa-m-nucleo { --m-pd: 2.6s; --m-o0: 0.55; }
+.oa-lab [data-oa-motion] .oa-m-junta { --m-pd: 2.2s; --m-o0: 0.6; }
+.oa-lab [data-oa-motion] .oa-m-sinal { --m-pd: 1.4s; --m-o0: 0.45; }
+.oa-lab [data-oa-motion] .oa-m-brilho { --m-pd: 2.8s; --m-o0: 0.3; }
+.oa-lab [data-oa-motion] .oa-m-cantos { --m-pd: 4.8s; --m-o0: 0.55; --m-o1: 1; }
+.oa-lab [data-oa-motion] .oa-m-sinais { --m-pd: 5.2s; --m-o0: 0.6; }
+.oa-lab [data-oa-motion] .oa-m-grade { --m-pd: 6s; --m-o0: 0.5; }
+.oa-lab [data-oa-motion] .oa-m-luz-base { --m-pd: 3.8s; --m-o0: 0.5; }
+.oa-lab [data-oa-motion] .oa-m-barras { --m-pd: 3.2s; --m-o0: 0.45; }
+.oa-lab [data-oa-motion] .oa-m-onda-impacto {
+  animation-name: oa-motion-onda;
+  animation-duration: var(--m-ciclo, 5s);
+  animation-direction: normal;
+}
+.oa-lab [data-oa-motion] .oa-m-atraso { --m-z: -1.4s; }
+
+/* ---------- fluxo: traços tracejados em movimento ---------- */
+.oa-lab [data-oa-motion] :is(.oa-m-fluxo, .oa-m-orbita, .oa-m-orbita-p, .oa-m-raios, .oa-m-rastro) {
+  --m-f: -16;
+  animation-name: oa-motion-fluxo;
+  animation-duration: var(--m-fd, 3.2s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.oa-lab [data-oa-motion] .oa-m-orbita { --m-f: -82; --m-fd: 16s; }
+.oa-lab [data-oa-motion] .oa-m-orbita-p { --m-f: -84; --m-fd: 16s; }
+.oa-lab [data-oa-motion] .oa-m-raios { --m-f: -22; --m-fd: 9s; }
+.oa-lab [data-oa-motion] .oa-m-rastro { --m-f: -38; --m-fd: 1.8s; }
+.oa-lab [data-oa-motion] .oa-m-rastro-b { --m-f: -27; --m-fd: 2.4s; }
+
+/* ---------- varreduras (invisíveis quando parados) ---------- */
+.oa-lab [data-oa-motion] .oa-m-varredura-plataforma {
+  opacity: 0;
+  stroke-dasharray: 7 93;
+  animation: oa-motion-trilha 6.5s linear infinite;
+}
+.oa-lab [data-oa-motion] .oa-m-eletro {
+  opacity: 0;
+  stroke-dasharray: 14 86;
+  animation: oa-motion-trilha 3.2s linear infinite;
+}
+.oa-lab [data-oa-motion] .oa-m-varredura-estrutura {
+  opacity: 0;
+  animation-name: oa-motion-varrer;
+  animation-duration: var(--m-d, 7s);
+  animation-timing-function: ease-in-out;
+}
+.oa-lab [data-oa-motion] .oa-m-varredura-vertical {
+  opacity: 0;
+  animation-name: oa-motion-varrer;
+  animation-duration: var(--m-d, 4.8s);
+  animation-timing-function: ease-in-out;
+}
+
+/* ---------- parâmetros por construto: humanos ---------- */
+.oa-lab [data-oa-motion="jato-hal"] .oa-m-voo { --m-ox: 240px; --m-oy: 165px; --m-d: 7s; --m-x: 10px; --m-y: -6px; --m-a: 1.6deg; }
+.oa-lab [data-oa-motion="jato-hal"] .oa-m-aleta { --m-ox: 213px; --m-oy: 170px; --m-d: 3.4s; --m-a: 1.1deg; }
+
+.oa-lab [data-oa-motion="ponte-john"] .oa-m-estrutura { --m-ox: 240px; --m-oy: 200px; --m-d: 6.5s; --m-y: -2.5px; }
+.oa-lab [data-oa-motion="ponte-john"] .oa-m-varredura-estrutura { --m-x: 320px; --m-y: 0px; --m-d: 7s; --m-ox: 80px; --m-oy: 160px; }
+.oa-lab [data-oa-motion="ponte-john"] .oa-m-fluxo { --m-f: -44; --m-fd: 2.6s; }
+
+.oa-lab [data-oa-motion="punho-guy"] { --m-ciclo: 4.8s; }
+.oa-lab [data-oa-motion="punho-guy"] .oa-m-soco { --m-x: 9px; --m-y: -5px; }
+.oa-lab [data-oa-motion="punho-guy"] .oa-m-fluxo { --m-f: -24; --m-fd: 3.6s; }
+
+.oa-lab [data-oa-motion="mecha-kyle"] .oa-m-corpo { --m-ox: 242px; --m-oy: 200px; --m-d: 5s; --m-y: -3px; }
+.oa-lab [data-oa-motion="mecha-kyle"] .oa-m-cabeca { --m-ox: 242px; --m-oy: 70px; --m-d: 4.2s; --m-a: 2.2deg; }
+.oa-lab [data-oa-motion="mecha-kyle"] .oa-m-torso { --m-ox: 243px; --m-oy: 135px; --m-d: 4.6s; --m-s: 1.025; }
+.oa-lab [data-oa-motion="mecha-kyle"] .oa-m-bracos { --m-ox: 242px; --m-oy: 135px; --m-d: 4.6s; --m-s: 1.02; --m-z: -0.8s; }
+.oa-lab [data-oa-motion="mecha-kyle"] .oa-m-pernas { --m-ox: 242px; --m-oy: 215px; --m-d: 5.2s; --m-s: 1.02; }
+.oa-lab [data-oa-motion="mecha-kyle"] .oa-m-fluxo { --m-f: -14; --m-fd: 3s; }
+
+.oa-lab [data-oa-motion="escudo-jessica"] .oa-m-corpo { --m-ox: 240px; --m-oy: 149px; --m-d: 6s; --m-y: -2px; }
+.oa-lab [data-oa-motion="escudo-jessica"] .oa-m-petalas { --m-ox: 240px; --m-oy: 149px; --m-d: 6s; --m-s: 1.035; --m-a: 5deg; }
+.oa-lab [data-oa-motion="escudo-jessica"] .oa-m-contra { --m-d: 7.5s; --m-a: -5deg; }
+.oa-lab [data-oa-motion="escudo-jessica"] .oa-m-fluxo { --m-f: -14; --m-fd: 3s; }
+
+.oa-lab [data-oa-motion="resgate-simon"] .oa-m-suspensao { --m-ox: 240px; --m-oy: 200px; --m-d: 1.8s; --m-y: -1.8px; --m-a: 0.4deg; }
+.oa-lab [data-oa-motion="resgate-simon"] .oa-m-roda-a { --m-ox: 157px; --m-oy: 224px; }
+.oa-lab [data-oa-motion="resgate-simon"] .oa-m-roda-b { --m-ox: 337px; --m-oy: 226px; }
+.oa-lab [data-oa-motion="resgate-simon"] .oa-m-fluxo { --m-f: -28; --m-fd: 1.2s; }
+
+.oa-lab [data-oa-motion="nave-abin"] .oa-m-voo { --m-ox: 240px; --m-oy: 150px; --m-d: 8s; --m-x: 8px; --m-y: -6px; --m-a: 1.4deg; }
+.oa-lab [data-oa-motion="nave-abin"] .oa-m-fluxo { --m-f: -46; --m-fd: 2.2s; }
+.oa-lab [data-oa-motion="nave-abin"] .oa-m-fluxo-b { --m-f: -68; --m-fd: 14s; }
+
+/* ---------- parâmetros por construto: cósmicos ---------- */
+.oa-lab [data-oa-motion="kilowog-martelo"] { --m-ciclo: 5.2s; }
+.oa-lab [data-oa-motion="kilowog-martelo"] .oa-m-recuo { --m-ox: 275px; --m-oy: 245px; --m-a: -9deg; }
+
+.oa-lab [data-oa-motion="salaak-astrolabio"] .oa-m-flutua { --m-ox: 240px; --m-oy: 149px; --m-d: 6s; --m-y: -4px; }
+.oa-lab [data-oa-motion="salaak-astrolabio"] .oa-m-articulacao { --m-ox: 240px; --m-oy: 149px; --m-d: 4.5s; --m-a: 3deg; }
+.oa-lab [data-oa-motion="salaak-astrolabio"] .oa-m-fluxo { --m-f: -18; --m-fd: 3.6s; }
+
+.oa-lab [data-oa-motion="arisia-prisma"] .oa-m-prisma { --m-ox: 240px; --m-oy: 145px; --m-d: 6.5s; --m-s: 1.03; --m-a: 4deg; }
+.oa-lab [data-oa-motion="arisia-prisma"] .oa-m-fluxo { --m-f: -20; --m-fd: 4s; }
+
+.oa-lab [data-oa-motion="tomar-re-nave"] .oa-m-voo { --m-ox: 240px; --m-oy: 160px; --m-d: 6.5s; --m-x: 6px; --m-y: -7px; --m-a: 1.2deg; }
+.oa-lab [data-oa-motion="tomar-re-nave"] .oa-m-asas { --m-ox: 240px; --m-oy: 150px; --m-d: 2.6s; --m-s: 1.035; }
+.oa-lab [data-oa-motion="tomar-re-nave"] .oa-m-fluxo { --m-f: -54; --m-fd: 9s; }
+
+.oa-lab [data-oa-motion="katma-egide"] .oa-m-escudo { --m-ox: 222px; --m-oy: 150px; --m-d: 5s; --m-s: 1.018; }
+.oa-lab [data-oa-motion="katma-egide"] .oa-m-lamina { --m-ox: 313px; --m-oy: 151px; --m-d: 4.2s; --m-a: 4deg; }
+
+.oa-lab [data-oa-motion="soranik-camara"] .oa-m-varredura-vertical { --m-x: 0px; --m-y: 120px; --m-d: 4.8s; }
+.oa-lab [data-oa-motion="soranik-camara"] .oa-m-fluxo { --m-f: -16; --m-fd: 3.4s; }
+.oa-lab [data-oa-motion="soranik-camara"] .oa-m-fluxo-b { --m-f: -42; --m-fd: 8s; }
+
+.oa-lab [data-oa-motion="sinestro-prisao"] .oa-m-respira { --m-ox: 240px; --m-oy: 146px; --m-d: 5s; --m-s: 1.012; }
+.oa-lab [data-oa-motion="sinestro-prisao"] .oa-m-tensao { --m-ox: 240px; --m-oy: 146px; --m-d: 1.3s; --m-x: 0.8px; --m-y: -0.6px; --m-a: 0.5deg; }
+.oa-lab [data-oa-motion="sinestro-prisao"] .oa-m-fluxo { --m-f: -16; --m-fd: 4s; }
+
+.oa-lab [data-oa-motion="laira-laminas"] .oa-m-orbitando { --m-ox: 240px; --m-oy: 151px; --m-d: 7.5s; --m-a: 16deg; }
+.oa-lab [data-oa-motion="laira-laminas"] .oa-m-fluxo { --m-f: -48; --m-fd: 10s; }
+
+.oa-lab [data-oa-motion="chp-estilingue"] { --m-ciclo: 3.8s; }
+.oa-lab [data-oa-motion="chp-estilingue"] .oa-m-elastico { --m-ox: 240px; --m-oy: 80px; }
+.oa-lab [data-oa-motion="chp-estilingue"] .oa-m-forquilha { --m-ox: 213px; --m-oy: 238px; --m-d: 3.8s; --m-a: 1.2deg; }
+.oa-lab [data-oa-motion="chp-estilingue"] .oa-m-fluxo { --m-f: -16; --m-fd: 3.6s; }
+
+.oa-lab [data-oa-motion="boodikka-machado"] { --m-ciclo: 5.6s; }
+.oa-lab [data-oa-motion="boodikka-machado"] .oa-m-recuo { --m-ox: 206px; --m-oy: 249px; --m-a: -10deg; }
+
+.oa-lab [data-oa-motion="kehaan-bastiao"] { --m-ciclo: 5s; }
+.oa-lab [data-oa-motion="kehaan-bastiao"] .oa-m-golpe { --m-x: 0px; --m-y: -7px; }
+.oa-lab [data-oa-motion="kehaan-bastiao"] .oa-m-chifres { --m-ox: 240px; --m-oy: 100px; --m-d: 2.5s; --m-s: 1.03; }
+
+.oa-lab [data-oa-motion="hannu-punho"] { --m-ciclo: 5.4s; }
+.oa-lab [data-oa-motion="hannu-punho"] .oa-m-soco { --m-x: 8px; --m-y: -6px; }
+
+.oa-lab [data-oa-motion="isamot-draco"] .oa-m-corpo { --m-ox: 240px; --m-oy: 150px; --m-d: 3.6s; --m-y: -4px; }
+.oa-lab [data-oa-motion="isamot-draco"] .oa-m-asas { --m-ox: 240px; --m-oy: 146px; --m-d: 1.8s; --m-s: 1; --m-sy: 0.9; }
+.oa-lab [data-oa-motion="isamot-draco"] .oa-m-cauda { --m-ox: 263px; --m-oy: 229px; --m-d: 3s; --m-a: 6deg; }
+
+.oa-lab [data-oa-motion="medphyll-jardim"] .oa-m-brotar { --m-ox: 240px; --m-oy: 231px; --m-d: 6s; --m-a: 2.4deg; }
+.oa-lab [data-oa-motion="medphyll-jardim"] .oa-m-folhas { --m-ox: 240px; --m-oy: 150px; --m-d: 4.2s; --m-a: 2deg; --m-z: -1s; }
+.oa-lab [data-oa-motion="medphyll-jardim"] .oa-m-fluxo { --m-f: -40; --m-fd: 9s; }
+
+.oa-lab [data-oa-motion="rot-lop-fan-sino"] .oa-m-sino { --m-ox: 240px; --m-oy: 64px; --m-d: 4.4s; --m-a: 3.6deg; }
+.oa-lab [data-oa-motion="rot-lop-fan-sino"] .oa-m-ressoa { --m-ox: 240px; --m-oy: 152px; --m-d: 3.8s; }
+
+.oa-lab [data-oa-motion="bzzd-asas"] .oa-m-asas { --m-ox: 240px; --m-oy: 135px; --m-d: 1.1s; --m-s: 1; --m-sy: 0.84; }
+.oa-lab [data-oa-motion="bzzd-asas"] .oa-m-corpo { --m-ox: 240px; --m-oy: 150px; --m-d: 2.6s; --m-y: -3px; }
+.oa-lab [data-oa-motion="bzzd-asas"] .oa-m-fluxo { --m-f: -26; --m-fd: 7s; }
+
+.oa-lab [data-oa-motion="tomar-tu-escudo"] .oa-m-corpo { --m-ox: 240px; --m-oy: 150px; --m-d: 5.5s; --m-y: -3px; }
+.oa-lab [data-oa-motion="tomar-tu-escudo"] .oa-m-penas { --m-ox: 240px; --m-oy: 150px; --m-d: 4.4s; --m-s: 1.022; }
+
+.oa-lab [data-oa-motion="vath-lanca"] { --m-ciclo: 4.6s; }
+.oa-lab [data-oa-motion="vath-lanca"] .oa-m-lanca { --m-x: 5px; --m-y: -7px; }
+.oa-lab [data-oa-motion="vath-lanca"] .oa-m-fluxo { --m-f: -16; --m-fd: 3.6s; }
+.oa-lab [data-oa-motion="vath-lanca"] .oa-m-fluxo-b { --m-f: -55; --m-fd: 12s; }
+
+/* ---------- keyframes originais ---------- */
+@keyframes oa-motion-flutuar {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to { transform: translate(var(--m-x, 0px), var(--m-y, -4px)) rotate(var(--m-a, 0deg)); }
+}
+@keyframes oa-motion-voo {
+  from { transform: translate(calc(var(--m-x, 8px) * -0.7), calc(var(--m-y, -5px) * -0.5)) rotate(calc(var(--m-a, 1.6deg) * -1)); }
+  to { transform: translate(var(--m-x, 8px), var(--m-y, -5px)) rotate(var(--m-a, 1.6deg)); }
+}
+@keyframes oa-motion-balanco {
+  from { transform: rotate(calc(var(--m-a, 3deg) * -1)); }
+  to { transform: rotate(var(--m-a, 3deg)); }
+}
+@keyframes oa-motion-respirar {
+  from { transform: scale(1, 1) rotate(calc(var(--m-a, 0deg) * -1)); }
+  to { transform: scale(var(--m-s, 1.03), var(--m-sy, var(--m-s, 1.03))) rotate(var(--m-a, 0deg)); }
+}
+@keyframes oa-motion-giro {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes oa-motion-pulso {
+  0% { opacity: var(--m-o0, 0.62); }
+  100% {
+    opacity: var(--m-o1, 1);
+    color: color-mix(in srgb, currentColor 82%, var(--oa-text));
+  }
+}
+@keyframes oa-motion-fluxo {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: var(--m-f, -16); }
+}
+@keyframes oa-motion-trilha {
+  from { stroke-dashoffset: 0; opacity: 0.9; }
+  to { stroke-dashoffset: -100; opacity: 0.9; }
+}
+@keyframes oa-motion-varrer {
+  0% { transform: translate(0, 0); opacity: 0; }
+  14% { opacity: 0.85; }
+  86% { opacity: 0.85; }
+  100% { transform: translate(var(--m-x, 300px), var(--m-y, 0px)); opacity: 0; }
+}
+@keyframes oa-motion-ressoa {
+  from { transform: scale(0.94); opacity: 0.6; }
+  to { transform: scale(1.07); opacity: 0.05; }
+}
+/* golpe rotativo: prepara, bate, rebate e assenta */
+@keyframes oa-motion-recuo {
+  0%, 48% { transform: rotate(0deg); }
+  60% { transform: rotate(var(--m-a, -8deg)); }
+  66% { transform: rotate(calc(var(--m-a, -8deg) * -1.35)); }
+  76% { transform: rotate(calc(var(--m-a, -8deg) * 0.25)); }
+  100% { transform: rotate(0deg); }
+}
+/* golpe linear: recua, avança na direção (--m-x, --m-y) e assenta */
+@keyframes oa-motion-soco {
+  0%, 44% { transform: translate(0, 0); }
+  58% { transform: translate(calc(var(--m-x, 0px) * -0.6), calc(var(--m-y, 0px) * -0.6)); }
+  64% { transform: translate(var(--m-x, 0px), var(--m-y, 0px)); }
+  74% { transform: translate(calc(var(--m-x, 0px) * 0.15), calc(var(--m-y, 0px) * 0.15)); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes oa-motion-impacto {
+  0%, 60% { opacity: 0; transform: scale(0.8); }
+  64% { opacity: 0.75; transform: scale(0.9); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+@keyframes oa-motion-onda {
+  0%, 56% { opacity: 0.35; }
+  64% {
+    opacity: 1;
+    color: color-mix(in srgb, currentColor 80%, var(--oa-text));
+  }
+  100% { opacity: 0.35; }
+}
+/* estilingue: estica, solta a bolota e assenta */
+@keyframes oa-motion-bolota {
+  0%, 30% { transform: translate(0, 0); }
+  55% { transform: translate(0, 10px); }
+  62% { transform: translate(0, -12px); }
+  76% { transform: translate(0, 2px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes oa-motion-elastico {
+  0%, 30% { transform: scaleY(1); }
+  55% { transform: scaleY(1.07); }
+  62% { transform: scaleY(0.96); }
+  76% { transform: scaleY(1.01); }
+  100% { transform: scaleY(1); }
+}
+
+/* ---------- pausa: modo calmo, oculto, fora da área e movimento reduzido ---------- */
+.oa-lab.oa-lab--quiet [data-oa-motion] *,
+.oa-lab .oa-lab--quiet [data-oa-motion] *,
+.oa-lab [data-oa-motion].oa-lab--quiet *,
+.oa-lab.oa-lab--hidden [data-oa-motion] *,
+.oa-lab .oa-lab--hidden [data-oa-motion] *,
+.oa-lab [data-oa-motion].oa-lab--hidden *,
+.oa-lab[data-offscreen="true"] [data-oa-motion] *,
+.oa-lab [data-offscreen="true"] [data-oa-motion] *,
+.oa-lab [data-oa-motion][data-offscreen="true"] * {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oa-lab [data-oa-motion] * {
+    animation: none !important;
+  }
+}

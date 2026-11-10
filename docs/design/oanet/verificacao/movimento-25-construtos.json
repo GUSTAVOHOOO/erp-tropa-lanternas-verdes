@@ -1,0 +1,202 @@
+[
+  {
+    "name": "Hal Jordan",
+    "id": "jato-hal",
+    "animations": 14,
+    "running": 14,
+    "changed": true,
+    "title": "Estudo de Hal Jordan: jato de luz sólida em projeção técnica"
+  },
+  {
+    "name": "John Stewart",
+    "id": "ponte-john",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Estudo de John Stewart: ponte estrutural de luz sólida com treliças e pilares"
+  },
+  {
+    "name": "Guy Gardner",
+    "id": "punho-guy",
+    "animations": 13,
+    "running": 13,
+    "changed": true,
+    "title": "Estudo de Guy Gardner: punho de boxe facetado em luz sólida"
+  },
+  {
+    "name": "Kyle Rayner",
+    "id": "mecha-kyle",
+    "animations": 16,
+    "running": 16,
+    "changed": true,
+    "title": "Estudo de Kyle Rayner: mecha de luz sólida com armadura e articulações técnicas"
+  },
+  {
+    "name": "Jessica Cruz",
+    "id": "escudo-jessica",
+    "animations": 15,
+    "running": 15,
+    "changed": true,
+    "title": "Estudo de Jessica Cruz: escudo floral de luz sólida com pétalas cristalinas"
+  },
+  {
+    "name": "Simon Baz",
+    "id": "resgate-simon",
+    "animations": 13,
+    "running": 13,
+    "changed": true,
+    "title": "Estudo de Simon Baz: veículo de resgate de luz sólida em perspectiva"
+  },
+  {
+    "name": "Abin Sur",
+    "id": "nave-abin",
+    "animations": 14,
+    "running": 14,
+    "changed": true,
+    "title": "Estudo de Abin Sur: nave interestelar de luz sólida com anéis orbitais"
+  },
+  {
+    "name": "Kilowog",
+    "id": "kilowog-martelo",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Kilowog · Martelo de impacto — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Salaak",
+    "id": "salaak-astrolabio",
+    "animations": 13,
+    "running": 13,
+    "changed": true,
+    "title": "Salaak · Astrolábio de quatro braços — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Arisia Rrab",
+    "id": "arisia-prisma",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Arisia Rrab · Prisma estelar — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Tomar-Re",
+    "id": "tomar-re-nave",
+    "animations": 12,
+    "running": 12,
+    "changed": true,
+    "title": "Tomar-Re · Nave de asas solares — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Katma Tui",
+    "id": "katma-egide",
+    "animations": 10,
+    "running": 10,
+    "changed": true,
+    "title": "Katma Tui · Égide e lâmina — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Soranik Natu",
+    "id": "soranik-camara",
+    "animations": 13,
+    "running": 13,
+    "changed": true,
+    "title": "Soranik Natu · Câmara de diagnóstico — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Sinestro",
+    "id": "sinestro-prisao",
+    "animations": 10,
+    "running": 10,
+    "changed": true,
+    "title": "Sinestro · Prisão poliédrica — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Laira",
+    "id": "laira-laminas",
+    "animations": 8,
+    "running": 8,
+    "changed": true,
+    "title": "Laira · Lâminas em órbita — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Ch'p",
+    "id": "chp-estilingue",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Ch'p · Estilingue de bolota — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Boodikka",
+    "id": "boodikka-machado",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Boodikka · Machado de cerco — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Ke'Haan",
+    "id": "kehaan-bastiao",
+    "animations": 12,
+    "running": 12,
+    "changed": true,
+    "title": "Ke'Haan · Bastião de aríete — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Hannu",
+    "id": "hannu-punho",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Hannu · Punho monolítico — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Isamot Kol",
+    "id": "isamot-draco",
+    "animations": 10,
+    "running": 10,
+    "changed": true,
+    "title": "Isamot Kol · Draco de luz — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Medphyll",
+    "id": "medphyll-jardim",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Medphyll · Jardim orbital — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Rot Lop Fan",
+    "id": "rot-lop-fan-sino",
+    "animations": 9,
+    "running": 9,
+    "changed": true,
+    "title": "Rot Lop Fan · Sino de ressonância — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Bzzd",
+    "id": "bzzd-asas",
+    "animations": 9,
+    "running": 9,
+    "changed": true,
+    "title": "Bzzd · Asas de microcosmo — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Tomar-Tu",
+    "id": "tomar-tu-escudo",
+    "animations": 11,
+    "running": 11,
+    "changed": true,
+    "title": "Tomar-Tu · Escudo de plumagem — estudo artístico de luz sólida"
+  },
+  {
+    "name": "Vath Sarn",
+    "id": "vath-lanca",
+    "animations": 9,
+    "running": 9,
+    "changed": true,
+    "title": "Vath Sarn · Lança de vanguarda — estudo artístico de luz sólida"
+  }
+]

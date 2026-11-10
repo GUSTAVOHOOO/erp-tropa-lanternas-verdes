@@ -1,7 +1,15 @@
 # Design system da Tropa — spec
 
+> **Atualização em 2026-11-06:** a skill `auditoria-apresentacao` foi removida.
+> As referências abaixo a essa automação são históricas; seus comandos e passos
+> não devem ser executados ou recriados. As regras atuais estão em
+> `.claude/skills/frontend-web/` (antes `padroes-wellington`, refeita em 2026-11-06;
+> os IDs CSS e DEC citados abaixo foram mantidos).
+> Os documentos `docs/AUDITORIA.md` e a spec do ERP citados aqui foram removidos;
+> as decisões do projeto estão agora em `docs/backend/ESCOPO.md`.
+
 Data: 2026-10-07. Aprovado no brainstorming (direção visual "B revisado", tema Noite).
-Projeto base: `docs/superpowers/specs/2026-10-07-erp-tropa-design.md`.
+Projeto base: spec original do ERP (removida; ver `docs/backend/ESCOPO.md`).
 
 ## 1. Objetivo
 

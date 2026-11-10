@@ -7,3 +7,41 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Padrões acadêmicos do projeto
+
+Ao escrever, revisar ou explicar código do front deste projeto, leia
+[frontend-web](.claude/skills/frontend-web/SKILL.md) e consulte as referências
+pertinentes ao pedido; para o back-end, leia
+[backend-api](.claude/skills/backend-api/SKILL.md). Os arquivos nesses caminhos
+são as fontes canônicas.
+
+## UI oficial
+
+Ao criar ou migrar uma tela, siga [docs/UI.md](docs/UI.md): o laboratório OANET
+é a referência visual oficial (decisão D28). Use seus componentes, vetores,
+tokens e animações. O front antigo serve para recuperar fluxos e regras,
+não como modelo de design. A implementação da migração está suspensa até o
+usuário autorizar; depois disso, siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md)
+(UI-01 e UI-02.00 primeiro). O [handoff OANET](docs/agents/HANDOFF-OANET.md) é só o histórico da UI-01 parcial.
+
+## Trabalho com agentes
+
+- Ao iniciar uma tarefa, leia [docs/agents/README.md](docs/agents/README.md)
+  para definir escopo, responsáveis, dependências e verificações.
+- Para localizar uma funcionalidade ou alterar contratos entre camadas, consulte
+  [docs/agents/MAPA.md](docs/agents/MAPA.md). Confira os arquivos atuais antes de editar.
+- Para implementar front/back em paralelo ou integrar HTTP, use o [plano da frente](docs/PLANO.md), o [pacote de contrato](docs/contratos/README.md) e os [gates de integração](docs/INTEGRACAO.md). Registre a revisão do contrato usada (G-1: versão e SHA-256); simulação não comprova integração real, e a ativação real é um corte único descrito em INTEGRACAO.
+- Ao dividir trabalho ou passar uma tarefa para outro agente, use
+  [docs/agents/TAREFA.md](docs/agents/TAREFA.md). Cada arquivo tem um responsável
+  por tarefa; testes acompanham o código do respectivo responsável.
+- Preserve alterações locais de outras tarefas. Confira `git status --short`
+  antes de editar. Até a migração para a API real, `db.json` é persistência da
+  demonstração e fixture de testes; testes manuais de escrita precisam de dados
+  isolados.
+- Mudanças em dependências, configuração, dados compartilhados e decisões do
+  projeto (`docs/backend/ESCOPO.md`) precisam constar explicitamente no escopo
+  da tarefa. O contrato da API (`docs/backend/API.md`) muda junto com o código.
+- Registre os comandos executados e seus resultados. Falha presente antes da sua
+  mudança deve ser reproduzida antes de ser atribuída ao trabalho atual.
+- O índice de toda a documentação está em [docs/README.md](docs/README.md).

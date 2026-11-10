@@ -1,9 +1,5 @@
 @AGENTS.md
 
-# ERP da Tropa dos Lanternas Verdes
-
-- Siga a skill `padroes-wellington` em todo código e marque as regras aplicadas com `// [ID]`.
-- Spec: `docs/superpowers/specs/2026-10-07-erp-tropa-design.md`.
-- Plano: `docs/superpowers/plans/2026-10-07-erp-tropa.md`.
-- Rodar: `npm run api` (json-server, porta 3001) e `npm run dev` (Next, porta 3000), em dois terminais.
-- Testes: `npm run test:run`. Lint: `npm run lint`. Build: `npm run build`.
+As instruções compartilhadas estão em `AGENTS.md`; o fluxo de trabalho começa
+em `docs/agents/README.md`. A skill `frontend-web` cobre o front e a `backend-api`
+cobre o back-end; siga-as nos caminhos canônicos indicados em `AGENTS.md`.

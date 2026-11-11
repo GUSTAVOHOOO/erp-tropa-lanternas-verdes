@@ -5,6 +5,7 @@ vi.mock('@/app/(site)/login/actions', () => ({ entrar: vi.fn() }))
 
 import { entrar } from '@/app/(site)/login/actions'
 import { FormLogin } from '@/app/(site)/login/_components/FormLogin'
+import LoginPage from '@/app/(site)/login/page'
 import { MENSAGEM_ERRO_API } from '@/lib/resultado-acao'
 
 beforeEach(() => vi.clearAllMocks())
@@ -50,4 +51,47 @@ test('falha de API aparece e botão destrava para nova tentativa', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'Entrar' }))
   expect(await screen.findByText(MENSAGEM_ERRO_API)).toBeDefined()
   await waitFor(() => expect(screen.getByRole('button', { name: 'Entrar' }).hasAttribute('disabled')).toBe(false))
+})
+
+// UI-02.03: controles OANET no formulário real, sem simulação de envio.
+test('senha começa oculta e um botão acessível alterna a visibilidade sem enviar', () => {
+  render(<FormLogin />)
+  const senha = screen.getByLabelText('Senha')
+  const alternar = screen.getByRole('button', { name: 'Mostrar senha' })
+  expect(alternar.getAttribute('type')).toBe('button')
+  expect(alternar.getAttribute('aria-pressed')).toBe('false')
+  expect(alternar.getAttribute('aria-controls')).toBe(senha.id)
+  fireEvent.click(alternar)
+  expect(senha.getAttribute('type')).toBe('text')
+  expect(alternar.getAttribute('aria-pressed')).toBe('true')
+  fireEvent.click(alternar)
+  expect(senha.getAttribute('type')).toBe('password')
+  expect(entrar).not.toHaveBeenCalled()
+})
+
+test('erros de e-mail e senha ficam associados aos próprios campos', async () => {
+  render(<FormLogin />)
+  fireEvent.click(screen.getByRole('button', { name: 'Entrar' }))
+  const erroSenha = await screen.findByText('Informe sua senha.')
+  const erroEmail = screen.getByText('Informe um e-mail válido, como hal@oa.tropa.')
+  const senha = screen.getByLabelText('Senha')
+  const email = screen.getByLabelText('E-mail')
+  expect(senha.getAttribute('aria-invalid')).toBe('true')
+  expect(senha.getAttribute('aria-describedby')).toBe(erroSenha.id)
+  expect(email.getAttribute('aria-invalid')).toBe('true')
+  expect(email.getAttribute('aria-describedby')).toBe(erroEmail.id)
+})
+
+test('o envio usa o botão OANET', () => {
+  render(<FormLogin />)
+  expect(screen.getByRole('button', { name: 'Entrar' }).classList.contains('oa-button')).toBe(true)
+})
+
+test('a página de login usa o painel de acesso OANET, sem aviso de simulação', () => {
+  const { container } = render(<LoginPage />)
+  expect(screen.getByRole('heading', { level: 1, name: 'Entrar na Central de Comando' })).toBeDefined()
+  expect(screen.getByText('Acesso restrito a membros da Tropa.')).toBeDefined()
+  expect(container.querySelector('.oa-access-panel')).not.toBeNull()
+  expect(container.querySelector('.oa-access-battery')?.getAttribute('aria-hidden')).toBe('true')
+  expect(screen.queryByText(/simulação|demonstração/i)).toBeNull()
 })

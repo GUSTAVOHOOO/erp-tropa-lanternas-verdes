@@ -10,11 +10,11 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 
 | Tela | Rota | Estado | Função e mudanças |
 |---|---|---|---|
-| Início | `/` | Existe | Apresentação da Central de Oa e acesso ao login |
-| Sobre | `/sobre` | Existe | Oa, a Tropa e o juramento |
-| Lanternas | `/lanternas` | Existe | Lista com filtro por Setor. **Muda:** busca, filtro de status e paginação, vindos da API |
+| Início | `/` | Atual (UI-01, UI-02.01) | Apresentação da Central de Oa e acesso ao login |
+| Sobre | `/sobre` | Atual (UI-01, UI-02.02) | Oa, a Tropa e o juramento |
+| Lanternas | `/lanternas` | Atual (UI-01, UI-02.04) | Lista com filtro por Setor. **Muda:** busca, filtro de status e paginação, vindos da API |
 | Ficha do Lanterna | `/lanternas/[id]` | Existe, será ampliada | **Muda:** dados completos (identidade, espécie, planeta, Setor, ingresso, primeira aparição, habilidades, citação, biografia), mentor e aprendizes navegáveis, estatísticas (resolvidas, em andamento, tempo médio, carga atual) e selo "não verificado" nos campos sem fonte |
-| Login | `/login` | Existe | **Muda:** chama a API; link para o cadastro; aviso de 429 |
+| Login | `/login` | Atual (UI-01, UI-02.03) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
 | Cadastro | `/cadastro` | **Nova** | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
 | Acesso negado | `/acesso-negado` | Existe | Só para 403 de papel |
 | Design system | `/design-system` | Existe, histórico visual | Atualizar ou redirecionar para a referência OANET na adoção |

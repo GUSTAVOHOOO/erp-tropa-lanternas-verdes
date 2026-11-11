@@ -21,7 +21,7 @@ As skills canônicas de [front](../.claude/skills/frontend-web/SKILL.md) e [back
 | Pasta | Conteúdo e finalidade | Autoridade/estado |
 |---|---|---|
 | `docs/` | Este índice, [PLANO](PLANO.md), [CONTRIBUINDO](CONTRIBUINDO.md), [INTEGRACAO](INTEGRACAO.md) e [UI](UI.md) | Entradas de execução e contrato visual |
-| `docs/agents/` | [Fluxo](agents/README.md), [mapa](agents/MAPA.md), [modelo de tarefa](agents/TAREFA.md), [handoff](agents/HANDOFF-OANET.md), [registro DOC-03](agents/DOC-03-PLANEJAMENTO.md) | Operação e estado datado; não redefine produto |
+| `docs/agents/` | [Fluxo](agents/README.md), [mapa](agents/MAPA.md), [modelo de tarefa](agents/TAREFA.md), [handoff da UI-01](agents/HANDOFF-OANET.md), [handoff do front](agents/HANDOFF-FRONT.md), [registro DOC-03](agents/DOC-03-PLANEJAMENTO.md) | Operação e estado datado; não redefine produto |
 | `docs/agents/revisoes/` | [Índice](agents/revisoes/README.md), relatórios e correções por rodada | Evidência, não fonte de contrato |
 | `docs/contratos/` | [Entrada](contratos/README.md), OpenAPI JSON, exemplos e validador documental | Formato HTTP acordado de destino; não API implementada |
 | `docs/contratos/exemplos/` | Requisições/respostas e cenários identificados por operação | Fixtures sintéticas de contrato; não dados do produto |

@@ -23,7 +23,7 @@ Ao criar ou migrar uma tela, siga [docs/UI.md](docs/UI.md): o laboratório OANET
 tokens e animações. O front antigo serve para recuperar fluxos e regras,
 não como modelo de design. A implementação do front está autorizada desde
 2026-11-10: siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md), com a UI-01
-concluída e integrada à `main` e a UI-02.00 em andamento. O [handoff OANET](docs/agents/HANDOFF-OANET.md) é só o histórico da transferência da UI-01.
+e a UI-02.00 concluídas e integradas à `main`; a próxima linha é a UI-02.01. O [handoff do front](docs/agents/HANDOFF-FRONT.md) traz o retrato de 2026-11-10; o [handoff OANET](docs/agents/HANDOFF-OANET.md) é só o histórico da transferência da UI-01.
 
 ## Trabalho com agentes
 

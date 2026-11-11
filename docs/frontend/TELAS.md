@@ -16,7 +16,7 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Ficha do Lanterna | `/lanternas/[id]` | Atual (UI-01, UI-02.05) | Ficha pública com identidade, espécie, planeta, Setor navegável, status operacional com SeloOa, construto vetorial OANET e link de retorno |
 | Login | `/login` | Atual (UI-01, UI-02.03) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
 | Cadastro | `/cadastro` | **Nova** | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
-| Acesso negado | `/acesso-negado` | Existe | Só para 403 de papel |
+| Acesso negado | `/acesso-negado` | Atual (UI-01, UI-02.11) | Página de aviso 403 com PaginaAviso, EmblemaOa e botão de retorno ao painel |
 | Design system | `/design-system` | Existe, histórico visual | Atualizar ou redirecionar para a referência OANET na adoção |
 | Laboratório | `/laboratorio` | Existe, UI oficial D28 | Referência de design, assets e movimento; dados ilustrativos, sem API |
 

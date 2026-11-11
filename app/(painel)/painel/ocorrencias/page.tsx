@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
-import { PlusIcon } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
+import { IconeOa } from '@/components/oanet/IconeOa'
+import { MolduraOa } from '@/components/oanet/PainelOa'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
 import { normalizarFiltroOcorrencias } from '@/lib/filtro-ocorrencias'
@@ -28,32 +28,38 @@ export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageP
   const temFiltro = Boolean(filtro.status || filtro.gravidade || (sessao.papel === 'guardiao' && filtro.setor))
 
   return (
-    <section className="grid gap-6">
+    <section className="oa-screen grid gap-6">
       <CabecalhoPagina
         titulo="Ocorrências"
         descricao={sessao.papel === 'guardiao' ? 'Todas as ocorrências da Tropa.' : `Ocorrências do Setor ${sessao.setorId}.`}
       >
-        <Link href="/painel/ocorrencias/nova" className={buttonVariants()}> {/* [ROTA-16] */}
-          <PlusIcon aria-hidden />
-          Registrar ocorrência
+        <Link href="/painel/ocorrencias/nova" className="oa-button oa-button--energia"> {/* [ROTA-16] */}
+          <span className="oa-button-content">
+            <IconeOa nome="mais" />
+            Registrar ocorrência
+          </span>
         </Link>
       </CabecalhoPagina>
-      <Suspense fallback={null}> {/* [ROTA-15] */}
-        <FiltroOcorrencias setores={sessao.papel === 'guardiao' ? setores : []} />
-      </Suspense>
-      {ocorrencias.length === 0 ? ( // [API-09]
-        <EstadoVazio
-          titulo="Nenhuma ocorrência encontrada"
-          descricao={temFiltro ? 'Nenhuma ocorrência combina com esses filtros.' : 'Ainda não há ocorrências registradas.'}
-          acao={temFiltro ? { href: '/painel/ocorrencias', rotulo: 'Limpar filtros' } : undefined}
-        />
-      ) : (
-        <TabelaOcorrencias
-          ocorrencias={ocorrencias}
-          nomeSetor={Object.fromEntries(setores.map((s) => [s.id, s.nome]))}
-          nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.nome]))}
-        />
-      )}
+      <MolduraOa titulo="Filtros operacionais" icone="painel">
+        <Suspense fallback={null}> {/* [ROTA-15] */}
+          <FiltroOcorrencias setores={sessao.papel === 'guardiao' ? setores : []} />
+        </Suspense>
+      </MolduraOa>
+      <MolduraOa titulo="Registros operacionais" icone="ocorrencias">
+        {ocorrencias.length === 0 ? ( // [API-09]
+          <EstadoVazio
+            titulo="Nenhuma ocorrência encontrada"
+            descricao={temFiltro ? 'Nenhuma ocorrência combina com esses filtros.' : 'Ainda não há ocorrências registradas.'}
+            acao={temFiltro ? { href: '/painel/ocorrencias', rotulo: 'Limpar filtros' } : undefined}
+          />
+        ) : (
+          <TabelaOcorrencias
+            ocorrencias={ocorrencias}
+            nomeSetor={Object.fromEntries(setores.map((s) => [s.id, s.nome]))}
+            nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.nome]))}
+          />
+        )}
+      </MolduraOa>
     </section>
   )
 }

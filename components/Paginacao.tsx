@@ -5,24 +5,30 @@ export type PaginacaoProps = {
   paginas: number
   caminho: string
   parametros: Record<string, string | undefined>
+  parametro?: string
 }
 
-function montarHref(caminho: string, parametros: Record<string, string | undefined>, paginaAlvo: number): string {
+function montarHref(
+  caminho: string,
+  parametros: Record<string, string | undefined>,
+  paginaAlvo: number,
+  parametro: string = 'pagina',
+): string {
   const params = new URLSearchParams()
   for (const [chave, valor] of Object.entries(parametros)) {
-    if (valor !== undefined && valor !== '' && chave !== 'pagina') {
+    if (valor !== undefined && valor !== '' && chave !== parametro) {
       params.set(chave, valor)
     }
   }
   if (paginaAlvo > 1) {
-    params.set('pagina', String(paginaAlvo))
+    params.set(parametro, String(paginaAlvo))
   }
   const qs = params.toString()
   return qs ? `${caminho}?${qs}` : caminho
 }
 
 /** Componente de paginação acessível compatível com Server Components. [ROTA-14][ROTA-16] */
-export function Paginacao({ pagina, paginas, caminho, parametros }: PaginacaoProps) {
+export function Paginacao({ pagina, paginas, caminho, parametros, parametro = 'pagina' }: PaginacaoProps) {
   if (paginas <= 1) return null
 
   const temAnterior = pagina > 1
@@ -32,7 +38,7 @@ export function Paginacao({ pagina, paginas, caminho, parametros }: PaginacaoPro
     <nav aria-label="Paginação" className="oa-button-row justify-center py-4">
       {temAnterior ? (
         <Link
-          href={montarHref(caminho, parametros, pagina - 1)}
+          href={montarHref(caminho, parametros, pagina - 1, parametro)}
           className="oa-button oa-button--linha"
         >
           <span className="oa-button-content">Anterior</span>
@@ -55,7 +61,7 @@ export function Paginacao({ pagina, paginas, caminho, parametros }: PaginacaoPro
 
       {temProxima ? (
         <Link
-          href={montarHref(caminho, parametros, pagina + 1)}
+          href={montarHref(caminho, parametros, pagina + 1, parametro)}
           className="oa-button oa-button--linha"
         >
           <span className="oa-button-content">Próxima</span>

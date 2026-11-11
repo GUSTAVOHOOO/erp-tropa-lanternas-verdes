@@ -56,6 +56,7 @@ oferecida pelo json-server.
 | Listagem e filtros privados | `app/(painel)/painel/ocorrencias/page.tsx`, `_components/FiltroOcorrencias.tsx` | `lib/schemas/ocorrencia.ts` (filtro da URL), `lib/ocorrencias.ts` |
 | Criar, editar, alterar status, atribuir ou excluir | `app/(painel)/painel/ocorrencias/actions.ts` | `FormOcorrencia`, `FormEditarOcorrencia`, `FormStatus`, `FormAtribuir`, `ConfirmarExclusao`, schemas, DAL e `lib/ocorrencias.ts` |
 | Detalhe e atribuição | `app/(painel)/painel/ocorrencias/[id]/` | `tratarErroDetalhe`, `lib/permissoes-ocorrencia.ts`, autorização e formulários |
+| Eventos e comentários | `app/(painel)/painel/ocorrencias/comentarios-actions.ts` | `lib/eventos.ts`, `lib/comentarios.ts`, `lib/schemas/evento.ts`, `lib/schemas/comentario.ts` |
 | Permissões de ocorrência | `lib/permissoes-ocorrencia.ts` | `acoesPermitidas` e `transicoesPermitidas` pela matriz de [TELAS.md](../frontend/TELAS.md); só visibilidade, a API decide ([matriz](../backend/API.md#matriz-de-permissões)) |
 | UI oficial e assets | `components/oanet/`, `app/globals.css`, `app/laboratorio/` | `docs/UI.md` (D28), `docs/agents/HANDOFF-OANET.md`; `/design-system` antigo é histórico |
 | Dados de demonstração | `db.json` | Schemas e testes que importam os dados (saem na migração) |

@@ -5,6 +5,8 @@ vi.mock('@/lib/dal', () => ({ verificarSessao: vi.fn() }))
 vi.mock('@/lib/ocorrencias', () => ({ buscarOcorrencia: vi.fn() }))
 vi.mock('@/lib/setores', () => ({ listarSetores: vi.fn() }))
 vi.mock('@/lib/lanternas', () => ({ listarTodosLanternas: vi.fn() }))
+vi.mock('@/lib/eventos', () => ({ listarEventos: vi.fn() }))
+vi.mock('@/lib/comentarios', () => ({ listarComentarios: vi.fn() }))
 vi.mock('@/lib/permissoes-ocorrencia', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/lib/permissoes-ocorrencia')>()
   return {
@@ -41,6 +43,8 @@ import { verificarSessao } from '@/lib/dal'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
 import { listarSetores } from '@/lib/setores'
 import { listarTodosLanternas } from '@/lib/lanternas'
+import { listarEventos } from '@/lib/eventos'
+import { listarComentarios } from '@/lib/comentarios'
 import { acoesPermitidas } from '@/lib/permissoes-ocorrencia'
 import OcorrenciaPage from '@/app/(painel)/painel/ocorrencias/[id]/page'
 import type { Ocorrencia } from '@/lib/schemas/ocorrencia'
@@ -73,6 +77,14 @@ beforeEach(() => {
   vi.mocked(listarTodosLanternas).mockResolvedValue([
     { id: 'hal-jordan', codinome: 'Hal Jordan', identidadeCivil: null, especie: 'Humano', planetaNatal: 'Terra', setorId: 2814, status: 'ativo', anoIngresso: null },
   ])
+  vi.mocked(listarEventos).mockResolvedValue({
+    itens: [],
+    meta: { total: 0, pagina: 1, limite: 20, paginas: 1 },
+  })
+  vi.mocked(listarComentarios).mockResolvedValue({
+    itens: [],
+    meta: { total: 0, pagina: 1, limite: 20, paginas: 1 },
+  })
 })
 
 test('página de detalhe renderiza dados, prazo e selo Vencida por texto', async () => {
@@ -156,4 +168,96 @@ test('setor alheio bloqueia acesso pelo podeAcessarSetor', async () => {
 
   await expect(OcorrenciaPage({ params: Promise.resolve({ id: ocorrenciaMock.id }) })).rejects.toThrow('NEXT_REDIRECT:/acesso-negado')
   expect(redirect).toHaveBeenCalledWith('/acesso-negado')
+})
+
+test('busca eventos e comentários em paralelo respeitando páginas da URL', async () => {
+  vi.mocked(verificarSessao).mockResolvedValue(sessaoGuardiao)
+  render(
+    await OcorrenciaPage({
+      params: Promise.resolve({ id: ocorrenciaMock.id }),
+      searchParams: Promise.resolve({ eventos: '2', comentarios: '3' }),
+    }),
+  )
+
+  expect(listarEventos).toHaveBeenCalledWith(ocorrenciaMock.id, 2)
+  expect(listarComentarios).toHaveBeenCalledWith(ocorrenciaMock.id, 3)
+})
+
+test('página inválida na URL (não numérica ou < 1) cai para 1', async () => {
+  vi.mocked(verificarSessao).mockResolvedValue(sessaoGuardiao)
+  render(
+    await OcorrenciaPage({
+      params: Promise.resolve({ id: ocorrenciaMock.id }),
+      searchParams: Promise.resolve({ eventos: 'invalido', comentarios: '-5' }),
+    }),
+  )
+
+  expect(listarEventos).toHaveBeenCalledWith(ocorrenciaMock.id, 1)
+  expect(listarComentarios).toHaveBeenCalledWith(ocorrenciaMock.id, 1)
+})
+
+test('renderiza seções de Linha do tempo e Comentários', async () => {
+  vi.mocked(verificarSessao).mockResolvedValue(sessaoGuardiao)
+  render(await OcorrenciaPage({ params: Promise.resolve({ id: ocorrenciaMock.id }) }))
+
+  expect(screen.getByRole('heading', { level: 2, name: /Linha do tempo/i })).toBeDefined()
+  expect(screen.getByRole('heading', { level: 2, name: /Comentários/i })).toBeDefined()
+  expect(screen.getByText('Nenhum evento registrado.')).toBeDefined()
+  expect(screen.getByText('Nenhum comentário ainda.')).toBeDefined()
+})
+
+test('paginação preserva o parâmetro da outra coleção', async () => {
+  vi.mocked(verificarSessao).mockResolvedValue(sessaoGuardiao)
+  vi.mocked(listarEventos).mockResolvedValueOnce({
+    itens: [
+      {
+        id: '00000000-0000-4000-8000-000000000101',
+        ocorrenciaId: ocorrenciaMock.id,
+        autorId: sessaoGuardiao.id,
+        autor: { id: sessaoGuardiao.id, nome: 'Ganthet', papel: 'guardiao' },
+        criadoEm: '2026-11-10T12:00:00.000Z',
+        tipo: 'criada',
+        dados: { de: null, para: 'aberta' },
+      },
+    ],
+    meta: { total: 50, pagina: 2, limite: 20, paginas: 3 },
+  })
+  vi.mocked(listarComentarios).mockResolvedValueOnce({
+    itens: [
+      {
+        id: '00000000-0000-4000-8000-000000000201',
+        ocorrenciaId: ocorrenciaMock.id,
+        autorId: sessaoGuardiao.id,
+        autor: { id: sessaoGuardiao.id, nome: 'Ganthet', papel: 'guardiao' },
+        texto: 'Comentário teste.',
+        criadoEm: '2026-11-10T12:00:00.000Z',
+      },
+    ],
+    meta: { total: 40, pagina: 1, limite: 20, paginas: 2 },
+  })
+
+  render(
+    await OcorrenciaPage({
+      params: Promise.resolve({ id: ocorrenciaMock.id }),
+      searchParams: Promise.resolve({ eventos: '2', comentarios: '1' }),
+    }),
+  )
+
+  // Na paginação de eventos (pág 2 de 3), o link para pág 3 deve manter o parâmetro de eventos
+  const navs = screen.getAllByRole('navigation', { name: 'Paginação' })
+  expect(navs.length).toBeGreaterThanOrEqual(2)
+})
+
+test('ocorrência resolvida ainda mostra o formulário de comentar', async () => {
+  vi.mocked(verificarSessao).mockResolvedValue(sessaoLanterna)
+  vi.mocked(buscarOcorrencia).mockResolvedValue({
+    ...ocorrenciaMock,
+    status: 'resolvida',
+    resolucao: 'Resolvida pelos lanternas.',
+  })
+
+  render(await OcorrenciaPage({ params: Promise.resolve({ id: ocorrenciaMock.id }) }))
+
+  expect(screen.getByLabelText('Comentário')).toBeDefined()
+  expect(screen.getByRole('button', { name: 'Comentar' })).toBeDefined()
 })

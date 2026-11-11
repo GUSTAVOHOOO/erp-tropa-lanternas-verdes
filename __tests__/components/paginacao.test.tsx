@@ -44,4 +44,24 @@ describe('Paginacao', () => {
     expect(within(navFim).getByRole('link', { name: /Anterior/i })).toBeDefined()
     expect(within(navFim).queryByRole('link', { name: /Próxima/i })).toBeNull()
   })
+
+  test('suporta parâmetro customizado preservando os demais', () => {
+    render(
+      <Paginacao
+        pagina={2}
+        paginas={4}
+        caminho="/painel/ocorrencias/123"
+        parametros={{ comentarios: '3', eventos: '2' }}
+        parametro="eventos"
+      />,
+    )
+    const nav = screen.getByRole('navigation', { name: 'Paginação' })
+    const anterior = within(nav).getByRole('link', { name: /Anterior/i })
+    const proxima = within(nav).getByRole('link', { name: /Próxima/i })
+
+    // Na página 1 do parâmetro 'eventos', o parâmetro 'eventos' é removido, mas 'comentarios' é preservado
+    expect(anterior.getAttribute('href')).toBe('/painel/ocorrencias/123?comentarios=3')
+    // Na próxima página (3), 'eventos=3' é setado e 'comentarios=3' é preservado
+    expect(proxima.getAttribute('href')).toBe('/painel/ocorrencias/123?comentarios=3&eventos=3')
+  })
 })

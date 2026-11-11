@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
 import { LinkVoltar } from '@/components/LinkVoltar'
+import { MolduraOa } from '@/components/oanet/PainelOa'
 import { exigirPapel } from '@/lib/dal'
 import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { listarLanternas } from '@/lib/lanternas'
@@ -32,14 +33,16 @@ export default async function AtribuirPage({ params }: AtribuirPageProps) {
   }
 
   return (
-    <section className="grid max-w-xl gap-6">
+    <article className="oa-screen mx-auto grid max-w-xl gap-6">
       <LinkVoltar href={`/painel/ocorrencias/${ocorrencia.id}`}>Voltar à ocorrência</LinkVoltar>
       <CabecalhoPagina titulo="Atribuir responsável" descricao={ocorrencia.titulo} />
-      {lanternas.length === 0 ? (
-        <EstadoVazio titulo="Nenhum lanterna neste setor" descricao="Não há lanternas designados no setor desta ocorrência." />
-      ) : (
-        <FormAtribuir ocorrenciaId={ocorrencia.id} lanternas={lanternas} responsavelAtual={ocorrencia.responsavelId} />
-      )}
-    </section>
+      <MolduraOa titulo="Designação de Lanterna" icone="pessoal">
+        {lanternas.length === 0 ? (
+          <EstadoVazio titulo="Nenhum lanterna neste setor" descricao="Não há lanternas designados no setor desta ocorrência." />
+        ) : (
+          <FormAtribuir ocorrenciaId={ocorrencia.id} lanternas={lanternas} responsavelAtual={ocorrencia.responsavelId} />
+        )}
+      </MolduraOa>
+    </article>
   )
 }

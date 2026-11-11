@@ -1,20 +1,13 @@
 import { expect, test, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+
+const redirectMock = vi.hoisted(() => vi.fn())
+vi.mock('next/navigation', () => ({
+  redirect: redirectMock,
+}))
+
 import DesignSystemPage from '@/app/(site)/design-system/page'
 
-// A vitrine renderiza todos os componentes de uma vez: passa de 5 s com a suíte completa em paralelo.
-vi.setConfig({ testTimeout: 20_000 })
-
-test('vitrine tem um h1 e uma seção para cada parte do sistema', () => {
-  render(<DesignSystemPage />)
-  expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
-  const secoes = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
-  expect(secoes).toEqual(['Cores', 'Gravidade', 'Tipografia', 'Emblema e ícones', 'Botões', 'Campos', 'Selos', 'Tabela e resumo', 'Alerta, vazio e carregando'])
-})
-
-test('vitrine mostra as quatro gravidades com texto', () => {
-  render(<DesignSystemPage />)
-  for (const rotulo of ['Baixa', 'Média', 'Alta', 'Crítica']) {
-    expect(screen.getAllByText(rotulo).length).toBeGreaterThan(0)
-  }
+test('redireciona para o laboratório visual oficial OANET (D28)', () => {
+  DesignSystemPage()
+  expect(redirectMock).toHaveBeenCalledWith('/laboratorio')
 })

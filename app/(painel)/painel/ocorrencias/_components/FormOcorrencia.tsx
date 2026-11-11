@@ -2,7 +2,7 @@
 
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
+import { BotaoOa } from '@/components/oanet/PainelOa'
 import { CampoSelect } from '@/components/CampoSelect'
 import { CampoTexto } from '@/components/CampoTexto'
 import { MensagemErro } from '@/components/MensagemErro'
@@ -63,9 +63,9 @@ export function FormOcorrencia({ setores, setorFixo }: FormOcorrenciaProps) {
       />
       <CampoTexto id="envolvidos" rotulo="Seres envolvidos" type="number" inputMode="numeric" registro={register('envolvidos')} erro={errors.envolvidos?.message} /> {/* [FORM-13] */}
       {errors.root && <MensagemErro>{errors.root.message}</MensagemErro>}
-      <Button type="submit" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
+      <BotaoOa type="submit" tom="energia" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
         {isSubmitting ? 'Registrando...' : 'Registrar ocorrência'}
-      </Button>
+      </BotaoOa>
     </form>
   )
 }

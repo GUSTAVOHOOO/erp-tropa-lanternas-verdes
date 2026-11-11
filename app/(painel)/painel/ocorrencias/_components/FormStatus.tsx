@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
+import { BotaoOa } from '@/components/oanet/PainelOa'
 import { CampoSelect } from '@/components/CampoSelect'
 import { CampoTexto } from '@/components/CampoTexto'
 import { MensagemErro } from '@/components/MensagemErro'
@@ -36,8 +36,7 @@ export function FormStatus({ ocorrenciaId, statusAtual, resolucaoAtual }: FormSt
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5 rounded-lg border border-border bg-card p-5"> {/* [FORM-06][FORM-07] */}
-      <h2 className="font-heading text-2xl font-semibold">Atualizar status</h2>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5"> {/* [FORM-06][FORM-07] */}
       <Controller
         name="status"
         control={control}
@@ -49,10 +48,10 @@ export function FormStatus({ ocorrenciaId, statusAtual, resolucaoAtual }: FormSt
         <CampoTexto id="resolucao" rotulo="Como foi resolvida?" multilinha registro={register('resolucao')} erro={errors.resolucao?.message} />
       )}
       {errors.root && <MensagemErro>{errors.root.message}</MensagemErro>}
-      {salvo && <p role="status" className="text-sm text-primary-texto">Status atualizado.</p>}
-      <Button type="submit" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
+      {salvo && <p role="status" className="text-sm text-(--oa-energy)">Status atualizado.</p>}
+      <BotaoOa type="submit" tom="energia" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
         {isSubmitting ? 'Salvando...' : 'Salvar status'}
-      </Button>
+      </BotaoOa>
     </form>
   )
 }

@@ -46,6 +46,16 @@ test('a casca mostra identidade, links por URL, conteúdo e o slot de saída', (
   expect(screen.getByRole('navigation', { name: 'Navegação teste' })).toBeDefined()
 })
 
+// Casos herdados do MenuNavegacao removido na UI-02.00: página atual e ícone fora do nome acessível.
+test('o link da página atual tem aria-current e o ícone não muda o nome acessível', () => {
+  montar()
+  const atual = screen.getByRole('link', { name: 'Ocorrências' })
+  expect(atual.getAttribute('aria-current')).toBe('page')
+  expect(atual.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
+  expect(screen.getByRole('link', { name: 'Resumo' }).getAttribute('aria-current')).toBeNull()
+  expect(screen.getByRole('link', { name: 'Registrar ocorrência' }).getAttribute('aria-current')).toBeNull()
+})
+
 test('menu móvel abre, fecha com Escape e devolve o foco', () => {
   montar()
   const menu = screen.getByRole('button', { name: 'Abrir menu' })

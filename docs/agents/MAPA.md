@@ -1,7 +1,7 @@
 # Mapa da codebase
 
 Levantamento conferido em 2026-11-06, a partir de `f819c48` e do estado local.
-Planejamento documental atualizado em 2026-11-09; a UI-01 local é parcial e ainda não recebeu aceite. A pausa para planejamento está registrada em [DOC-03](DOC-03-PLANEJAMENTO.md).
+Planejamento documental atualizado em 2026-11-09; a UI-01 foi concluída e integrada à `main` pela PR #1 em 2026-11-10 (merge `f0cb363`). A pausa de planejamento registrada em [DOC-03](DOC-03-PLANEJAMENTO.md) deixou de valer para o front em 2026-11-10.
 Use este mapa para encontrar os arquivos; confirme contratos no código antes
 de alterá-los. As regras de código estão nas skills
 [`frontend-web`](../../.claude/skills/frontend-web/SKILL.md) e
@@ -43,7 +43,7 @@ oferecida pelo json-server.
 
 | Pedido | Ponto de entrada | Dependências a consultar |
 |---|---|---|
-| Home, Sobre e navegação pública | `app/(site)/page.tsx`, `sobre/`, layout público | `MenuNavegacao`, `Marca`, `Juramento` |
+| Home, Sobre e navegação pública | `app/(site)/page.tsx`, `sobre/`, layout público | `components/oanet/CascaOa.tsx` (substitui `MenuNavegacao` e `Marca`, removidos na UI-02.00), `Juramento` |
 | Lista e detalhe de lanternas | `app/(site)/lanternas/` | `lib/lanternas.ts`, `lib/setores.ts`, schemas correspondentes |
 | Login | `app/(site)/login/` | `lib/usuarios.ts`, `lib/schemas/login.ts`, DAL e sessão |
 | Logout | `app/(painel)/actions.ts` e layout privado | `lib/dal.ts` |
@@ -170,7 +170,7 @@ cobertura completa ou resultado aprovado.
 | [Índice da documentação](../README.md) | Todos os documentos e se descrevem o estado atual ou o destino |
 | [Spec visual antiga](../superpowers/specs/2026-10-07-design-system-tropa-design.md) | Histórico; não orienta o design novo |
 | [UI.md](../UI.md) | UI oficial OANET, assets e movimento aprovados (D28) |
-| [Handoff OANET](HANDOFF-OANET.md) | Histórico da transferência da UI-01 parcial e evidências; a sequência vigente está no plano FE |
+| [Handoff OANET](HANDOFF-OANET.md) | Histórico da transferência da UI-01 e evidências; a sequência vigente está no plano FE |
 
 Em divergência entre documentação e implementação, registre a diferença e
 confira a decisão em `ESCOPO.md` antes de mudar ambos.

@@ -1,13 +1,14 @@
-import { IconeStatus } from '@/components/IconeStatus'
+import { SeloOa } from '@/components/oanet/PainelOa'
 import { rotuloStatus, type StatusOcorrencia } from '@/lib/schemas/ocorrencia'
-import { cn } from '@/lib/utils'
 
-/** Status da ocorrência: ícone de carga + texto. Resolvida ganha o verde da Tropa. */
+// [CSS-12] mapa explícito por valor de status
+const tomPorStatus = {
+  aberta: 'ambar',
+  em_andamento: 'neutro',
+  resolvida: 'verde',
+} as const
+
+/** Status da ocorrência: selo OANET com símbolo + texto. Resolvida ganha o verde da Tropa. */
 export function BadgeStatus({ status }: { status: StatusOcorrencia }) {
-  return (
-    <span className={cn('inline-flex items-center gap-1.5 text-sm whitespace-nowrap', status === 'resolvida' ? 'text-primary-texto' : 'text-muted-foreground')}> {/* [CSS-02] */}
-      <IconeStatus status={status} />
-      {rotuloStatus[status]}
-    </span>
-  )
+  return <SeloOa tom={tomPorStatus[status]}>{rotuloStatus[status]}</SeloOa> // [CSS-02]
 }

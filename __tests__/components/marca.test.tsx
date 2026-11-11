@@ -1,17 +1,12 @@
 import { describe, expect, test } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { Emblema } from '@/components/Emblema'
-import { Marca } from '@/components/Marca'
 import { IconeStatus } from '@/components/IconeStatus'
 
+// UI-02.00: a Marca foi removida (a casca OANET mostra a marca); o Emblema sai com o último consumidor, na UI-02.12.
 test('Emblema é decorativo para leitores de tela', () => {
   const { container } = render(<Emblema />)
   expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
-})
-
-test('Marca leva ao endereço pedido com o nome da Central', () => {
-  render(<Marca href="/" />)
-  expect(screen.getByRole('link', { name: 'Central de Oa' }).getAttribute('href')).toBe('/')
 })
 
 describe('IconeStatus', () => {

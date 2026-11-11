@@ -21,9 +21,9 @@ são as fontes canônicas.
 Ao criar ou migrar uma tela, siga [docs/UI.md](docs/UI.md): o laboratório OANET
 é a referência visual oficial (decisão D28). Use seus componentes, vetores,
 tokens e animações. O front antigo serve para recuperar fluxos e regras,
-não como modelo de design. A implementação da migração está suspensa até o
-usuário autorizar; depois disso, siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md)
-(UI-01 e UI-02.00 primeiro). O [handoff OANET](docs/agents/HANDOFF-OANET.md) é só o histórico da UI-01 parcial.
+não como modelo de design. A implementação do front está autorizada desde
+2026-11-10: siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md), com a UI-01
+concluída e integrada à `main` e a UI-02.00 em andamento. O [handoff OANET](docs/agents/HANDOFF-OANET.md) é só o histórico da transferência da UI-01.
 
 ## Trabalho com agentes
 

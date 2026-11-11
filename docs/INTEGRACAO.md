@@ -181,9 +181,9 @@ Arquivos compartilhados não são editados em paralelo: o responsável recebe co
 
 ## 6. Branches, merge e publicação
 
-- [ ] Usar branch de contrato/base comum e branches por fatia (`front/<id>`, `back/<id>` são nomes sugeridos, não existentes). Criar worktree nativa do ambiente quando disponível; registrar commit-base e alterações locais preservadas. A pausa DOC-03 não autoriza criar implementação agora.
+- [ ] Usar a `main` como base comum e branches por fatia (`front/<id>` no front, já em uso, p. ex. `front/ui-02-00-componentes`; `back/<id>` é nome sugerido, não existente). Criar worktree nativa do ambiente quando disponível; registrar commit-base e alterações locais preservadas. A autorização de 2026-11-10 cobre o front; o back continua sem implementação.
 - [ ] Cada PR/entrega informa objetivo, arquivos, revisão/hash, cenários P/B/A, comandos/exit e limitações. Revisar pelo outro dev antes da integração. Uma falha baseline precisa de reprodução prévia registrada.
-- [ ] Antes do Corte 1, só a branch de UI (que preserva json-server e sessão atuais) é integrada à base. A branch de preparação FE (cliente, sessão, services) permanece separada; páginas e formulários entram nela por rebase sobre a base UI aceita (regra de posse no plano front), nunca por duas implementações dos mesmos arquivos.
+- [ ] Antes do Corte 1, só a branch de UI (que preserva json-server e sessão atuais) é integrada à `main`, por PR, como ocorreu com a UI-01 (PR #1). A branch de preparação FE (cliente, sessão, services) permanece separada; páginas e formulários entram nela por rebase sobre a `main` com a UI integrada (regra de posse no plano front), nunca por duas implementações dos mesmos arquivos.
 - [ ] Na branch de integração do Corte 1, incorporar contrato aceito, depois código do provedor, depois consumidor; resolver conflitos de serviços/config e revisar lockfile. Reinstalar dependências conforme locks somente se alterados.
 - [ ] Executar checks do estado combinado e roteiro autenticado, inclusive o roteiro visual (§3). Preparação FE não substitui o fluxo de demonstração fora do Corte 1.
 - [ ] Publicar apenas combinação aceita. “Mock funciona” e “backend passou unitários” são resultados insuficientes para marcar A. Commit/merge/publicação seguem a autorização da tarefa de execução, sem presumir que este plano já os realizou.

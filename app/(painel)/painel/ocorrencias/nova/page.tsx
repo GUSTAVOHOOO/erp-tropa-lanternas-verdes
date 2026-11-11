@@ -11,7 +11,7 @@ export default async function NovaOcorrenciaPage() {
   const sessao = await verificarSessao() // [AUTH-04]
   const setores = sessao.papel === 'guardiao' ? await listarSetores() : []
   return (
-    <section className="grid max-w-xl gap-6">
+    <section className="mx-auto grid w-full max-w-2xl gap-6">
       <LinkVoltar href="/painel/ocorrencias">Voltar à lista</LinkVoltar>
       <CabecalhoPagina
         titulo="Registrar ocorrência"

@@ -4,7 +4,7 @@ De 2026-11-06. A coluna **Estado** diz se a tela existe hoje ou é planejada. As
 
 Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 
-**Situação visual em 2026-11-10:** laboratório OANET aprovado; casca UI-01 concluída na branch `front/ui-01-casca` e **em revisão** (identidade da sessão no site e no painel, saída por Action nos dois, verificação em navegador registrada na PR); o aceite depende da revisão. O conteúdo das rotas segue o visual anterior até UI-02. “Existe” abaixo descreve o fluxo atual com json-server, não comprova migração visual OANET. A ordem e a propriedade de cada rota/estado estão no [plano FE/UI](PLANO-IMPLEMENTACAO.md); integração de dados segue [INTEGRACAO.md](../INTEGRACAO.md).
+**Situação visual em 2026-11-10:** laboratório OANET aprovado; casca UI-01 concluída e integrada à `main` (PR #1); componentes compartilhados da UI-02.00 adaptados à OANET na branch `front/ui-02-00-componentes`, **em revisão** (campos, select, tabela, selos, cabeçalho, estados e avisos; verificação em navegador registrada na tarefa). A composição de cada página segue a anterior até a sua linha UI-02.01 a UI-02.12, e o 404 global fica fora da casca até a UI-02.11. “Existe” abaixo descreve o fluxo atual com json-server, não comprova migração visual OANET. A ordem e a propriedade de cada rota/estado estão no [plano FE/UI](PLANO-IMPLEMENTACAO.md); integração de dados segue [INTEGRACAO.md](../INTEGRACAO.md).
 
 ## Públicas
 

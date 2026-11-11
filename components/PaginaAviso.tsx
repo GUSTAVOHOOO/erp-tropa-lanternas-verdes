@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
-import { Emblema } from '@/components/Emblema'
+import { EmblemaOa } from '@/components/oanet/EmblemaOa'
 
 type PaginaAvisoProps = {
   titulo: string
@@ -12,10 +11,12 @@ type PaginaAvisoProps = {
 export function PaginaAviso({ titulo, descricao, acao }: PaginaAvisoProps) {
   return (
     <section className="mx-auto flex max-w-lg flex-col items-center gap-4 py-12 text-center">
-      <Emblema className="size-12 text-texto-terciario" />
-      <h1 className="font-heading text-4xl leading-none font-bold">{titulo}</h1> {/* [CSS-07][CSS-13] */}
-      <p className="text-muted-foreground">{descricao}</p>
-      <Link href={acao.href} className={buttonVariants({ className: 'mt-2' })}>{acao.rotulo}</Link> {/* [ROTA-16] */}
+      <EmblemaOa className="size-24" />
+      <h1 className="font-heading text-4xl leading-none font-bold uppercase">{titulo}</h1> {/* [CSS-07][CSS-13] */}
+      <p className="max-w-prose text-(--oa-muted)">{descricao}</p>
+      <Link href={acao.href} className="oa-button mt-2 inline-flex items-center justify-center"> {/* [ROTA-16] */}
+        <span className="oa-button-content">{acao.rotulo}</span>
+      </Link>
     </section>
   )
 }

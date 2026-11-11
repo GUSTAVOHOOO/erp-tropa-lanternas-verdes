@@ -6,7 +6,7 @@ import { BadgeStatus } from '@/components/BadgeStatus'
 import { BarraStatus } from '@/components/BarraStatus'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
-import { GRAVIDADES, rotuloGravidade } from '@/lib/schemas/ocorrencia'
+import { GRAVIDADES, STATUS_OCORRENCIA, rotuloGravidade, rotuloStatus } from '@/lib/schemas/ocorrencia'
 
 test('BadgeGravidade sempre mostra o texto, nunca só a cor (CSS-12)', () => {
   for (const gravidade of GRAVIDADES) {
@@ -16,10 +16,34 @@ test('BadgeGravidade sempre mostra o texto, nunca só a cor (CSS-12)', () => {
   }
 })
 
-test('BadgeStatus mostra o rótulo e o ícone é decorativo', () => {
+// UI-02.00: os tons seguem o laboratório (TelasOa): crítica em vermelho, baixa em azul, as demais em âmbar.
+test('BadgeGravidade é um selo OANET com o tom do laboratório', () => {
+  const tons = { baixa: 'azul', media: 'ambar', alta: 'ambar', critica: 'vermelho' } as const
+  for (const gravidade of GRAVIDADES) {
+    const { unmount } = render(<BadgeGravidade gravidade={gravidade} />)
+    const selo = screen.getByText(rotuloGravidade[gravidade]).closest('.oa-badge')
+    expect(selo?.classList.contains(`oa-badge--${tons[gravidade]}`)).toBe(true)
+    unmount()
+  }
+})
+
+test('BadgeStatus mostra o rótulo e o símbolo é decorativo', () => {
   const { container } = render(<BadgeStatus status="em_andamento" />)
   expect(screen.getByText('Em andamento')).toBeDefined()
-  expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
+  const simbolos = container.querySelectorAll('svg, .oa-badge > span')
+  expect(simbolos.length).toBeGreaterThan(0)
+  for (const simbolo of simbolos) expect(simbolo.getAttribute('aria-hidden')).toBe('true')
+})
+
+// UI-02.00: mesmos tons do laboratório: resolvida em verde, aberta em âmbar, em andamento neutro.
+test('BadgeStatus é um selo OANET com o tom do laboratório', () => {
+  const tons = { aberta: 'ambar', em_andamento: 'neutro', resolvida: 'verde' } as const
+  for (const status of STATUS_OCORRENCIA) {
+    const { unmount } = render(<BadgeStatus status={status} />)
+    const selo = screen.getByText(rotuloStatus[status]).closest('.oa-badge')
+    expect(selo?.classList.contains(`oa-badge--${tons[status]}`)).toBe(true)
+    unmount()
+  }
 })
 
 test('BarraStatus acende um segmento por ocorrência e a legenda filtra', () => {
@@ -48,9 +72,16 @@ test('CabecalhoPagina tem um único h1, descrição e ação', () => {
     </CabecalhoPagina>,
   )
   expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
-  expect(screen.getByRole('heading', { level: 1, name: 'Ocorrências' })).toBeDefined()
+  const titulo = screen.getByRole('heading', { level: 1, name: 'Ocorrências' })
+  expect(titulo.closest('header')?.classList.contains('oa-page-heading')).toBe(true) // UI-02.00: abertura OANET
   expect(screen.getByText('Todas as ocorrências da Tropa.')).toBeDefined()
   expect(screen.getByRole('link', { name: 'Registrar ocorrência' })).toBeDefined()
+})
+
+test('CabecalhoPagina sem descrição nem ação mostra só o título', () => {
+  const { container } = render(<CabecalhoPagina titulo="Sobre" />)
+  expect(screen.getByRole('heading', { level: 1, name: 'Sobre' })).toBeDefined()
+  expect(container.querySelector('p')).toBeNull()
 })
 
 test('TabelaOcorrencias não tem texto solto entre células (hidratação)', () => {

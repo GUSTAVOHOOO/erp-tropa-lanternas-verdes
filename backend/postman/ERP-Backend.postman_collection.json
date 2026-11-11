@@ -1,0 +1,2660 @@
+{
+  "info": {
+    "name": "ERP Tropa - Backend local",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Roteiro sequencial com autenticação, 30 operações, exemplos JSON e erros esperados. Leia backend/postman/README.md. Requer seed completo. Tokens e IDs são preenchidos no ambiente ERP Local. A coleção cria dados de teste; não use banco com dados que precisem ser preservados."
+  },
+  "item": [
+    {
+      "name": "01 - Preparação e consultas públicas",
+      "item": [
+        {
+          "name": "01 - Saúde e iniciar nova rodada [200]",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const rodada = Date.now().toString() + Math.floor(Math.random() * 1000).toString();",
+                  "pm.environment.set('rodada', rodada);",
+                  "pm.environment.set('emailLanterna', 'lanterna-' + rodada + '@postman.invalid');",
+                  "pm.environment.set('emailOutroSetor', 'outro-' + rodada + '@postman.invalid');",
+                  "pm.environment.set('lanternaId', 'postman-' + rodada);",
+                  "['tokenGuardiao', 'tokenLanterna', 'tokenOutroSetor', 'usuarioId', 'ocorrenciaId', 'comentarioId', 'setorTeste'].forEach(function (chave) { pm.environment.unset(chave); });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/saude",
+            "description": "Execute primeiro. Gera e-mails e slug exclusivos para esta rodada. Precisa do ambiente ERP Local selecionado.\nResultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "02 - Listar setores e escolher ID livre [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Listar setores e escolher ID livre', function () { pm.expect(resposta.dados).to.be.an('array'); const usados = new Set(resposta.dados.map(function (s) { return s.id; })); let livre = 9000; while (usados.has(livre) && livre <= 9999) livre++; pm.expect(livre).to.be.at.most(9999); pm.environment.set('setorTeste', livre); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/setores",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "03 - Listar lanternas com paginação [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Listar lanternas com paginação', function () { pm.expect(resposta.dados.itens).to.be.an('array'); pm.expect(resposta.dados.meta.total).to.be.a('number'); pm.expect(resposta.dados.meta.pagina).to.be.a('number'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/lanternas?pagina=1&limite=5&ordenar=codinome&ordem=asc",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "04 - Ficha pública de Hal Jordan [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Ficha pública de Hal Jordan', function () { pm.expect(resposta.dados.id).to.eql('hal-jordan'); pm.expect(resposta.dados.habilidades).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/lanternas/hal-jordan",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02 - Cadastro, login e tokens",
+      "item": [
+        {
+          "name": "05 - Cadastrar conta Lanterna [201]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "if (pm.response.code === 201) pm.environment.set('usuarioId', resposta.dados.id);",
+                  "pm.test('Conferir Cadastrar conta Lanterna', function () { pm.expect(resposta.dados.id).to.be.a('string'); pm.expect(resposta.dados.papel).to.eql('lanterna'); pm.expect(resposta.dados.setorId).to.eql(2814); pm.expect(resposta.dados).not.to.have.property('senhaHash'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/cadastro",
+            "description": "Resultado esperado: HTTP 201.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lanterna Postman\",\n  \"email\": \"{{emailLanterna}}\",\n  \"senha\": \"{{senhaTeste}}\",\n  \"setorId\": 2814\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "06 - Cadastrar Lanterna de outro setor [201]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/cadastro",
+            "description": "Resultado esperado: HTTP 201.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lanterna de outro setor\",\n  \"email\": \"{{emailOutroSetor}}\",\n  \"senha\": \"{{senhaTeste}}\",\n  \"setorId\": 674\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "07 - Login Guardião do seed [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "if (pm.response.code === 200) pm.environment.set('tokenGuardiao', resposta.dados.token);",
+                  "pm.test('Conferir Login Guardião do seed', function () { pm.expect(resposta.dados.token).to.be.a('string'); pm.expect(resposta.dados.expiresIn).to.be.a('number'); pm.expect(resposta.dados.usuario.papel).to.eql('guardiao'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/login",
+            "description": "Credenciais locais do seed. Se usou SEED_SENHA, ajuste senhaGuardiao no ambiente Postman.\nResultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailGuardiao}}\",\n  \"senha\": \"{{senhaGuardiao}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "08 - Login da nova Lanterna [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "if (pm.response.code === 200) pm.environment.set('tokenLanterna', resposta.dados.token);",
+                  "pm.test('Conferir Login da nova Lanterna', function () { pm.expect(resposta.dados.usuario.papel).to.eql('lanterna'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/login",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailLanterna}}\",\n  \"senha\": \"{{senhaTeste}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "09 - Login de outro setor [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "if (pm.response.code === 200) pm.environment.set('tokenOutroSetor', resposta.dados.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/login",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailOutroSetor}}\",\n  \"senha\": \"{{senhaTeste}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "10 - Consultar sessão Guardião [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Consultar sessão Guardião', function () { pm.expect(resposta.dados.papel).to.eql('guardiao'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/auth/me",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "11 - Consultar sessão Lanterna [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Consultar sessão Lanterna', function () { pm.expect(resposta.dados.papel).to.eql('lanterna'); pm.expect(resposta.dados.lanternaId).to.eql(null); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/auth/me",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "12 - Sem token [401]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('NAO_AUTENTICADO'); pm.expect(resposta.erro.status).to.eql(401); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/me",
+            "description": "Resultado esperado: HTTP 401 / NAO_AUTENTICADO."
+          },
+          "response": []
+        },
+        {
+          "name": "13 - Token inválido [401]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('NAO_AUTENTICADO'); pm.expect(resposta.erro.status).to.eql(401); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInvalido}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/auth/me",
+            "description": "Resultado esperado: HTTP 401 / NAO_AUTENTICADO."
+          },
+          "response": []
+        },
+        {
+          "name": "14 - Senha incorreta [401]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('CREDENCIAIS_INVALIDAS'); pm.expect(resposta.erro.status).to.eql(401); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/login",
+            "description": "Resultado esperado: HTTP 401 / CREDENCIAIS_INVALIDAS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailLanterna}}\",\n  \"senha\": \"senha-errada-exemplo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "15 - Cadastro com e-mail duplicado [409]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', function () { pm.response.to.have.status(409); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('EMAIL_JA_CADASTRADO'); pm.expect(resposta.erro.status).to.eql(409); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/cadastro",
+            "description": "Resultado esperado: HTTP 409 / EMAIL_JA_CADASTRADO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lanterna Postman\",\n  \"email\": \"{{emailLanterna}}\",\n  \"senha\": \"{{senhaTeste}}\",\n  \"setorId\": 2814\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "16 - Cadastro não aceita escolher papel [400]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('DADOS_INVALIDOS'); pm.expect(resposta.erro.status).to.eql(400); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });",
+                  "pm.test('Detalhes da validação', function () { pm.expect(resposta.erro.detalhes).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/cadastro",
+            "description": "Resultado esperado: HTTP 400 / DADOS_INVALIDOS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Lanterna Postman\",\n  \"email\": \"{{emailLanterna}}\",\n  \"senha\": \"{{senhaTeste}}\",\n  \"setorId\": 2814,\n  \"papel\": \"guardiao\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "17 - Cadastro com campos obrigatórios ausentes [400]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('DADOS_INVALIDOS'); pm.expect(resposta.erro.status).to.eql(400); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });",
+                  "pm.test('Detalhes da validação', function () { pm.expect(resposta.erro.detalhes).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/auth/cadastro",
+            "description": "Resultado esperado: HTTP 400 / DADOS_INVALIDOS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Incompleto\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 - Usuários e autorização por papel",
+      "item": [
+        {
+          "name": "18 - Listar usuários como Guardião [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Listar usuários como Guardião', function () { pm.expect(resposta.dados.itens).to.be.an('array'); pm.expect(resposta.dados.meta.total).to.be.a('number'); pm.expect(resposta.dados.meta.pagina).to.be.a('number'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/usuarios?pagina=1&limite=10",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "19 - Lanterna não lista usuários [403]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('SEM_PERMISSAO'); pm.expect(resposta.erro.status).to.eql(403); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/usuarios",
+            "description": "Resultado esperado: HTTP 403 / SEM_PERMISSAO."
+          },
+          "response": []
+        },
+        {
+          "name": "20 - Promover conta criada a Guardião [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/usuarios/{{usuarioId}}/papel",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"papel\": \"guardiao\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "21 - Mesmo token reflete promoção [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Mesmo token reflete promoção', function () { pm.expect(resposta.dados.papel).to.eql('guardiao'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/auth/me",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "22 - Retornar conta criada a Lanterna [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/usuarios/{{usuarioId}}/papel",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"papel\": \"lanterna\",\n  \"setorId\": 2814\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "23 - Mesmo token reflete papel Lanterna [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Mesmo token reflete papel Lanterna', function () { pm.expect(resposta.dados.papel).to.eql('lanterna'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/auth/me",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 - Setores",
+      "item": [
+        {
+          "name": "24 - Criar setor [201]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Criar setor', function () { pm.expect(resposta.dados.id).to.be.a('number'); pm.expect(resposta.dados.nome).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/setores",
+            "description": "Resultado esperado: HTTP 201.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{setorTeste}},\n  \"nome\": \"Setor Postman\",\n  \"descricao\": \"Setor temporário criado pela coleção do Postman.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "25 - Consultar setor criado [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/setores/{{setorTeste}}",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "26 - Editar setor [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/setores/{{setorTeste}}",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Setor Postman editado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "27 - Setor duplicado [409]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', function () { pm.response.to.have.status(409); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('SETOR_JA_CADASTRADO'); pm.expect(resposta.erro.status).to.eql(409); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/setores",
+            "description": "Resultado esperado: HTTP 409 / SETOR_JA_CADASTRADO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{setorTeste}},\n  \"nome\": \"Setor Postman\",\n  \"descricao\": \"Setor temporário criado pela coleção do Postman.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "28 - Lanterna não cria setor [403]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403', function () { pm.response.to.have.status(403); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('SEM_PERMISSAO'); pm.expect(resposta.erro.status).to.eql(403); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/setores",
+            "description": "Resultado esperado: HTTP 403 / SEM_PERMISSAO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{setorTeste}},\n  \"nome\": \"Setor Postman\",\n  \"descricao\": \"Setor temporário criado pela coleção do Postman.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "29 - Campo extra é rejeitado [400]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('DADOS_INVALIDOS'); pm.expect(resposta.erro.status).to.eql(400); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });",
+                  "pm.test('Detalhes da validação', function () { pm.expect(resposta.erro.detalhes).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/setores/{{setorTeste}}",
+            "description": "Resultado esperado: HTTP 400 / DADOS_INVALIDOS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Teste inválido\",\n  \"extra\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 - Fichas e vínculo",
+      "item": [
+        {
+          "name": "30 - Fila sem ficha vinculada [409]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', function () { pm.response.to.have.status(409); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('CONTA_SEM_LANTERNA'); pm.expect(resposta.erro.status).to.eql(409); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/minha-fila",
+            "description": "Resultado esperado: HTTP 409 / CONTA_SEM_LANTERNA."
+          },
+          "response": []
+        },
+        {
+          "name": "31 - Criar ficha [201]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/lanternas",
+            "description": "Resultado esperado: HTTP 201.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{lanternaId}}\",\n  \"codinome\": \"Lanterna Postman\",\n  \"identidadeCivil\": \"Pessoa de Teste\",\n  \"especie\": \"Humana\",\n  \"planetaNatal\": \"Terra\",\n  \"setorId\": 2814,\n  \"habilidades\": [\n    \"Resgate\",\n    \"Construções de energia\"\n  ],\n  \"biografia\": \"Ficha de demonstração para testar os endpoints HTTP.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "32 - Consultar ficha criada [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Consultar ficha criada', function () { pm.expect(resposta.dados.id).to.eql(pm.environment.get('lanternaId')); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/lanternas/{{lanternaId}}",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "33 - Editar ficha [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/lanternas/{{lanternaId}}",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"biografia\": \"Biografia editada durante os testes com o Postman.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "34 - Mentor próprio é inválido [422]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('MENTOR_INVALIDO'); pm.expect(resposta.erro.status).to.eql(422); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/lanternas/{{lanternaId}}",
+            "description": "Resultado esperado: HTTP 422 / MENTOR_INVALIDO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mentorId\": \"{{lanternaId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "35 - Afastar ficha sem missões [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/lanternas/{{lanternaId}}/status",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"afastado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "36 - Reativar ficha [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/lanternas/{{lanternaId}}/status",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ativo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "37 - Vincular conta à ficha [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/usuarios/{{usuarioId}}/lanterna",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lanternaId\": \"{{lanternaId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "38 - Fila inicialmente vazia [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Fila inicialmente vazia', function () { pm.expect(resposta.dados.itens).to.be.an('array'); pm.expect(resposta.dados.meta.total).to.be.a('number'); pm.expect(resposta.dados.meta.pagina).to.be.a('number'); });",
+                  "pm.test('Conferir Fila inicialmente vazia', function () { pm.expect(resposta.dados.itens.length).to.eql(0); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/minha-fila",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 - Ocorrências e ciclo de vida",
+      "item": [
+        {
+          "name": "39 - Criar ocorrência como Lanterna [201]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "if (pm.response.code === 201) pm.environment.set('ocorrenciaId', resposta.dados.id);",
+                  "pm.test('Conferir Criar ocorrência como Lanterna', function () { pm.expect(resposta.dados.status).to.eql('aberta'); pm.expect(resposta.dados.setorId).to.eql(2814); pm.expect(resposta.dados.envolvidos).to.be.a('number'); pm.expect(resposta.dados.vencida).to.be.a('boolean'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias",
+            "description": "Resultado esperado: HTTP 201.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Resgate de nave na Terra\",\n  \"descricao\": \"Uma nave ficou sem energia e precisa de ajuda da Tropa para resgatar a tripulação.\",\n  \"planeta\": \"Terra\",\n  \"gravidade\": \"alta\",\n  \"envolvidos\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "40 - Listar ocorrências do setor [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Listar ocorrências do setor', function () { pm.expect(resposta.dados.itens).to.be.an('array'); pm.expect(resposta.dados.meta.total).to.be.a('number'); pm.expect(resposta.dados.meta.pagina).to.be.a('number'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias?pagina=1&limite=10&gravidade=alta",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "41 - Consultar ocorrência criada [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "42 - Outro setor não vê a ocorrência [404]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('NAO_ENCONTRADO'); pm.expect(resposta.erro.status).to.eql(404); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenOutroSetor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}",
+            "description": "Resultado esperado: HTTP 404 / NAO_ENCONTRADO."
+          },
+          "response": []
+        },
+        {
+          "name": "43 - Lanterna não escolhe setor no POST [400]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('DADOS_INVALIDOS'); pm.expect(resposta.erro.status).to.eql(400); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });",
+                  "pm.test('Detalhes da validação', function () { pm.expect(resposta.erro.detalhes).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias",
+            "description": "Resultado esperado: HTTP 400 / DADOS_INVALIDOS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Resgate de nave na Terra\",\n  \"descricao\": \"Uma nave ficou sem energia e precisa de ajuda da Tropa para resgatar a tripulação.\",\n  \"planeta\": \"Terra\",\n  \"gravidade\": \"alta\",\n  \"envolvidos\": 12,\n  \"setorId\": 674\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "44 - Gravidade fora do enum [400]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('DADOS_INVALIDOS'); pm.expect(resposta.erro.status).to.eql(400); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });",
+                  "pm.test('Detalhes da validação', function () { pm.expect(resposta.erro.detalhes).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias",
+            "description": "Resultado esperado: HTTP 400 / DADOS_INVALIDOS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Resgate de nave na Terra\",\n  \"descricao\": \"Uma nave ficou sem energia e precisa de ajuda da Tropa para resgatar a tripulação.\",\n  \"planeta\": \"Terra\",\n  \"gravidade\": \"urgente\",\n  \"envolvidos\": 12\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "45 - Editar ocorrência própria [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Resgate da nave acompanhado pelo Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "46 - Iniciar sem responsável [422]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 422', function () { pm.response.to.have.status(422); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('SEM_RESPONSAVEL'); pm.expect(resposta.erro.status).to.eql(422); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/status",
+            "description": "Resultado esperado: HTTP 422 / SEM_RESPONSAVEL.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"em_andamento\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "47 - Guardião atribui responsável [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/responsavel",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"responsavelId\": \"{{lanternaId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "48 - Minha fila contém a ocorrência [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Minha fila contém a ocorrência', function () { pm.expect(resposta.dados.itens.some(function (item) { return item.id === pm.environment.get('ocorrenciaId'); })).to.eql(true); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/minha-fila",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "49 - Afastamento com carga é recusado [409]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', function () { pm.response.to.have.status(409); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('LANTERNA_EM_MISSAO'); pm.expect(resposta.erro.status).to.eql(409); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/lanternas/{{lanternaId}}/status",
+            "description": "Resultado esperado: HTTP 409 / LANTERNA_EM_MISSAO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"afastado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "50 - Iniciar atendimento [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Iniciar atendimento', function () { pm.expect(resposta.dados.status).to.eql('em_andamento'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/status",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"em_andamento\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "07 - Comentários e eventos",
+      "item": [
+        {
+          "name": "51 - Criar comentário [201]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "if (pm.response.code === 201) pm.environment.set('comentarioId', resposta.dados.id);",
+                  "pm.test('Conferir Criar comentário', function () { pm.expect(resposta.dados.texto).to.be.a('string'); pm.expect(resposta.dados.autor.nome).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/comentarios",
+            "description": "Resultado esperado: HTTP 201.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"texto\": \"Equipe enviada ao local. Iniciamos o resgate da tripulação.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "52 - Listar comentários [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Listar comentários', function () { pm.expect(resposta.dados.itens).to.be.an('array'); pm.expect(resposta.dados.meta.total).to.be.a('number'); pm.expect(resposta.dados.meta.pagina).to.be.a('number'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/comentarios?pagina=1&limite=20",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "53 - Listar eventos [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Listar eventos', function () { pm.expect(resposta.dados.itens).to.be.an('array'); pm.expect(resposta.dados.meta.total).to.be.a('number'); pm.expect(resposta.dados.meta.pagina).to.be.a('number'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/eventos?pagina=1&limite=20",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "54 - Outro setor não comenta [404]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('NAO_ENCONTRADO'); pm.expect(resposta.erro.status).to.eql(404); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenOutroSetor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/comentarios",
+            "description": "Resultado esperado: HTTP 404 / NAO_ENCONTRADO.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"texto\": \"Comentário fora do setor.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "55 - Apagar comentário pelo autor [204]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () { pm.response.to.have.status(204); });",
+                  "pm.test('204 sem corpo', function () { pm.expect(pm.response.text()).to.eql(''); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/comentarios/{{comentarioId}}",
+            "description": "Resultado esperado: HTTP 204."
+          },
+          "response": []
+        },
+        {
+          "name": "56 - Comentário apagado não aparece [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Comentário apagado não aparece', function () { pm.expect(resposta.dados.itens.some(function (item) { return item.id === pm.environment.get('comentarioId'); })).to.eql(false); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/comentarios",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "08 - Resolução, dashboard e exclusão",
+      "item": [
+        {
+          "name": "57 - Resolver com justificativa [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });",
+                  "pm.test('Conferir Resolver com justificativa', function () { pm.expect(resposta.dados.status).to.eql('resolvida'); pm.expect(resposta.dados.resolvidaEm).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}/status",
+            "description": "Resultado esperado: HTTP 200.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"resolvida\",\n  \"resolucao\": \"Todos os tripulantes foram resgatados e a nave foi rebocada com segurança.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "58 - Resolvida não pode ser editada [409]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409', function () { pm.response.to.have.status(409); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('OCORRENCIA_RESOLVIDA'); pm.expect(resposta.erro.status).to.eql(409); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}",
+            "description": "Resultado esperado: HTTP 409 / OCORRENCIA_RESOLVIDA.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Tentativa de editar resolvida\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "59 - Dashboard Guardião [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/dashboard?dias=7",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "60 - Dashboard Lanterna [200]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(true); });",
+                  "pm.test('Dados presentes', function () { pm.expect(resposta).to.have.property('dados'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenLanterna}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/dashboard?dias=7",
+            "description": "Resultado esperado: HTTP 200."
+          },
+          "response": []
+        },
+        {
+          "name": "61 - Dashboard com período inválido [400]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('DADOS_INVALIDOS'); pm.expect(resposta.erro.status).to.eql(400); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });",
+                  "pm.test('Detalhes da validação', function () { pm.expect(resposta.erro.detalhes).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/dashboard?dias=3",
+            "description": "Resultado esperado: HTTP 400 / DADOS_INVALIDOS."
+          },
+          "response": []
+        },
+        {
+          "name": "62 - Excluir ocorrência criada [204]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () { pm.response.to.have.status(204); });",
+                  "pm.test('204 sem corpo', function () { pm.expect(pm.response.text()).to.eql(''); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}",
+            "description": "Exclusão lógica somente da ocorrência desta rodada.\nResultado esperado: HTTP 204."
+          },
+          "response": []
+        },
+        {
+          "name": "63 - Ocorrência excluída retorna 404 [404]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('NAO_ENCONTRADO'); pm.expect(resposta.erro.status).to.eql(404); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/ocorrencias/{{ocorrenciaId}}",
+            "description": "Resultado esperado: HTTP 404 / NAO_ENCONTRADO."
+          },
+          "response": []
+        },
+        {
+          "name": "64 - Excluir setor temporário vazio [204]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () { pm.response.to.have.status(204); });",
+                  "pm.test('204 sem corpo', function () { pm.expect(pm.response.text()).to.eql(''); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenGuardiao}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/setores/{{setorTeste}}",
+            "description": "Resultado esperado: HTTP 204."
+          },
+          "response": []
+        },
+        {
+          "name": "65 - Setor excluído retorna 404 [404]",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "const resposta = pm.response.json();",
+                  "pm.test('Envelope e tipos', function () { pm.expect(resposta.sucesso).to.be.a('boolean'); pm.expect(resposta.sucesso).to.eql(false); });",
+                  "pm.test('Código de erro', function () { pm.expect(resposta.erro.codigo).to.eql('NAO_ENCONTRADO'); pm.expect(resposta.erro.status).to.eql(404); pm.expect(resposta.erro.mensagem).to.be.a('string'); pm.expect(resposta.caminho).to.be.a('string'); pm.expect(resposta.timestamp).to.be.a('string'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": "{{baseUrl}}/setores/{{setorTeste}}",
+            "description": "Resultado esperado: HTTP 404 / NAO_ENCONTRADO."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -16,8 +16,12 @@ de alterá-los. As regras de código estão nas skills
 
 ## Arquitetura atual
 
-Aplicação Next.js com App Router, TypeScript e React. O json-server é a API
-de demonstração; o diretório `backend/` (NestJS) ainda não existe.
+Aplicação Next.js com App Router, TypeScript e React. O json-server continua como
+API de demonstração do front. `backend/` agora contém bootstrap HTTP, persistência
+SQLite/TypeORM, autenticação, seeds mínimo/completo, rotas de Usuários, Setores,
+Lanternas, Ocorrências, linha do tempo de Eventos e Comentários e Dashboard
+(BE-01/02/03/04/05/06/07a/07b/08/09/10/07c/11). A entrega de contrato completa
+segue no [plano BE](../backend/PLANO-IMPLEMENTACAO.md).
 Consulte versões e scripts em [package.json](../../package.json), sem pressupor
 as APIs de outra versão do framework.
 
@@ -59,7 +63,7 @@ oferecida pelo json-server.
 | Trabalho independente FE/BE | `docs/frontend/PLANO-IMPLEMENTACAO.md`, `docs/backend/PLANO-IMPLEMENTACAO.md` | `docs/PLANO.md`, `docs/INTEGRACAO.md` |
 | Contrato verificável e exemplos | `docs/contratos/` | `docs/backend/API.md`, `DTOS.md`; mock e API reais ainda precisam ser implementados |
 | Componentes compartilhados (cabeçalho, tabela, badges, campos, estados) | `components/*.tsx`, `components/ui/*` | Inventário e destino em UI-02.00 do plano FE; consumidores em `app/` |
-| Ordem de ativação real (Corte 1 e aditivos) e fixture de integração | `docs/INTEGRACAO.md` §3 e §4 | Planos FE/BE; `backend/` e `fixture:integracao` ainda não existem |
+| Ordem de ativação real (Corte 1 e aditivos) e fixture de integração | `docs/INTEGRACAO.md` §3 e §4 | Planos FE/BE; BE-01/02/03/04/05/06/07a/07b/08/09/10 e fixture etapas a–e existem |
 
 `(site)` e `(painel)` organizam layouts sem aparecer na URL. `_components`
 contém componentes locais da rota. `components/` concentra os compartilhados.

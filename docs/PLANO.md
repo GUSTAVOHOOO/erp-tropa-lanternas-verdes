@@ -83,30 +83,31 @@ contratos novos acontece no Corte 1, dependente da API.
 
 ## Adoção da UI oficial
 
-### UI-01 Casca OANET nas rotas reais — parcial, sem aceite
-**Depende de:** base local do laboratório (já existe); não depende da API nova.
-**Responsável de implementação:** dev FE a atribuir na retomada; o receptor do handoff preservou o parcial e está na DOC-03, sem retomar código.
+### UI-01 Casca OANET nas rotas reais — Concluída
+**Estado:** Integrada à `main` pela PR #1 em 2026-11-10 (merge `f0cb363`). Histórico em [HANDOFF-OANET.md](agents/HANDOFF-OANET.md).
 **Arquivos:** casca reutilizável em `components/oanet/`, layouts público/privado,
 `app/globals.css`, testes correspondentes. Sem dependências novas ou escrita no seed.
-Extrair fundo, cabeçalho, navegação, sidebar sticky e ciclo de movimento; usar
+Extraiu fundo, cabeçalho, navegação, sidebar sticky e ciclo de movimento; usa
 rotas/Links e dados da sessão atual, mantendo logout e checagens no servidor.
 **Aceite:** casca oficial nas rotas públicas e privadas; navegação por URL,
 nome/papel/setor reais, saída funcional, foco/menu acessíveis, movimento reduzido
 e modo calmo preservados, sem importar `dados-demo.ts` nos fluxos reais.
 
-### UI-02.00 Componentes compartilhados
-**Depende de:** UI-01. Inventário com caminhos reais, testes, destino (adaptar, substituir ou remover) e dono único dos componentes de `components/*.tsx` e `components/ui/*` usados pelas rotas: cabeçalhos, tabela, badges, links, campos, mensagens, estados, marca e navegação. Detalhe e aceite no [plano FE](frontend/PLANO-IMPLEMENTACAO.md#ui-0200--componentes-compartilhados-antes-de-qualquer-rota).
+### UI-02.00 Componentes compartilhados — Concluída
+**Estado:** Integrada à `main` pela PR #3 em 2026-11-11 (merge `241d837`).
+Inventário completo executado com caminhos reais, testes e destino (adaptar, substituir ou remover) dos componentes de `components/*.tsx` e `components/ui/*`: cabeçalhos, tabela, badges, links, campos, mensagens, estados, marca e navegação. Detalhe e aceite no [plano FE](frontend/PLANO-IMPLEMENTACAO.md#ui-0200--componentes-compartilhados-antes-de-qualquer-rota) e histórico em [HANDOFF-FRONT.md](agents/HANDOFF-FRONT.md).
 **Aceite:** todo componente do inventário no destino indicado, testes passando, nenhum import de arquivo removido.
 
-### UI-02 Conteúdo e estados no vocabulário OANET
-**Depende de:** UI-01 e UI-02.00. Migrar as rotas existentes de [TELAS.md](frontend/TELAS.md)
+### UI-02 Conteúdo e estados no vocabulário OANET — Concluída
+**Estado:** Concluída em 2026-11-11; as 12 frentes (UI-02.01 a UI-02.12) foram integradas à `main` através das PRs #6, #7 e #8.
+Migração de todas as rotas existentes de [TELAS.md](frontend/TELAS.md)
 (portal, Sobre, login, catálogo/ficha, painel, ocorrências e formulários) e
-seus estados carregando/erro/vazio/404/acesso negado. Atualizar ou redirecionar
-`/design-system`. Reutilizar a arte vetorial e os controles; dados e permissões
-continuam reais, mesmo durante a fase json-server.
+seus estados carregando/erro/vazio/404/acesso negado. Redirecionamento permanente de
+`/design-system` para `/laboratorio` (decisão D28). Arte vetorial, construtos e controles OANET adotados.
+Handoff e backlog de refinamento em [HANDOFF-UI-02.md](agents/HANDOFF-UI-02.md).
 **Aceite:** nenhuma rota concluída usa o design antigo como referência; sem
 mock de login/escrita, com validação, teclado, celular e movimento reduzido
-conferidos. Cada entrega atualiza `TELAS.md` com seu estado real.
+conferidos. 204 testes verdes. Atualização completa em `TELAS.md`.
 
 UI-01/UI-02 não substituem FE-00 a FE-10. FE-02 em diante adotam a casca UI-01;
 o marco final M4 exige também UI-02 e a linguagem OANET nas features novas.

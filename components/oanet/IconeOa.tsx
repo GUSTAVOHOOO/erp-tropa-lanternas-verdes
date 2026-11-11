@@ -5,7 +5,7 @@ export type IconeOaNome =
   | "equipamentos" | "hierarquia" | "relatorios" | "comunicacoes"
   | "seta" | "mais" | "menos" | "alvo" | "sino" | "configuracao"
   | "sair" | "menu" | "fechar" | "busca" | "escudo" | "energia"
-  | "verificado" | "olho" | "pausa" | "play" | "codigo";
+  | "verificado" | "olho" | "pausa" | "play" | "codigo" | "brilho";
 
 const geometrias: Record<IconeOaNome, ReactNode> = {
   painel: <><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" /><path d="M6 6h1M17 6h1M6 17h1M17 17h1" /></>,
@@ -34,6 +34,7 @@ const geometrias: Record<IconeOaNome, ReactNode> = {
   pausa: <><path d="M6 4h4v16H6zM14 4h4v16h-4z" /></>,
   play: <path d="m7 3 14 9-14 9z" />,
   codigo: <><path d="m7 5-6 7 6 7M17 5l6 7-6 7M14 3l-4 18" /></>,
+  brilho: <><path d="M12 3v4M12 17v4M3 12h4M17 12h4" /><path d="m12 8 1.5 2.5L16 12l-2.5 1.5L12 16l-1.5-2.5L8 12l2.5-1.5z" /><path d="M5 5l2 2M17 17l2 2" /></>,
 };
 
 type IconeOaProps = Omit<SVGProps<SVGSVGElement>, "name"> & {

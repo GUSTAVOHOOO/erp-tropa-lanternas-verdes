@@ -97,10 +97,29 @@ Todas as 12 frentes da UI-02 foram validadas com sucesso e integradas à `main`:
 
 ## 3. Backlog de Ações para a Próxima Iteração (UI-03)
 
-| ID | Item | Escopo / Arquivo | Complexidade |
-| :--- | :--- | :--- | :--- |
-| **REF-01** | Fixar a barra lateral em desktop (`position: sticky`) | `app/globals.css` (`.oa-shell > .oa-sidebar`) | Baixa (1 dia) |
-| **REF-02** | Safe area de padding inferior nas molduras OANET | `app/globals.css` (`.oa-panel-content`) e views | Baixa (1 dia) |
-| **REF-03** | Ajuste na quina do `SeloOa` (contorno na base-direita) | `app/globals.css` (`.oa-badge`) | Baixa (0.5 dia) |
-| **REF-04** | Redesign do botão de Modo Calmo (ícone + tooltip) | `components/oanet/CascaOa.tsx` e `IconeOa.tsx` | Baixa (0.5 dia) |
-| **REF-05** | Definição funcional do Cubo de Setores no topo | `components/oanet/CascaOa.tsx` | Média (conforme spec de produto) |
+| ID | Item | Escopo / Arquivo | Complexidade | Situação |
+| :--- | :--- | :--- | :--- | :--- |
+| **REF-01** | Fixar a barra lateral em desktop (`position: sticky`) | `app/globals.css` (`.oa-shell > .oa-sidebar`) | Baixa (1 dia) | Concluído (UI-03) |
+| **REF-02** | Safe area de padding inferior nas molduras OANET | `app/globals.css` (`.oa-panel-content`) e views | Baixa (1 dia) | Concluído (UI-03) |
+| **REF-03** | Ajuste na quina do `SeloOa` (contorno na base-direita) | `app/globals.css` (`.oa-badge`) | Baixa (0.5 dia) | Concluído (UI-03) |
+| **REF-04** | Redesign do botão de Modo Calmo (ícone + tooltip) | `components/oanet/CascaOa.tsx` e `IconeOa.tsx` | Baixa (0.5 dia) | Concluído (UI-03) |
+| **REF-05** | Definição funcional do Cubo de Setores no topo | `components/oanet/CascaOa.tsx` | Média (conforme spec de produto) | Concluído (opção 2); opção 1 pendente |
+
+---
+
+## 4. Entrega dos refinamentos (UI-03, 2026-11-11)
+
+Os itens do backlog da seção 3 foram implementados na branch `front/ui-03-refinamentos`.
+
+| ID | Situação | O que mudou |
+| :--- | :--- | :--- |
+| REF-01 | Concluído | A sidebar continua sticky, mas a altura passou de `calc(100dvh - 36px)` para `calc(100dvh - 71px)` em `app/globals.css`. Assim ela não é mais empurrada para cima pelo rodapé `.oa-system-footer` no fim da rolagem. Medido em 1440x900: topo da sidebar foi de -17px para 18px no fim da rolagem. O diagnóstico original do item 1 estava incompleto. |
+| REF-02 | Concluído | Nova classe `.oa-panel-body` (16px 16px 28px; 20px 24px 30px a partir de 768px), aplicada às molduras de Status operacional, Filtros operacionais, Dados da ocorrência, Registro operacional, Atualizar status e Designação de Lanterna. Tabelas seguem rentes por decisão, e `.oa-panel-content` não recebeu padding. |
+| REF-03 | Concluído | Opção A aplicada: `clip-path` do `.oa-badge` em `polygon(0 4px, 4px 0, 100% 0, 100% 100%, 0 100%)`. |
+| REF-04 | Concluído | A engrenagem foi trocada pelo novo ícone "brilho" (`IconeOa`). O botão recebeu a classe `oa-calm-toggle` (borda de energia quando ativo) e tooltip visível por hover e foco, ligado por `aria-describedby`. Textos: "Modo calmo: reduz brilho e animações" e "Modo calmo ligado: brilho e animações reduzidos". O nome acessível "Reduzir efeitos luminosos" foi mantido. |
+| REF-05 | Concluído (opção 2) | O cubo virou `role="img"` com nome e tooltip "Rede OANET: 3.600 setores sob a guarda de Oa". O texto vem do material de `/sobre`, não é métrica. Não há interação nova. |
+| Hidratação (extra) | Concluído | Corrigido o aviso "1 Issue" do Next em todas as telas. `useMovimentoOa` gravava `data-offscreen` nas molduras antes da hidratação; `MolduraOa` recebeu `suppressHydrationWarning`. |
+
+Verificações: `npm run test:run` (40 arquivos, 206 testes, exit 0), `npm run lint` (exit 0) e `npm run build` (exit 0). Não há erros de console no dev em 5 rotas. Capturas feitas em 1440 e 375 px.
+
+Pendente: decisão de produto sobre tornar o cubo de setores interativo (REF-05, opção 1).

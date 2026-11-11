@@ -9,7 +9,7 @@ export function MolduraOa({ titulo, icone, acao, children, className = '' }: {
   titulo?: string; icone?: IconeOaNome; acao?: ReactNode; children: ReactNode; className?: string
 }) {
   return (
-    <section className={`oa-panel ${className}`}>
+    <section className={`oa-panel ${className}`} suppressHydrationWarning>
       <div className="oa-panel-corners" aria-hidden="true"><i /><i /><i /><i /></div>
       {titulo && <header className="oa-panel-heading"><h2>{icone && <IconeOa nome={icone} />}{titulo}</h2>{acao}</header>}
       <div className="oa-panel-content">{children}</div>

@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
 import { CascaOa, linkAtivo, type LinkCascaOa } from '@/components/oanet/CascaOa'
+import { IconeOa } from '@/components/oanet/IconeOa'
 
 const caminho = '/painel/ocorrencias/7'
 vi.mock('next/navigation', () => ({ usePathname: () => caminho }))
@@ -95,7 +96,21 @@ test('sem slot de saída, a casca não mostra botão Sair', () => {
 test('modo calmo alterna na casca real', () => {
   const { container } = montar()
   const controle = screen.getByRole('button', { name: 'Reduzir efeitos luminosos' })
+  const dica = screen.getByRole('tooltip')
+  expect(controle.getAttribute('aria-describedby')).toBe(dica.id)
+  expect(dica.textContent).toBe('Modo calmo: reduz brilho e animações')
   fireEvent.click(controle)
   expect(container.querySelector('.oa-lab--quiet')).not.toBeNull()
   expect(controle.getAttribute('aria-pressed')).toBe('true')
+  expect(dica.textContent).toBe('Modo calmo ligado: brilho e animações reduzidos')
+})
+
+test('o globo explica a rede OANET sem interação', () => {
+  montar()
+  expect(screen.getByRole('img', { name: /Rede OANET/ })).toBeDefined()
+})
+
+test('o ícone de brilho renderiza SVG decorativo', () => {
+  const { container } = render(<IconeOa nome="brilho" />)
+  expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
 })

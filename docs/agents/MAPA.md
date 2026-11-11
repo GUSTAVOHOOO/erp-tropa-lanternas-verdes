@@ -78,8 +78,9 @@ O alias `@/` aponta para a raiz, conforme [tsconfig.json](../../tsconfig.json).
 | Action → formulário | [ResultadoAcao](../../lib/resultado-acao.ts): `ok`, `erro` geral e `errors` por campo; [aplicarErrosDoServidor](../../lib/erros-formulario.ts) aplica os erros no RHF |
 | Página/action → autorização | [DAL](../../lib/dal.ts): `verificarSessao`, `exigirPapel`, criação/leitura/remoção de cookie |
 | Sessão → setor | [sessao.ts](../../lib/sessao.ts): `podeAcessarSetor`, `setorParaFiltro`; a sessão determina o setor do Lanterna |
-| Servidor → HTTP | [api.ts](../../lib/api.ts) monta URLs com `API_URL`; serviços por recurso fazem `fetch`, checam status e validam a resposta com Zod |
-| HTTP → erro de detalhe | [ApiError](../../lib/api-error.ts) preserva status; [tratarErroDetalhe](../../lib/erro-detalhe.ts) navega em 401/403 e chama `notFound` em 404 |
+| Servidor → HTTP | [api.ts](../../lib/api.ts) tem o cliente único `requisitarApi` e `requisitarApiSemConteudo`: valida o envelope `{ sucesso, dados }` com o schema do serviço, exige cache explícito e envia Bearer quando há token; `urlDaApi` fica só para os serviços json-server ainda não migrados |
+| HTTP → erro de detalhe | [ApiError](../../lib/api-error.ts) carrega status, código e detalhes; [tratarErroDetalhe](../../lib/erro-detalhe.ts) navega em 401/403, chama `notFound` em 404 e converte 400 de leitura de detalhe em `notFound` |
+| HTTP → erro de Action | [resultadoDeErroApi](../../lib/api-error.ts) e [destinoDoErro](../../lib/api-error.ts) tratam `ApiError` em Actions |
 | Persistência → tela | Actions de escrita revalidam `/painel` no escopo `layout`; cadastro/atribuição redirecionam e status retorna `{ ok: true }` |
 
 Os serviços de `lib/` não recebem sessão. Quem chama `listarOcorrencias` precisa

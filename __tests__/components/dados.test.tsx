@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { render, screen } from '@testing-library/react'
 import { BadgeGravidade } from '@/components/BadgeGravidade'
 import { BadgeStatus } from '@/components/BadgeStatus'
-import { BarraStatus } from '@/components/BarraStatus'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { GRAVIDADES, STATUS_OCORRENCIA, rotuloGravidade, rotuloStatus } from '@/lib/schemas/ocorrencia'
@@ -44,30 +43,6 @@ test('BadgeStatus é um selo OANET com o tom do laboratório', () => {
     expect(selo?.classList.contains(`oa-badge--${tons[status]}`)).toBe(true)
     unmount()
   }
-})
-
-test('BarraStatus acende um segmento por ocorrência e a legenda filtra', () => {
-  const contagens = {
-    aberta: 2,
-    em_andamento: 0,
-    resolvida: 1,
-  }
-  const { container } = render(<BarraStatus contagens={contagens} />)
-  expect(container.querySelectorAll('[data-status]')).toHaveLength(3)
-  expect(screen.getByRole('link', { name: /2\s*abertas/ }).getAttribute('href')).toBe('/painel/ocorrencias?status=aberta')
-  expect(screen.getByRole('link', { name: /0\s*em andamento/ }).getAttribute('href')).toBe('/painel/ocorrencias?status=em_andamento')
-  expect(screen.getByRole('link', { name: /1\s*resolvidas/ }).getAttribute('href')).toBe('/painel/ocorrencias?status=resolvida')
-})
-
-test('BarraStatus sem ocorrências não desenha a barra e mostra zeros', () => {
-  const contagens = {
-    aberta: 0,
-    em_andamento: 0,
-    resolvida: 0,
-  }
-  const { container } = render(<BarraStatus contagens={contagens} />)
-  expect(container.querySelectorAll('[data-status]')).toHaveLength(0)
-  expect(screen.getByRole('link', { name: /0\s*abertas/ })).toBeDefined()
 })
 
 test('CabecalhoPagina tem um único h1, descrição e ação', () => {

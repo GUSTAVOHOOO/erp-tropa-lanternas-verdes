@@ -1,46 +1,58 @@
-// FE-07a: substituído pelo /dashboard
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BarraStatus } from '@/components/BarraStatus'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
 import { IconeOa } from '@/components/oanet/IconeOa'
 import { MolduraOa } from '@/components/oanet/PainelOa'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
+import { consultarDashboard } from '@/lib/dashboard'
 import { listarTodosLanternas } from '@/lib/lanternas'
-import { contarOcorrencias, listarOcorrencias } from '@/lib/ocorrencias'
-import type { StatusOcorrencia } from '@/lib/schemas/ocorrencia'
+import { listarOcorrencias } from '@/lib/ocorrencias'
+import { DIAS_PADRAO, filtroDashboardSchema } from '@/lib/schemas/dashboard'
 import { listarSetores } from '@/lib/setores'
+import { Dashboard } from './_components/Dashboard'
 
-export const metadata: Metadata = { title: 'Resumo | Central de Comando' }
+export const metadata: Metadata = { title: 'Dashboard | Central de Comando' }
 
-/** Resumo: barra de status com contagens do servidor e as 5 ocorrências mais recentes. */
-export default async function PainelPage() {
+type PainelPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}
+
+/**
+ * Painel operacional: métricas agregadas do dashboard e as 5 ocorrências mais recentes. [API-07][ROTA-10]
+ */
+export default async function PainelPage({ searchParams }: PainelPageProps = {}) {
   const sessao = await verificarSessao() // [AUTH-04]
-  const [aberta, emAndamento, resolvida, respostaRecentes, setores, lanternas] = await Promise.all([ // [API-07]
-    contarOcorrencias({ status: 'aberta' }),
-    contarOcorrencias({ status: 'em_andamento' }),
-    contarOcorrencias({ status: 'resolvida' }),
+  const rawParams = searchParams ? await searchParams : {} // [ROTA-10]
+  const { setor, dias } = filtroDashboardSchema.parse(rawParams) // [ROTA-11]
+
+  const filtroConsulta: { setor?: number; dias?: number } = {}
+  if (dias !== undefined) {
+    filtroConsulta.dias = dias
+  }
+  // Lanterna nunca envia setor (AUTH-07); Guardião envia o setor escolhido (inclusive Setor 0)
+  if (sessao.papel === 'guardiao' && setor !== undefined) {
+    filtroConsulta.setor = setor
+  }
+
+  const [dashboard, setores, respostaRecentes, lanternas] = await Promise.all([ // [API-07]
+    consultarDashboard(filtroConsulta),
+    listarSetores(), // nomes da tabela para todos; o seletor de setor é só do Guardião
     listarOcorrencias({ limite: 5 }),
-    listarSetores(),
     listarTodosLanternas(),
   ])
 
-  const contagens: Record<StatusOcorrencia, number> = {
-    aberta,
-    em_andamento: emAndamento,
-    resolvida,
-  }
-
   const ocorrencias = respostaRecentes.itens
+
+  const descricao =
+    sessao.papel === 'guardiao'
+      ? (setor !== undefined ? `Setor ${setor}.` : 'Visão de todos os setores.')
+      : `Ocorrências do Setor ${sessao.setorId}.`
 
   return (
     <section className="oa-screen grid gap-8">
-      <CabecalhoPagina
-        titulo={`Bem-vindo, ${sessao.nome}`}
-        descricao={sessao.papel === 'guardiao' ? 'Visão de todos os setores.' : `Ocorrências do Setor ${sessao.setorId}.`}
-      >
+      <CabecalhoPagina titulo={`Bem-vindo, ${sessao.nome}`} descricao={descricao}>
         <Link href="/painel/ocorrencias/nova" className="oa-button oa-button--energia"> {/* [ROTA-16] */}
           <span className="oa-button-content">
             <IconeOa nome="mais" />
@@ -49,13 +61,19 @@ export default async function PainelPage() {
         </Link>
       </CabecalhoPagina>
 
-      <MolduraOa titulo="Status operacional" icone="painel">
-        <BarraStatus contagens={contagens} />
-      </MolduraOa>
+      <Dashboard
+        dados={dashboard}
+        dias={dias ?? DIAS_PADRAO}
+        setores={sessao.papel === 'guardiao' ? setores : undefined}
+      />
 
       <MolduraOa titulo="Mais recentes" icone="ocorrencias">
         {ocorrencias.length === 0 ? ( // [API-09]
-          <EstadoVazio titulo="Nenhuma ocorrência registrada" descricao="Quando algo acontecer no setor, registre aqui." acao={{ href: '/painel/ocorrencias/nova', rotulo: 'Registrar ocorrência' }} />
+          <EstadoVazio
+            titulo="Nenhuma ocorrência registrada"
+            descricao="Quando algo acontecer no setor, registre aqui."
+            acao={{ href: '/painel/ocorrencias/nova', rotulo: 'Registrar ocorrência' }}
+          />
         ) : (
           <TabelaOcorrencias
             ocorrencias={ocorrencias}

@@ -24,7 +24,7 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 
 | Tela | Rota | Quem | Estado | Função e mudanças |
 |---|---|---|---|---|
-| Resumo | `/painel` | Guardião, Lanterna | Atual (UI-01, UI-02.06) | Visão geral operacional: saudação contextual por papel/setor, BarraStatus com contadores e links filtrados em MolduraOa, lista de ocorrências recentes em MolduraOa e botão de registro OANET |
+| Dashboard (substitui o Resumo) | `/painel` | Guardião, Lanterna | Preparado contra contrato (FE-07a, P) | Painel operacional com `GET /dashboard`: contagens por status e gravidade, vencidas, tempo médio (nulo como "Sem resoluções ainda"), série dos últimos dias em SVG com tabela equivalente, ranking com links para a Ficha e as ocorrências mais recentes, em MolduraOa; filtro de setor só para o Guardião |
 | Minha fila | `/painel/minha-fila` | Lanterna | **Nova** | Ocorrências atribuídas ao usuário, por Prazo e Gravidade, com destaque às vencidas. O Guardião não a acessa |
 | Ocorrências | `/painel/ocorrencias` | Guardião, Lanterna | Preparado contra contrato (FE-04/05, P) | Lista operacional com filtros de status, gravidade e setor dentro de MolduraOa, tabela OANET, estado vazio com ação de limpar e botão de novo registro |
 | Nova ocorrência | `/painel/ocorrencias/nova` | Guardião, Lanterna | Preparado contra contrato (FE-04/05, P) | Formulário de registro em MolduraOa com BotaoOa, CampoTexto, CampoSelect e validação zóide cliente/servidor |

@@ -52,7 +52,7 @@ oferecida pelo json-server.
 | Login | `app/(site)/login/` | `lib/auth.ts`, `lib/schemas/login.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Cadastro | `app/(site)/cadastro/` | `lib/cadastro.ts`, `lib/schemas/cadastro.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Logout | `app/(painel)/actions.ts` e layout privado | `lib/dal.ts` |
-| Resumo | `app/(painel)/painel/page.tsx` | Serviços de ocorrências, setores, lanternas e `setorParaFiltro` |
+| Dashboard (painel inicial, substitui o Resumo) | `app/(painel)/painel/page.tsx`, `app/(painel)/painel/_components/Dashboard.tsx` | `lib/dashboard.ts`, `lib/schemas/dashboard.ts`, `FiltroDashboard.tsx` |
 | Listagem e filtros privados | `app/(painel)/painel/ocorrencias/page.tsx`, `_components/FiltroOcorrencias.tsx` | `lib/schemas/ocorrencia.ts` (filtro da URL), `lib/ocorrencias.ts` |
 | Criar, editar, alterar status, atribuir ou excluir | `app/(painel)/painel/ocorrencias/actions.ts` | `FormOcorrencia`, `FormEditarOcorrencia`, `FormStatus`, `FormAtribuir`, `ConfirmarExclusao`, schemas, DAL e `lib/ocorrencias.ts` |
 | Detalhe e atribuição | `app/(painel)/painel/ocorrencias/[id]/` | `tratarErroDetalhe`, `lib/permissoes-ocorrencia.ts`, autorização e formulários |

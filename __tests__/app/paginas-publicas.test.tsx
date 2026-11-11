@@ -27,6 +27,20 @@ test('sobre tem título e o juramento', () => {
   expect(screen.getByText(/No dia mais claro, na noite mais densa/)).toBeDefined()
 })
 
+// UI-02.02: Oa, Tropa e juramento em molduras OANET, sem perder leitura, landmarks nem a volta ao início.
+test('sobre compõe as seções em molduras OANET e oferece volta ao início', () => {
+  const { container } = render(<SobrePage />)
+  expect(screen.getByRole('article')).toBeDefined()
+  for (const titulo of ['O juramento', 'Oa e os Guardiões', 'Os setores']) {
+    const secao = screen.getByRole('heading', { level: 2, name: titulo }).closest('.oa-panel')
+    expect(secao).not.toBeNull()
+  }
+  expect(screen.getByText(/Oa fica no centro do universo/)).toBeDefined()
+  expect(screen.getByText(/dividido em 3600 setores/)).toBeDefined()
+  expect(screen.getByRole('link', { name: /Voltar ao início/ }).getAttribute('href')).toBe('/')
+  expect(container.querySelector('.oa-hierarchy-city')?.getAttribute('aria-hidden')).toBe('true')
+})
+
 // O 404 global é renderizado fora da casca: sem o escopo OANET (.oa-lab) os tokens --oa-* não existem
 // e o emblema da Tropa perde o verde.
 test('404 global leva o escopo OANET para o emblema e a saída', () => {

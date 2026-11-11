@@ -9,7 +9,7 @@ O projeto está **em migração** de uma API de demonstração (json-server) par
 | Parte | Estado |
 |---|---|
 | Front-end Next.js (site público e painel) | Pronto, ainda consumindo o json-server |
-| UI OANET oficial (D28) | Base aprovada e implementada em `/laboratorio`; adoção nas rotas reais em migração |
+| UI OANET oficial (D28) | Concluída em todas as 12 rotas existentes (UI-01 e UI-02.00 a UI-02.12 integradas à `main`); refinamentos em [HANDOFF-UI-02](docs/agents/HANDOFF-UI-02.md) |
 | Back-end NestJS (`backend/`) | Documentado, **ainda não implementado** |
 | Migração do front para a API real | Preparação independente por contrato; ativação após aceite da API |
 | Features novas (linha do tempo, comentários, dashboard, fila, Ficha completa) | Especificadas, ainda não implementadas |
@@ -17,7 +17,7 @@ O projeto está **em migração** de uma API de demonstração (json-server) par
 
 Documentação completa em [docs/README.md](docs/README.md).
 Planejamento atual: [plano por frente](docs/PLANO.md). A [DOC-03](docs/agents/DOC-03-PLANEJAMENTO.md) está concluída; a implementação do front está autorizada desde 2026-11-10 e segue o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md). O contrato consumível está identificado em [G-1](docs/INTEGRACAO.md#g-1--aceite-do-contrato).
-A UI-01 (casca OANET com identidade da sessão) foi concluída e integrada à `main` pela PR #1 em 2026-11-10 (merge `f0cb363`). O [handoff OANET](docs/agents/HANDOFF-OANET.md) preserva o histórico dessa transferência.
+A UI-01 (casca OANET) e toda a suíte UI-02 (UI-02.00 a UI-02.12, PRs #1, #2, #3, #6, #7 e #8) foram concluídas e integradas à `main`. O [handoff UI-02](docs/agents/HANDOFF-UI-02.md) traz o relatório de entrega e revisões, e o [handoff OANET](docs/agents/HANDOFF-OANET.md) preserva o histórico da transferência inicial da UI-01.
 Todo design novo parte de [docs/UI.md](docs/UI.md) e dos assets em código do laboratório.
 
 ## Guia para os dois desenvolvedores

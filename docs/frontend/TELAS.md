@@ -1,10 +1,10 @@
 # Telas do front-end
 
-De 2026-11-06. A coluna **Estado** diz se a tela existe hoje ou é planejada. As rotas planejadas foram aceitas em D23. Regras de acesso em [backend/API.md](../backend/API.md#matriz-de-permissões); regras de negócio em [REGRAS-DE-NEGOCIO.md](../backend/REGRAS-DE-NEGOCIO.md). A **forma visual** de cada tela é do redesign OANET ([UI.md](../UI.md)); aqui só a função.
+De 2026-11-06 (atualizado em 2026-11-11 após conclusão da UI-02). A coluna **Estado** diz se a tela existe hoje ou é planejada. As rotas planejadas foram aceitas em D23. Regras de acesso em [backend/API.md](../backend/API.md#matriz-de-permissões); regras de negócio em [REGRAS-DE-NEGOCIO.md](../backend/REGRAS-DE-NEGOCIO.md). A **forma visual** de cada tela é do redesign OANET ([UI.md](../UI.md)); aqui só a função.
 
 Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 
-**Situação visual em 2026-11-10:** laboratório OANET aprovado; casca UI-01 concluída e integrada à `main` (PR #1); componentes compartilhados da UI-02.00 adaptados à OANET e integrados à `main` (PR #3: campos, select, tabela, selos, cabeçalho, estados e avisos; verificação em navegador registrada na PR); cidade de Oa (`CidadeOa`) redesenhada (PR #2). A composição de cada página segue a anterior até a sua linha UI-02.01 a UI-02.12; o 404 global fica fora da casca, só com o escopo de cores OANET, até a UI-02.11. “Existe” abaixo descreve o fluxo atual com json-server, não comprova migração visual OANET. A ordem e a propriedade de cada rota/estado estão no [plano FE/UI](PLANO-IMPLEMENTACAO.md); integração de dados segue [INTEGRACAO.md](../INTEGRACAO.md).
+**Situação visual em 2026-11-11:** laboratório OANET aprovado; casca UI-01 concluída e integrada à `main` (PR #1); componentes compartilhados da UI-02.00 integrados à `main` (PR #3); cidade de Oa (`CidadeOa`) redesenhada (PR #2). Toda a suíte UI-02 (UI-02.01 a UI-02.12) foi concluída e integrada à `main` (PRs #6, #7 e #8), migrando todas as 12 rotas existentes para a identidade visual OANET. O handoff de entrega e o backlog de refinamentos visuais estão documentados em [docs/agents/HANDOFF-UI-02.md](../agents/HANDOFF-UI-02.md). Integração de dados segue [INTEGRACAO.md](../INTEGRACAO.md).
 
 ## Públicas
 
@@ -16,13 +16,8 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Ficha do Lanterna | `/lanternas/[id]` | Atual (UI-01, UI-02.05) | Ficha pública com identidade, espécie, planeta, Setor navegável, status operacional com SeloOa, construto vetorial OANET e link de retorno |
 | Login | `/login` | Atual (UI-01, UI-02.03) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
 | Cadastro | `/cadastro` | **Nova** | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
-<<<<<<< HEAD
 | Acesso negado | `/acesso-negado` | Atual (UI-01, UI-02.11) | Página de aviso 403 com PaginaAviso, EmblemaOa e botão de retorno ao painel |
-| Design system | `/design-system` | Existe, histórico visual | Atualizar ou redirecionar para a referência OANET na adoção |
-=======
-| Acesso negado | `/acesso-negado` | Existe | Só para 403 de papel |
 | Design system | `/design-system` | Atual (UI-01, UI-02.12) | Redirecionamento permanente para a vitrine oficial do laboratório OANET (/laboratorio, decisão D28) |
->>>>>>> 19d3c92 (refactor(design-system): redireciona para laboratório e remove legados (UI-02.12))
 | Laboratório | `/laboratorio` | Existe, UI oficial D28 | Referência de design, assets e movimento; dados ilustrativos, sem API |
 
 ## Painel (autenticado)
@@ -31,7 +26,6 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 |---|---|---|---|---|
 | Resumo | `/painel` | Guardião, Lanterna | Atual (UI-01, UI-02.06) | Visão geral operacional: saudação contextual por papel/setor, BarraStatus com contadores e links filtrados em MolduraOa, lista de ocorrências recentes em MolduraOa e botão de registro OANET |
 | Minha fila | `/painel/minha-fila` | Lanterna | **Nova** | Ocorrências atribuídas ao usuário, por Prazo e Gravidade, com destaque às vencidas. O Guardião não a acessa |
-<<<<<<< HEAD
 | Ocorrências | `/painel/ocorrencias` | Guardião, Lanterna | Atual (UI-01, UI-02.07) | Lista operacional com filtros de status, gravidade e setor dentro de MolduraOa, tabela OANET, estado vazio com ação de limpar e botão de novo registro |
 | Nova ocorrência | `/painel/ocorrencias/nova` | Guardião, Lanterna | Atual (UI-01, UI-02.08) | Formulário de registro em MolduraOa com BotaoOa, CampoTexto, CampoSelect e validação zóide cliente/servidor |
 | Detalhe | `/painel/ocorrencias/[id]` | Guardião, Lanterna | Atual (UI-01, UI-02.09) | Detalhe operacional em MolduraOa com badges de gravidade/status, dados formatados, formulário FormStatus com BotaoOa e ação de atribuição |

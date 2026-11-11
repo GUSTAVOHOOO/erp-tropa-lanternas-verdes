@@ -110,7 +110,9 @@ Para testes focados: `npm exec -- vitest run <caminho-do-teste>`; substituir pel
 
 **Aceite:** cada componente da tabela está no destino indicado e os testes citados passam; `npm run build` compila todos os consumidores; nenhum import resta de arquivo removido. Depois de UI-02.12, `rg -l "@/components/(Emblema|Marca|MenuNavegacao)'" app components __tests__` não encontra nada. Só então UI-02.01 em diante podem consumir os componentes.
 
-## UI-02 — migração de cada rota existente
+## UI-02 — migração de cada rota existente (Concluída e Integrada à `main`)
+
+> **Status em 2026-11-11:** Todas as linhas UI-02.01 a UI-02.12 foram concluídas, validadas com 204 testes e integradas à `main` através das PRs #6 (Bloco A: Públicas), #7 (Bloco B: Painel Operacional) e #8 (Bloco C: Gestão, Estados e Limpeza). O handoff de encerramento e os refinamentos visuais estão catalogados em [HANDOFF-UI-02](../agents/HANDOFF-UI-02.md).
 
 Todas as linhas dependem de UI-01 e UI-02.00 e mantêm regras/actions atuais enquanto a branch usa json-server. Para **cada linha**, criar o caso visual/semântico do aceite, compor `MolduraOa`, `BotaoOa`, `SeloOa`, `IconeOa` e assets pertinentes com dados por props, executar o ciclo acima e atualizar apenas aquela tela em `TELAS.md`. Arquivos “novo” não existem na conferência; os demais existem.
 

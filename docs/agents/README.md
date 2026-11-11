@@ -33,7 +33,7 @@ Use [docs/README.md](../README.md) como índice, carregando as referências quan
    estão em [backend/ESCOPO.md](../backend/ESCOPO.md) e o índice de toda a
    documentação em [docs/README.md](../README.md).
    Para interface, leia também [UI.md](../UI.md): o laboratório OANET é a
-   referência oficial D28. [HANDOFF-OANET.md](HANDOFF-OANET.md) é o histórico da UI-01 parcial; a sequência ativa está no [PLANO](../PLANO.md) e no [plano FE](../frontend/PLANO-IMPLEMENTACAO.md), e a implementação só começa quando o usuário a autorizar.
+   referência oficial D28. A UI-01 e toda a suíte UI-02 (UI-02.00 a UI-02.12) estão 100% integradas à `main` (PRs #1, #2, #3, #6, #7 e #8). O [HANDOFF-UI-02.md](HANDOFF-UI-02.md) traz a entrega e os refinamentos visuais; a sequência ativa de funcionalidades segue no [PLANO](../PLANO.md) e no [plano FE](../frontend/PLANO-IMPLEMENTACAO.md).
 4. Registre objetivo, arquivos, responsável, contratos e aceite usando
    [TAREFA.md](TAREFA.md), no registro de tarefa que o grupo estiver usando.
    Anote a versão e o SHA-256 do contrato (G-1, [INTEGRACAO §2](../INTEGRACAO.md#g-1--aceite-do-contrato)) que você leu antes de abrir a tarefa.

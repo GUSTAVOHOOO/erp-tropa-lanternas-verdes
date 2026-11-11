@@ -1,6 +1,6 @@
 # Documentação do projeto
 
-Atualizada em 2026-11-09. **Atual:** Next + json-server e laboratório OANET aprovado. **Parcial:** casca UI-01 herdada, sem aceite final. **Destino:** NestJS, JWT, novas funcionalidades e migração completa. A [DOC-03](agents/DOC-03-PLANEJAMENTO.md) está concluída com planos e contrato revisados; [G-1](INTEGRACAO.md#g-1--aceite-do-contrato) identifica a revisão consumível. Implementação permanece suspensa até tarefa explícita.
+Atualizada em 2026-11-11. **Atual:** Next + json-server e identidade OANET oficial (UI-01 e UI-02.00 a UI-02.12 integradas à `main`). **Destino:** NestJS, JWT, novas funcionalidades e migração completa da API. A [DOC-03](agents/DOC-03-PLANEJAMENTO.md) está concluída com planos e contrato revisados; [G-1](INTEGRACAO.md#g-1--aceite-do-contrato) identifica a revisão consumível. O [HANDOFF-UI-02](agents/HANDOFF-UI-02.md) traz a conclusão da UI-02 e o backlog de refinamentos visuais.
 
 ## Comece pelo seu trabalho
 
@@ -11,7 +11,7 @@ Atualizada em 2026-11-09. **Atual:** Next + json-server e laboratório OANET apr
 | Dev de back | [Guia dos agentes](agents/README.md) → [plano BE](backend/PLANO-IMPLEMENTACAO.md) → [contrato](contratos/README.md) → RN/modelo da tarefa | Implementar e testar o recurso sem esperar a UI |
 | Integrar as duas frentes | [INTEGRACAO](INTEGRACAO.md) → revisão contratual usada por ambos → evidências das tarefas | Aprovar o gate contra API real com dados isolados |
 | Agente novo | [AGENTS](../AGENTS.md) → [guia](agents/README.md) → [MAPA](agents/MAPA.md) → tarefa atribuída | Conhecer propriedade, restrições e primeiro passo executável |
-| Entender a UI-01 parcial | [Plano FE](frontend/PLANO-IMPLEMENTACAO.md) (UI-01, UI-02.00) → [Handoff](agents/HANDOFF-OANET.md) como histórico | Preservar o parcial; a implementação só recomeça quando o usuário autorizar |
+| Entender a migração da UI | [Plano FE](frontend/PLANO-IMPLEMENTACAO.md) e [Handoff UI-02](agents/HANDOFF-UI-02.md) | Suíte UI-02 concluída; seguir para refinamentos ou tarefas FE |
 | Revisar contratos ou planos | [DOC-03](agents/DOC-03-PLANEJAMENTO.md) → [revisões](agents/revisoes/README.md) | Localizar achados, decisões e evidências de correção |
 
 As skills canônicas de [front](../.claude/skills/frontend-web/SKILL.md) e [back](../.claude/skills/backend-api/SKILL.md) são lidas ao escrever/revisar/explicar o respectivo código. Next exige o guia pertinente instalado em `node_modules/next/dist/docs/` antes de escrever código.
@@ -21,7 +21,7 @@ As skills canônicas de [front](../.claude/skills/frontend-web/SKILL.md) e [back
 | Pasta | Conteúdo e finalidade | Autoridade/estado |
 |---|---|---|
 | `docs/` | Este índice, [PLANO](PLANO.md), [CONTRIBUINDO](CONTRIBUINDO.md), [INTEGRACAO](INTEGRACAO.md) e [UI](UI.md) | Entradas de execução e contrato visual |
-| `docs/agents/` | [Fluxo](agents/README.md), [mapa](agents/MAPA.md), [modelo de tarefa](agents/TAREFA.md), [handoff da UI-01](agents/HANDOFF-OANET.md), [handoff do front](agents/HANDOFF-FRONT.md), [registro DOC-03](agents/DOC-03-PLANEJAMENTO.md) | Operação e estado datado; não redefine produto |
+| `docs/agents/` | [Fluxo](agents/README.md), [mapa](agents/MAPA.md), [modelo de tarefa](agents/TAREFA.md), [handoff da UI-01](agents/HANDOFF-OANET.md), [handoff do front](agents/HANDOFF-FRONT.md), [handoff UI-02](agents/HANDOFF-UI-02.md), [registro DOC-03](agents/DOC-03-PLANEJAMENTO.md) | Operação e estado datado; não redefine produto |
 | `docs/agents/revisoes/` | [Índice](agents/revisoes/README.md), relatórios e correções por rodada | Evidência, não fonte de contrato |
 | `docs/contratos/` | [Entrada](contratos/README.md), OpenAPI JSON, exemplos e validador documental | Formato HTTP acordado de destino; não API implementada |
 | `docs/contratos/exemplos/` | Requisições/respostas e cenários identificados por operação | Fixtures sintéticas de contrato; não dados do produto |

@@ -4,7 +4,6 @@ import { describe, expect, test } from 'vitest'
 import db from '@/db.json'
 import { setorSchema } from '@/lib/schemas/setor'
 import { lanternaSchema, filtroLanternasSchema } from '@/lib/schemas/lanterna'
-import { usuarioSchema } from '@/lib/schemas/usuario'
 import { loginSchema } from '@/lib/schemas/login'
 import {
   atribuicaoSchema,
@@ -19,7 +18,6 @@ describe('db.json respeita o contrato (os schemas de resposta)', () => {
   test('todas as coleções passam no schema', () => {
     expect(() => z.array(setorSchema).parse(db.setores)).not.toThrow()
     expect(() => z.array(lanternaSchema).parse(db.lanternas)).not.toThrow()
-    expect(() => z.array(usuarioSchema).parse(db.usuarios)).not.toThrow()
     expect(() => z.array(ocorrenciaSchema).parse(db.ocorrencias)).not.toThrow()
   })
 

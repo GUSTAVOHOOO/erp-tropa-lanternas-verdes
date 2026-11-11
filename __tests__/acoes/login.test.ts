@@ -1,56 +1,53 @@
 // @vitest-environment node
 import { beforeEach, expect, test, vi } from 'vitest'
-
-vi.mock('next/navigation', () => ({
-  redirect: vi.fn((url: string) => {
-    throw new Error(`NEXT_REDIRECT ${url}`)
-  }),
-  RedirectType: { replace: 'replace', push: 'push' },
+const { redirect, entrarNaApi, gravarCookieSessao } = vi.hoisted(() => ({
+  redirect: vi.fn((url: string, tipo?: string) => { throw new Error(`NEXT_REDIRECT ${url} ${tipo ?? ''}`) }),
+  entrarNaApi: vi.fn(), gravarCookieSessao: vi.fn(),
 }))
-vi.mock('@/lib/usuarios', () => ({ buscarUsuarioPorEmail: vi.fn() }))
-vi.mock('@/lib/dal', () => ({ criarSessao: vi.fn() }))
-
-import { redirect } from 'next/navigation'
-import { buscarUsuarioPorEmail } from '@/lib/usuarios'
-import { criarSessao } from '@/lib/dal'
-import { MENSAGEM_ERRO_API } from '@/lib/resultado-acao'
+vi.mock('next/navigation', () => ({ redirect, RedirectType: { replace: 'replace' } }))
+vi.mock('@/lib/auth', () => ({ entrarNaApi, gravarCookieSessao }))
+import { ApiError } from '@/lib/api-error'
 import { entrar } from '@/app/(site)/login/actions'
-
-const hal = { id: 'u2', nome: 'Hal Jordan', email: 'hal@oa.tropa', senha: 'lanterna123', papel: 'lanterna' as const, setorId: '2814', lanternaId: 'hal-jordan' }
 
 beforeEach(() => vi.clearAllMocks())
 
-test('dados inválidos voltam como erros de campo, sem consultar a API', async () => {
+test('inválido devolve erros de campo sem chamar API', async () => {
   const resultado = await entrar({ email: 'hal', senha: '' })
   expect(resultado.ok).toBe(false)
   expect(resultado.errors?.email?.[0]).toBe('Informe um e-mail válido, como hal@oa.tropa.')
   expect(resultado.errors?.senha?.[0]).toBe('Informe sua senha.')
-  expect(buscarUsuarioPorEmail).not.toHaveBeenCalled()
+  expect(entrarNaApi).not.toHaveBeenCalled()
 })
 
-test('senha errada e e-mail desconhecido dão a mesma mensagem', async () => {
-  vi.mocked(buscarUsuarioPorEmail).mockResolvedValueOnce(hal)
-  expect(await entrar({ email: 'hal@oa.tropa', senha: 'errada' })).toEqual({ ok: false, erro: 'E-mail ou senha incorretos.' })
-  vi.mocked(buscarUsuarioPorEmail).mockResolvedValueOnce(null)
-  expect(await entrar({ email: 'x@oa.tropa', senha: 'qualquer' })).toEqual({ ok: false, erro: 'E-mail ou senha incorretos.' })
-  expect(criarSessao).not.toHaveBeenCalled()
+test('401 não distingue conta inexistente de senha errada e não grava cookie', async () => {
+  entrarNaApi.mockRejectedValueOnce(new ApiError(401, 'CREDENCIAIS_INVALIDAS'))
+  const resultado = await entrar({ email: 'hal@oa.tropa', senha: 'incorreta' })
+  expect(resultado).toEqual({ ok: false, erro: 'E-mail ou senha incorretos.' })
+  expect(gravarCookieSessao).not.toHaveBeenCalled()
 })
 
-test('API fora do ar vira mensagem para humanos', async () => {
-  vi.spyOn(console, 'error').mockImplementation(() => {})
-  vi.mocked(buscarUsuarioPorEmail).mockRejectedValueOnce(new TypeError('fetch failed'))
-  expect(await entrar({ email: 'hal@oa.tropa', senha: 'lanterna123' })).toEqual({ ok: false, erro: MENSAGEM_ERRO_API })
+test('429 orienta aguardar', async () => {
+  entrarNaApi.mockRejectedValueOnce(new ApiError(429, 'MUITAS_TENTATIVAS'))
+  expect(await entrar({ email: 'hal@oa.tropa', senha: 'x' })).toEqual({ ok: false, erro: expect.stringContaining('Aguarde') })
 })
 
-test('sucesso cria a sessão sem senha nem e-mail e substitui o histórico', async () => {
-  vi.mocked(buscarUsuarioPorEmail).mockResolvedValueOnce(hal)
-  await expect(entrar({ email: 'hal@oa.tropa', senha: 'lanterna123' })).rejects.toThrow('NEXT_REDIRECT /painel')
-  expect(criarSessao).toHaveBeenCalledWith({ id: 'u2', nome: 'Hal Jordan', papel: 'lanterna', setorId: '2814', lanternaId: 'hal-jordan' })
+test('senha acima de 72 bytes falha no campo e não chama API', async () => {
+  const resultado = await entrar({ email: 'hal@oa.tropa', senha: `${'a'.repeat(71)}é` })
+  expect(resultado.ok).toBe(false)
+  expect(resultado.errors?.senha).toBeDefined()
+  expect(entrarNaApi).not.toHaveBeenCalled()
+})
+
+test('sucesso grava token e redireciona com replace sem retornar token', async () => {
+  const payload = { token: 'secret.jwt.token', expiresIn: 28800, usuario: { id: 'id', nome: 'Hal' } }
+  entrarNaApi.mockResolvedValueOnce(payload)
+  await expect(entrar({ email: ' Hal@OA.tropa ', senha: 'x' })).rejects.toThrow('NEXT_REDIRECT /painel replace')
+  expect(entrarNaApi).toHaveBeenCalledWith({ email: 'hal@oa.tropa', senha: 'x' })
+  expect(gravarCookieSessao).toHaveBeenCalledWith(payload.token, payload.expiresIn)
   expect(redirect).toHaveBeenCalledWith('/painel', 'replace')
 })
 
-test('normaliza espaços e maiúsculas antes de consultar o usuário', async () => {
-  vi.mocked(buscarUsuarioPorEmail).mockResolvedValueOnce(null)
-  await entrar({ email: ' Hal@OA.tropa ', senha: 'lanterna123' })
-  expect(buscarUsuarioPorEmail).toHaveBeenCalledWith('hal@oa.tropa')
+test('400 com detalhe de campo segue para errors', async () => {
+  entrarNaApi.mockRejectedValueOnce(new ApiError(400, 'DADOS_INVALIDOS', [{ campo: 'senha', mensagens: ['inválida'] }]))
+  expect(await entrar({ email: 'hal@oa.tropa', senha: 'x' })).toEqual({ ok: false, errors: { senha: ['inválida'] } })
 })

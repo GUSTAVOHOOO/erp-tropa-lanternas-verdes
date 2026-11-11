@@ -11,9 +11,8 @@ de alterá-los. As regras de código estão nas skills
 > consumindo o json-server. O back-end NestJS já está implementado em `backend/`
 > (ver a seção abaixo); a ligação do front a ele (JWT em cookie `httpOnly`,
 > features novas) é o Corte 1 e está em [docs/README.md](../README.md), e o caminho entre os dois
-> em [frontend/MIGRACAO.md](../frontend/MIGRACAO.md). As seções "Sessão e dados
-> privados" e "Leitura, cache e erros" serão reescritas quando a migração
-> chegar ao passo correspondente.
+> em [frontend/MIGRACAO.md](../frontend/MIGRACAO.md). A seção "Leitura, cache e
+> erros" será reescrita quando a migração chegar ao passo correspondente.
 
 ## Arquitetura atual
 
@@ -50,7 +49,8 @@ oferecida pelo json-server.
 |---|---|---|
 | Home, Sobre e navegação pública | `app/(site)/page.tsx`, `sobre/`, layout público | `components/oanet/CascaOa.tsx` (substitui `MenuNavegacao` e `Marca`, removidos na UI-02.00), `Juramento` |
 | Lista e detalhe de lanternas | `app/(site)/lanternas/` | `lib/lanternas.ts`, `lib/setores.ts`, schemas correspondentes |
-| Login | `app/(site)/login/` | `lib/usuarios.ts`, `lib/schemas/login.ts`, DAL e sessão |
+| Login | `app/(site)/login/` | `lib/auth.ts`, `lib/schemas/login.ts`, `lib/schemas/senha.ts`, DAL e sessão |
+| Cadastro | `app/(site)/cadastro/` | `lib/cadastro.ts`, `lib/schemas/cadastro.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Logout | `app/(painel)/actions.ts` e layout privado | `lib/dal.ts` |
 | Resumo | `app/(painel)/painel/page.tsx` | Serviços de ocorrências, setores, lanternas e `setorParaFiltro` |
 | Listagem e filtros privados | `app/(painel)/painel/ocorrencias/page.tsx`, `_components/FiltroOcorrencias.tsx` | `lib/filtro-ocorrencias.ts`, schema e serviço de ocorrências |
@@ -77,7 +77,7 @@ O alias `@/` aponta para a raiz, conforme [tsconfig.json](../../tsconfig.json).
 | Navegador → action | RHF chama action com dados; a action recebe `unknown`, valida e usa `parsed.data`. Exemplo: [FormOcorrencia](../../app/(painel)/painel/ocorrencias/_components/FormOcorrencia.tsx) e [actions](../../app/(painel)/painel/ocorrencias/actions.ts) |
 | Action → formulário | [ResultadoAcao](../../lib/resultado-acao.ts): `ok`, `erro` geral e `errors` por campo; [aplicarErrosDoServidor](../../lib/erros-formulario.ts) aplica os erros no RHF |
 | Página/action → autorização | [DAL](../../lib/dal.ts): `verificarSessao`, `exigirPapel`, criação/leitura/remoção de cookie |
-| Sessão → setor | [sessao.ts](../../lib/sessao.ts): `podeAcessarSetor`, `setorParaFiltro`; a sessão determina o setor do Lanterna |
+| Sessão → setor | [escopo.ts](../../lib/escopo.ts): `podeAcessarSetor`, `setorParaFiltro`; o setor vem do `Usuario` devolvido por `/auth/me` |
 | Servidor → HTTP | [api.ts](../../lib/api.ts) tem o cliente único `requisitarApi` e `requisitarApiSemConteudo`: valida o envelope `{ sucesso, dados }` com o schema do serviço, exige cache explícito e envia Bearer quando há token; `urlDaApi` fica só para os serviços json-server ainda não migrados |
 | HTTP → erro de detalhe | [ApiError](../../lib/api-error.ts) carrega status, código e detalhes; [tratarErroDetalhe](../../lib/erro-detalhe.ts) navega em 401/403, chama `notFound` em 404 e converte 400 de leitura de detalhe em `notFound` |
 | HTTP → erro de Action | [resultadoDeErroApi](../../lib/api-error.ts) e [destinoDoErro](../../lib/api-error.ts) tratam `ApiError` em Actions |
@@ -105,7 +105,7 @@ normalizados para string; preserve os contratos nas relações entre coleções.
 | Registrar ocorrência | Escolhe um setor existente | Servidor fixa o setor da sessão |
 | Atribuir responsável | Responsável deve pertencer ao setor da ocorrência | Bloqueado por papel |
 
-Fontes: [sessao.ts](../../lib/sessao.ts),
+Fontes: [escopo.ts](../../lib/escopo.ts),
 [actions de ocorrências](../../app/(painel)/painel/ocorrencias/actions.ts), páginas
 privadas e DEC-03/AUTH-07 da skill. O acesso negado é apresentado pela navegação
 para `/acesso-negado`; isso não equivale a devolver um status HTTP 403 da API.
@@ -117,30 +117,59 @@ dez caracteres para resolver; a action limpa resolução nos outros status.
 
 ## Sessão e dados privados
 
-> Estado **atual**. A sessão assinada pelo front sai na migração
-> ([ADR 0001](../adr/0001-token-jwt-fica-no-servidor-do-next.md)).
+> Estado **preparado contra contrato** (FE-02, modo P), na branch
+> `front/fe-02-sessao`, sem ativação real. O contrato é o v1.0.0 da API; a
+> decisão de manter o JWT no servidor do Next está na
+> [ADR 0001](../adr/0001-token-jwt-fica-no-servidor-do-next.md).
 
-[sessao.ts](../../lib/sessao.ts) codifica dados em base64url e assina com
-HMAC-SHA256 usando `SESSION_SECRET`. Assinatura protege a integridade do conteúdo;
-base64url não é criptografia. A sessão expira em oito horas. O DAL configura
-cookie `httpOnly`, `sameSite: 'lax'`, path `/` e `secure` em produção.
+O login chama `POST /auth/login` e grava o JWT devolvido só no cookie `sessao`:
+`httpOnly`, `sameSite: 'lax'`, path `/`, `secure` em produção e validade igual a
+`expiresIn`. O cookie não guarda dados do usuário; [cookie.ts](../../lib/cookie.ts)
+define só o nome do cookie, compartilhado com o proxy.
 
-`verificarSessao` verifica o cookie; não recarrega o usuário na API. Logo, papel e
-setor são os valores assinados no login enquanto o cookie continuar válido.
-[buscarUsuarioPorEmail](../../lib/usuarios.ts) retorna senha para comparação
-exclusiva na [action de login](../../app/(site)/login/actions.ts); esse objeto
-não deve seguir como props para o navegador.
+[auth.ts](../../lib/auth.ts) (`server-only`) concentra `entrarNaApi`,
+`buscarUsuarioAtual` (GET `/auth/me` com Bearer), `gravarCookieSessao`,
+`apagarCookieSessao` e `lerToken`.
+
+[dal.ts](../../lib/dal.ts) é a fronteira de autorização:
+
+- `lerSessao` devolve o `Usuario` do contrato, ou `null` sem token ou com 401;
+- `verificarSessao` vai para `/login` sem token e para
+  [sessao-expirada](../../app/sessao-expirada/route.ts) com 401;
+- `exigirPapel` vai para `/acesso-negado` quando o papel não basta;
+- `lerTokenObrigatorio` devolve o token para chamadas à API.
+
+Papel e setor não ficam no cookie: vêm de `/auth/me` a cada requisição. Uma
+promoção ou um rebaixamento na API vale na próxima requisição. `setorId` é
+inteiro ou `null`.
+
+[app/sessao-expirada/route.ts](../../app/sessao-expirada/route.ts) apaga o cookie
+e redireciona para `/login?expirou=1`. Sem cookie, o proxy não manda de volta
+ao painel, então não há laço entre `/login` e `/painel`.
+
+[proxy.ts](../../proxy.ts) só verifica a presença do cookie: `/painel` sem cookie
+vai para `/login`, e `/login` ou `/cadastro` com cookie vão para `/painel`. A
+validade do token é decidida pela API, na DAL.
+
+[escopo.ts](../../lib/escopo.ts) concentra `podeAcessarSetor` e `setorParaFiltro`.
+Lanterna sem setor recebe `-1`, que não casa com nenhum setor. As páginas do
+painel ainda usam serviços do json-server, que comparam setores convertendo com
+`Number` e `String`; essa conversão sai na migração (FE-04).
+
+`lib/sessao.ts` (HMAC) e `lib/usuarios.ts` (busca de usuário com senha) foram
+removidos. O código desta branch não lê mais `SESSION_SECRET`; a remoção de
+`.env.example` fica para FE-09.
 
 O json-server mantém usuários e senhas de demonstração em texto puro e não
 autentica suas próprias rotas. Isso está declarado no [README](../../README.md)
-e em AUTH-11; uma migração de back-end precisa definir autenticação real.
+e em AUTH-11; a migração do back-end depende de autenticação real na API.
 
 ## Leitura, cache e erros
 
 - [Lanternas](../../lib/lanternas.ts) e [setores](../../lib/setores.ts):
   revalidação de 60 segundos nas leituras.
-- [Ocorrências](../../lib/ocorrencias.ts) e [usuários](../../lib/usuarios.ts):
-  leituras sem cache; ocorrência usa POST para criar e PATCH para alterar.
+- [Ocorrências](../../lib/ocorrencias.ts): leituras sem cache; ocorrência usa
+  POST para criar e PATCH para alterar.
 - Filtros privados usam [normalizarFiltroOcorrencias](../../lib/filtro-ocorrencias.ts)
   tanto no servidor quanto nos controles para manter a interpretação consistente.
 - Componentes como `EstadoVazio`, `EsqueletoLista` e `TelaDeErro`, além dos

@@ -9,7 +9,7 @@ import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
 import { listarLanternas } from '@/lib/lanternas'
 import { listarOcorrencias } from '@/lib/ocorrencias'
-import { setorParaFiltro } from '@/lib/sessao'
+import { setorParaFiltro } from '@/lib/escopo'
 import { listarSetores } from '@/lib/setores'
 
 export const metadata: Metadata = { title: 'Resumo | Central de Comando' }
@@ -18,7 +18,7 @@ export const metadata: Metadata = { title: 'Resumo | Central de Comando' }
 export default async function PainelPage() {
   const sessao = await verificarSessao() // [AUTH-04]
   const [ocorrencias, setores, lanternas] = await Promise.all([ // [API-07]
-    listarOcorrencias({ setorId: setorParaFiltro(sessao) }), // [AUTH-07]
+    listarOcorrencias({ setorId: setorParaFiltro(sessao) === undefined ? undefined : String(setorParaFiltro(sessao)) }), // [AUTH-07] // FE-04: setor inteiro do contrato
     listarSetores(),
     listarLanternas(),
   ])

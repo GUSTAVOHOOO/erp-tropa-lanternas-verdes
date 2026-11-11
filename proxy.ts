@@ -1,19 +1,17 @@
-// proxy.ts: o "middleware" pedido no enunciado (no Next.js 16 o middleware.ts foi renomeado para proxy.ts)
 import { NextResponse, type NextRequest } from 'next/server'
-import { decodificarSessao, NOME_COOKIE } from '@/lib/sessao'
+import { NOME_COOKIE } from '@/lib/cookie'
 
-/** Checagem otimista: só lê o cookie. A checagem definitiva fica em cada página e action (lib/dal.ts). */
+/** Checagem otimista: só verifica se o navegador enviou o cookie; a API valida o token. */
 export function proxy(request: NextRequest) {
-  const sessao = decodificarSessao(request.cookies.get(NOME_COOKIE)?.value)
   const { pathname } = request.nextUrl
-
-  if (pathname.startsWith('/painel') && !sessao) {
-    return NextResponse.redirect(new URL('/login', request.url)) // [AUTH-01]
+  const temCookie = request.cookies.has(NOME_COOKIE)
+  if (pathname.startsWith('/painel') && !temCookie) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
-  if (pathname === '/login' && sessao) {
+  if ((pathname === '/login' || pathname === '/cadastro') && temCookie) {
     return NextResponse.redirect(new URL('/painel', request.url))
   }
   return NextResponse.next()
 }
 
-export const config = { matcher: ['/painel/:path*', '/login'] }
+export const config = { matcher: ['/painel/:path*', '/login', '/cadastro'] }

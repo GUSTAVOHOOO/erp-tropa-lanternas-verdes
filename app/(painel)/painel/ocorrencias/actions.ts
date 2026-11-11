@@ -8,7 +8,7 @@ import { buscarLanterna } from '@/lib/lanternas'
 import { atualizarOcorrencia, buscarOcorrencia, criarOcorrencia } from '@/lib/ocorrencias'
 import { MENSAGEM_ERRO_API, type ResultadoAcao } from '@/lib/resultado-acao'
 import { atribuicaoSchema, atualizarStatusSchema, novaOcorrenciaSchema, type Ocorrencia } from '@/lib/schemas/ocorrencia'
-import { podeAcessarSetor } from '@/lib/sessao'
+import { podeAcessarSetor } from '@/lib/escopo'
 import { listarSetores } from '@/lib/setores'
 
 /** Registra uma ocorrência. O Lanterna sempre registra no próprio setor. */
@@ -17,16 +17,16 @@ export async function registrarOcorrencia(dados: unknown): Promise<ResultadoAcao
   const parsed = novaOcorrenciaSchema.safeParse(dados) // [FORM-17]
   if (!parsed.success) return { ok: false, errors: z.flattenError(parsed.error).fieldErrors } // [FORM-18]
 
-  const setorId = sessao.papel === 'lanterna' ? sessao.setorId : parsed.data.setorId // [AUTH-07]
+  const setorId = sessao.papel === 'lanterna' ? sessao.setorId : Number(parsed.data.setorId) // [AUTH-07]
   let criada: Ocorrencia
   try {
     const setores = await listarSetores()
-    if (!setorId || !setores.some((s) => s.id === setorId)) {
+    if (setorId === null || !Number.isInteger(setorId) || !setores.some((s) => s.id === String(setorId))) {
       return { ok: false, errors: { setorId: ['Escolha um setor válido.'] } }
     }
     criada = await criarOcorrencia({
       ...parsed.data,
-      setorId,
+      setorId: String(setorId), // FE-04: setor inteiro do contrato
       status: 'aberta',
       responsavelId: null,
       resolucao: null,
@@ -52,7 +52,7 @@ export async function atualizarStatus(id: unknown, dados: unknown): Promise<Resu
   try {
     const ocorrencia = await buscarOcorrencia(id)
     if (!ocorrencia) return { ok: false, erro: 'Ocorrência não encontrada.' }
-    if (!podeAcessarSetor(sessao, ocorrencia.setorId)) { // [AUTH-07]
+    if (!podeAcessarSetor(sessao, Number(ocorrencia.setorId))) { // [AUTH-07] // FE-04: setor inteiro do contrato
       return { ok: false, erro: 'Você não pode alterar ocorrências de outro setor.' }
     }
     const { status, resolucao } = parsed.data

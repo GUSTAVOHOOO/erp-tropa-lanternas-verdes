@@ -87,11 +87,23 @@ test('o envio usa o botão OANET', () => {
   expect(screen.getByRole('button', { name: 'Entrar' }).classList.contains('oa-button')).toBe(true)
 })
 
-test('a página de login usa o painel de acesso OANET, sem aviso de simulação', () => {
-  const { container } = render(<LoginPage />)
+test('a página de login usa o painel de acesso OANET, sem aviso de simulação', async () => {
+  const { container } = render(await LoginPage())
   expect(screen.getByRole('heading', { level: 1, name: 'Entrar na Central de Comando' })).toBeDefined()
   expect(screen.getByText('Acesso restrito a membros da Tropa.')).toBeDefined()
   expect(container.querySelector('.oa-access-panel')).not.toBeNull()
   expect(container.querySelector('.oa-access-battery')?.getAttribute('aria-hidden')).toBe('true')
   expect(screen.queryByText(/simulação|demonstração/i)).toBeNull()
+  expect(screen.getByRole('link', { name: 'Criar conta' }).getAttribute('href')).toBe('/cadastro')
+})
+
+test('a página de login mostra avisos de expirou e cadastro', async () => {
+  const { rerender } = render(await LoginPage({ searchParams: Promise.resolve({ expirou: '1' }) }))
+  expect(screen.getByRole('status').textContent).toBe('Sua sessão expirou. Entre de novo.')
+
+  rerender(await LoginPage({ searchParams: Promise.resolve({ cadastro: '1' }) }))
+  expect(screen.getByRole('status').textContent).toBe('Conta criada. Entre com o seu e-mail e senha.')
+
+  rerender(await LoginPage({ searchParams: Promise.resolve({ expirou: '0', cadastro: '2' }) }))
+  expect(screen.queryByRole('status')).toBeNull()
 })

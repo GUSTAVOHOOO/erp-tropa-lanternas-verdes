@@ -6,7 +6,6 @@ import { urlDaApi } from '@/lib/api'
 import { listarSetores } from '@/lib/setores'
 import { buscarLanterna, listarLanternas } from '@/lib/lanternas'
 import { atualizarOcorrencia, buscarOcorrencia, criarOcorrencia, listarOcorrencias } from '@/lib/ocorrencias'
-import { buscarUsuarioPorEmail } from '@/lib/usuarios'
 import { ocorrenciaSchema } from '@/lib/schemas/ocorrencia'
 
 const fetchSimulado = vi.fn()
@@ -120,19 +119,5 @@ describe('escritas', () => {
     expect(urlChamada().pathname).toBe('/ocorrencias/o2')
     expect(opcoesChamada().method).toBe('PATCH')
     expect(JSON.parse(String(opcoesChamada().body))).toEqual({ status: 'resolvida' })
-  })
-})
-
-describe('buscarUsuarioPorEmail', () => {
-  test('normaliza espaços e maiúsculas antes de buscar', async () => {
-    fetchSimulado.mockResolvedValue(resposta([db.usuarios[1]]))
-    const usuario = await buscarUsuarioPorEmail('  Hal@OA.tropa ')
-    expect(urlChamada().searchParams.get('email')).toBe('hal@oa.tropa')
-    expect(usuario?.nome).toBe('Hal Jordan')
-  })
-
-  test('e-mail desconhecido devolve null', async () => {
-    fetchSimulado.mockResolvedValue(resposta([]))
-    expect(await buscarUsuarioPorEmail('ninguem@oa.tropa')).toBeNull()
   })
 })

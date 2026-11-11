@@ -1,4 +1,4 @@
-import type { Sessao } from '@/lib/sessao'
+import type { Sessao } from '@/lib/schemas/usuario'
 import type { IdentidadeOa } from './CascaOa'
 
 /**

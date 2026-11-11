@@ -15,8 +15,8 @@ import { listarSetores } from '@/lib/setores'
 import { listarLanternas } from '@/lib/lanternas'
 import OcorrenciaPage from '@/app/(painel)/painel/ocorrencias/[id]/page'
 
-const sessaoGuardiao = { id: 'g1', nome: 'Ganthet', papel: 'guardiao' as const, setorId: null, lanternaId: null, expiraEm: 1_900_000_000 }
-const sessaoLanterna = { id: 'l1', nome: 'Hal Jordan', papel: 'lanterna' as const, setorId: '2814', lanternaId: '1', expiraEm: 1_900_000_000 }
+const sessaoGuardiao = { id: '00000000-0000-4000-8000-000000000001', nome: 'Ganthet', email: 'ganthet@oa.tropa', papel: 'guardiao' as const, setorId: null, lanternaId: null, criadoEm: '2026-01-01T00:00:00.000Z' }
+const sessaoLanterna = { id: '00000000-0000-4000-8000-000000000002', nome: 'Hal Jordan', email: 'hal@oa.tropa', papel: 'lanterna' as const, setorId: 2814, lanternaId: 'hal-jordan', criadoEm: '2026-01-01T00:00:00.000Z' }
 
 const ocorrenciaMock = {
   id: 'o1',

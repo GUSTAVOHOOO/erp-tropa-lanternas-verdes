@@ -13,3 +13,9 @@ test('campo de resolução aparece só quando o status é resolvida', () => {
   expect(screen.queryByLabelText('Como foi resolvida?')).toBeNull()
   expect(screen.getByText('Aberta')).toBeDefined()
 })
+
+test('botão de envio usa BotaoOa', () => {
+  render(<FormStatus ocorrenciaId="o2" statusAtual="aberta" resolucaoAtual="" />)
+  const botao = screen.getByRole('button', { name: 'Salvar status' })
+  expect(botao.classList.contains('oa-button')).toBe(true)
+})

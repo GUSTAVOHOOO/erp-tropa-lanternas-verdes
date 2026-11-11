@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // O back-end (NestJS) é um projeto separado, com os próprios comandos.
+    "backend/**",
   ]),
 ]);
 

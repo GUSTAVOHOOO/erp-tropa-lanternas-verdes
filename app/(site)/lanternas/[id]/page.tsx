@@ -3,14 +3,23 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { LinkVoltar } from '@/components/LinkVoltar'
+import { ConstructoDoLanterna } from '@/components/oanet/GaleriaConstructos'
+import { IconeOa } from '@/components/oanet/IconeOa'
+import { MolduraOa, SeloOa } from '@/components/oanet/PainelOa'
 import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { buscarLanterna } from '@/lib/lanternas'
 import { listarSetores } from '@/lib/setores'
-import { rotuloStatusLanterna } from '@/lib/schemas/lanterna'
+import { rotuloStatusLanterna, type StatusLanterna } from '@/lib/schemas/lanterna'
 
 export const metadata: Metadata = { title: 'Ficha do lanterna | Central de Oa' }
 
 type LanternaPageProps = { params: Promise<{ id: string }> }
+
+const tonsStatus: Record<StatusLanterna, 'verde' | 'ambar' | 'neutro'> = {
+  ativo: 'verde',
+  em_missao: 'ambar',
+  afastado: 'neutro',
+}
 
 /** Ficha pública de um lanterna. */
 export default async function LanternaPage({ params }: LanternaPageProps) {
@@ -23,36 +32,49 @@ export default async function LanternaPage({ params }: LanternaPageProps) {
   }
   if (!lanterna) notFound() // [ROTA-12]
   const setor = setores.find((s) => s.id === lanterna.setorId)
+  const tom = tonsStatus[lanterna.status] ?? 'neutro'
 
   return (
-    <article className="grid max-w-2xl gap-8">
+    <article className="oa-screen max-w-3xl">
       <div className="grid gap-4">
         <LinkVoltar href="/lanternas">Voltar à lista</LinkVoltar>
         <CabecalhoPagina titulo={lanterna.nome} descricao={`${lanterna.especie} · ${lanterna.planetaNatal}`} />
       </div>
-      <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2"> {/* [CSS-03] */}
-        <div className="grid gap-1">
-          <dt className="text-sm text-texto-terciario">Espécie</dt>
-          <dd>{lanterna.especie}</dd>
+      <MolduraOa className="oa-profile-panel">
+        <div className="oa-profile">
+          <span className="oa-profile-code">ARQUIVO DA TROPA / SETOR {lanterna.setorId}</span>
+          <ConstructoDoLanterna nome={lanterna.nome} />
+          <div className="my-3 flex justify-center">
+            <SeloOa tom={tom}>{rotuloStatusLanterna[lanterna.status]}</SeloOa>
+          </div>
+          <h2 className="font-heading text-2xl font-bold uppercase">{lanterna.nome}</h2>
+          <p className="text-sm text-(--oa-muted)">{lanterna.especie} · {lanterna.planetaNatal}</p>
+          <dl className="mt-6 grid gap-4 border-t border-(--oa-line) pt-6 sm:grid-cols-2 text-left">
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Espécie</dt>
+              <dd className="text-sm font-medium text-(--oa-text)">{lanterna.especie}</dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Planeta natal</dt>
+              <dd className="text-sm font-medium text-(--oa-text)">{lanterna.planetaNatal}</dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Setor de patrulha</dt>
+              <dd className="grid gap-1">
+                <Link href={`/lanternas?setor=${lanterna.setorId}`} className="oa-sector-label w-fit text-sm text-(--oa-energy) hover:underline">
+                  <IconeOa nome="setores" />
+                  {setor?.nome ?? `Setor ${lanterna.setorId}`}
+                </Link>
+                {setor && <span className="text-xs text-(--oa-muted)">{setor.descricao}</span>}
+              </dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Status operacional</dt>
+              <dd className="text-sm font-medium text-(--oa-text)">{rotuloStatusLanterna[lanterna.status]}</dd>
+            </div>
+          </dl>
         </div>
-        <div className="grid gap-1">
-          <dt className="text-sm text-texto-terciario">Planeta natal</dt>
-          <dd>{lanterna.planetaNatal}</dd>
-        </div>
-        <div className="grid gap-1">
-          <dt className="text-sm text-texto-terciario">Setor</dt>
-          <dd className="grid gap-1">
-            <Link href={`/lanternas?setor=${lanterna.setorId}`} className="w-fit font-mono text-sm text-primary-texto underline-offset-4 hover:underline">
-              {setor?.nome ?? `Setor ${lanterna.setorId}`}
-            </Link>
-            {setor && <span className="text-sm text-muted-foreground">{setor.descricao}</span>}
-          </dd>
-        </div>
-        <div className="grid gap-1">
-          <dt className="text-sm text-texto-terciario">Status</dt>
-          <dd>{rotuloStatusLanterna[lanterna.status]}</dd>
-        </div>
-      </dl>
+      </MolduraOa>
     </article>
   )
 }

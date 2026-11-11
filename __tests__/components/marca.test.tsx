@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { render } from '@testing-library/react'
-import { Emblema } from '@/components/Emblema'
+import { EmblemaOa as Emblema } from '@/components/oanet/EmblemaOa'
 import { IconeStatus } from '@/components/IconeStatus'
 
 // UI-02.00: a Marca foi removida (a casca OANET mostra a marca); o Emblema sai com o último consumidor, na UI-02.12.

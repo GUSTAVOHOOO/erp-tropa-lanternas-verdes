@@ -16,8 +16,13 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Ficha do Lanterna | `/lanternas/[id]` | Atual (UI-01, UI-02.05) | Ficha pública com identidade, espécie, planeta, Setor navegável, status operacional com SeloOa, construto vetorial OANET e link de retorno |
 | Login | `/login` | Atual (UI-01, UI-02.03) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
 | Cadastro | `/cadastro` | **Nova** | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
+<<<<<<< HEAD
 | Acesso negado | `/acesso-negado` | Atual (UI-01, UI-02.11) | Página de aviso 403 com PaginaAviso, EmblemaOa e botão de retorno ao painel |
 | Design system | `/design-system` | Existe, histórico visual | Atualizar ou redirecionar para a referência OANET na adoção |
+=======
+| Acesso negado | `/acesso-negado` | Existe | Só para 403 de papel |
+| Design system | `/design-system` | Atual (UI-01, UI-02.12) | Redirecionamento permanente para a vitrine oficial do laboratório OANET (/laboratorio, decisão D28) |
+>>>>>>> 19d3c92 (refactor(design-system): redireciona para laboratório e remove legados (UI-02.12))
 | Laboratório | `/laboratorio` | Existe, UI oficial D28 | Referência de design, assets e movimento; dados ilustrativos, sem API |
 
 ## Painel (autenticado)
@@ -30,13 +35,7 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Ocorrências | `/painel/ocorrencias` | Guardião, Lanterna | Atual (UI-01, UI-02.07) | Lista operacional com filtros de status, gravidade e setor dentro de MolduraOa, tabela OANET, estado vazio com ação de limpar e botão de novo registro |
 | Nova ocorrência | `/painel/ocorrencias/nova` | Guardião, Lanterna | Atual (UI-01, UI-02.08) | Formulário de registro em MolduraOa com BotaoOa, CampoTexto, CampoSelect e validação zóide cliente/servidor |
 | Detalhe | `/painel/ocorrencias/[id]` | Guardião, Lanterna | Atual (UI-01, UI-02.09) | Detalhe operacional em MolduraOa com badges de gravidade/status, dados formatados, formulário FormStatus com BotaoOa e ação de atribuição |
-| Atribuir | `/painel/ocorrencias/[id]/atribuir` | Guardião | Existe | Escolhe o Responsável do mesmo Setor; mostra por que um Lanterna afastado não pode ser escolhido |
-=======
-| Ocorrências | `/painel/ocorrencias` | Guardião, Lanterna | Existe, será ampliada | Filtros de Status, Gravidade, Setor, responsável e vencida; busca; ordenação por prazo, criação ou Gravidade; paginação; indicador de Prazo |
-| Nova ocorrência | `/painel/ocorrencias/nova` | Guardião, Lanterna | Existe | Registro. O Setor é fixo para o Lanterna |
-| Detalhe | `/painel/ocorrencias/[id]` | Guardião, Lanterna | Existe, será ampliada | **Muda:** linha do tempo de Eventos, Comentários (comentar e apagar), Prazo e "vencida", ações conforme o Status e o papel, edição dos dados, exclusão (Guardião) e reabertura com motivo (Guardião) |
 | Atribuir | `/painel/ocorrencias/[id]/atribuir` | Guardião | Atual (UI-01, UI-02.10) | Atribuição de responsável em MolduraOa com BotaoOa, CampoSelect e validação de permissão exclusiva para Guardião |
->>>>>>> 906def3 (feat(painel): migra tela de atribuição com MolduraOa e BotaoOa (UI-02.10))
 | Lanternas (gestão) | `/painel/lanternas` | Guardião | **Nova** | Lista, criar, editar, afastar e reativar. Mostra a carga de cada um |
 | Setores (gestão) | `/painel/setores` | Guardião | **Nova** | Criar, editar e remover; remoção bloqueada se o Setor estiver em uso |
 | Usuários | `/painel/usuarios` | Guardião | **Nova** | Lista, promoção de papel e vínculo da conta a uma Ficha de Lanterna; impede rebaixar o último Guardião |

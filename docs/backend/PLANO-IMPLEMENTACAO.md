@@ -1,6 +1,6 @@
 # Plano de implementação do back-end
 
-> DOC-03 foi concluída. BE-01 a BE-12 foram implementados em 2026-11-10. O aceite G-9 permanece pendente de atualização do registro G-1 pela coordenação devido à divergência de hash anotada em BE-12.
+> DOC-03 foi concluída. BE-01 a BE-12 foram implementados em 2026-11-10. A divergência de hash anotada em BE-12 foi resolvida em 2026-11-11 pelo registro G-1 revisão 2 (SHA-256 `4e5dfad5…33b0`, em [INTEGRACAO §2](../INTEGRACAO.md#g-1--aceite-do-contrato)); o OpenAPI e os cenários não mudaram.
 
 **Objetivo:** entregar API NestJS independente do front, compatível com o contrato acordado e provada com clientes HTTP e SQLite isolado.
 
@@ -12,7 +12,7 @@
 
 Leia [AGENTS.md](../../AGENTS.md), [guia](../agents/README.md), [mapa](../agents/MAPA.md) e [backend-api](../../.claude/skills/backend-api/SKILL.md). Consulte [arquitetura](ARQUITETURA.md), [modelo](MODELO-DE-DADOS.md), [regras RN](REGRAS-DE-NEGOCIO.md), [cenários](CENARIOS-DE-TESTE.md), [seed](SEED.md), [API](API.md), [DTOs](DTOS.md) e [pacote contratual](../contratos/README.md) antes da fatia correspondente. Decisões vigentes de ESCOPO e ADRs governam política, inclusive D32/RN-34 e D33. Não copiar tipos do front nem depender de Next para testar o provedor.
 
-Os caminhos de BE-01 a BE-12 existem; a entrega técnica do provedor está implementada, e o aceite de integração G-9 aguarda a revisão coordenada do hash G-1. O dev back possui os arquivos do backend; contrato e documentação compartilhada são atribuídos à integração. `.env.example` da raiz pertence ao integrador/front; o back usa `backend/.env.example`. Não tocar `db.json`: leitura de origem histórica é permitida, escrita de teste usa SQLite próprio.
+Os caminhos de BE-01 a BE-12 existem; a entrega técnica do provedor está implementada, e o hash G-1 foi reconferido em 2026-11-11 (revisão 2); resta a integração com o front (Corte 1). O dev back possui os arquivos do backend; contrato e documentação compartilhada são atribuídos à integração. `.env.example` da raiz pertence ao integrador/front; o back usa `backend/.env.example`. Não tocar `db.json`: leitura de origem histórica é permitida, escrita de teste usa SQLite próprio.
 
 **Pré-condição de toda tarefa:** contrato aceito em G-1 ([INTEGRACAO §2](../INTEGRACAO.md#g-1--aceite-do-contrato)), com a versão e o hash lidos anotados no registro da tarefa. Os fechamentos técnicos da rodada 2 do contrato (busca, senha em bytes, vínculo de Ficha, liberação em andamento, precedência de erros) ficam nas fontes — [ESCOPO](ESCOPO.md), [RN](REGRAS-DE-NEGOCIO.md), [API](API.md), [modelo](MODELO-DE-DADOS.md) e OpenAPI — e este plano só aponta onde cada tarefa os cumpre; se uma fonte ainda não os trouxer, a operação aguarda a fonte.
 

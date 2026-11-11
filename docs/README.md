@@ -1,6 +1,6 @@
 # Documentação do projeto
 
-Atualizada em 2026-11-11. **Atual:** o **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12; 30 operações do contrato; auditado em 2026-11-11, ver [relatórios](relatorios/README.md)); o front Next.js ainda consome o json-server, com a UI OANET migrada nas telas UI-02.01 a UI-02.12 (branches do front). **Pendente:** ligar o front à API real (Corte 1, [INTEGRACAO](INTEGRACAO.md)) e as telas novas (cadastro, minha fila, gestão, comentários, linha do tempo). A [DOC-03](agents/DOC-03-PLANEJAMENTO.md) está concluída; [G-1](INTEGRACAO.md#g-1--aceite-do-contrato) identifica a revisão consumível do contrato (o aceite G-9 aguarda a atualização do hash G-1 pela coordenação, ver o [plano BE](backend/PLANO-IMPLEMENTACAO.md)).
+Atualizada em 2026-11-11. **Atual:** o **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12; 30 operações do contrato; auditado em 2026-11-11, ver [relatórios](relatorios/README.md)); o front Next.js ainda consome o json-server, com a UI OANET migrada nas telas UI-02.01 a UI-02.12 (branches do front). **Pendente:** ligar o front à API real (Corte 1, [INTEGRACAO](INTEGRACAO.md)) e as telas novas (cadastro, minha fila, gestão, comentários, linha do tempo). A [DOC-03](agents/DOC-03-PLANEJAMENTO.md) está concluída; [G-1](INTEGRACAO.md#g-1--aceite-do-contrato) identifica a revisão consumível do contrato (hash do pacote reconferido em 2026-11-11, revisão 2; ver o registro em [INTEGRACAO §2](INTEGRACAO.md#g-1--aceite-do-contrato)).
 
 ## Comece pelo seu trabalho
 

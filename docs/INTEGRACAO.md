@@ -1,6 +1,6 @@
 # Integração entre front-end e back-end
 
-**Estado (2026-11-11):** procedimento para duas pessoas. A pausa da DOC-03 terminou. O **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12, com a fixture de integração BE-FX e o comando `fixture:integracao`) e foi auditado contra o contrato em 2026-11-11 ([relatórios](relatorios/README.md)). O **front ainda usa Next + json-server**: o Corte 1 (cliente HTTP único, sessão JWT, todos os consumidores e dashboard) não foi feito, e o fake HTTP de contrato do front (FE-00) e os demais gates do front abaixo seguem pendentes. Aprovação visual do laboratório não prova integração de rotas. O gate G-9 do back aguarda a atualização do registro G-1 (divergência de hash anotada no plano BE).
+**Estado (2026-11-11):** procedimento para duas pessoas. A pausa da DOC-03 terminou. O **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12, com a fixture de integração BE-FX e o comando `fixture:integracao`) e foi auditado contra o contrato em 2026-11-11 ([relatórios](relatorios/README.md)). O **front ainda usa Next + json-server**: o Corte 1 (cliente HTTP único, sessão JWT, todos os consumidores e dashboard) não foi feito, e o fake HTTP de contrato do front (FE-00) e os demais gates do front abaixo seguem pendentes. Aprovação visual do laboratório não prova integração de rotas. O hash G-1 foi reconferido em 2026-11-11 (revisão 2, em §2): o gate G-9 do back deixa de aguardar o registro.
 
 **Resultado:** front e back trabalham em branches separadas, sobre a mesma revisão contratual, e combinam os recursos reais em **um primeiro corte integrado único** (Corte 1, §3), seguido de recursos aditivos. Os detalhes executáveis de cada lado estão no [plano front](frontend/PLANO-IMPLEMENTACAO.md) e [plano back](backend/PLANO-IMPLEMENTACAO.md); a visão de sequência fica em [PLANO](PLANO.md).
 
@@ -57,6 +57,21 @@ Pré-condição de FE-00, BE-01 e de toda tarefa de implementação. **Responsá
 | Responsável pelo aceite | Codex coordenador desta DOC-03, após duas revisões e duas correções Claude Code/Sonnet 5.5; ciência individual dos devs a registrar nas futuras tarefas |
 | Comandos de verificação e exits | `validar.py --hash`:0 (30 operações/310 cenários); `unittest`:0 (120 testes/29,278s); verificador com `--ancoras`:0; `git diff --check`:0. Comandos completos e limites no registro DOC-03 |
 | Achados P0/P1 abertos | `0` dos achados identificados na revisão; os 22 achados têm tratamento nos relatórios e na leitura cruzada |
+
+**Registro G-1, revisão 2 — hash do pacote reconferido em 2026-11-11.** O registro acima (revisão 1) fica como histórico do que DOC-03 aceitou. Desde então o pacote mudou só em texto, não em contrato: o `openapi.json` e o `cenarios.json` **não mudaram** (o hash do OpenAPI é o mesmo). Mudaram `docs/backend/SEED.md` (atualização do dev de back em 2026-11-10: seed mínimo/completo e teste de seed já implementado), `docs/backend/API.md` (parágrafo sobre 413, agrupamento de `detalhes` e query desconhecida) e `docs/contratos/README.md` (estado da materialização dos cenários). Foi isso que fez o hash do conjunto divergir, como o plano BE anotou em BE-10/BE-12.
+
+| Campo | Valor |
+|---|---|
+| `info.version` | `1.0.0`, igual à `versaoContrato` dos cenários |
+| SHA-256 do pacote contratual (12 arquivos, LF normalizado) | `4e5dfad54d593521612c52eb29572a042114e146ee3be077403709b7a5e228f3` (revisão 1: `cd91fef5…4730`) |
+| SHA-256 do OpenAPI (LF normalizado) | `1836fa15115a7819a603431288921b3cbddb47d6032327adf5d7a35411cd7166` (inalterado) |
+| Data (UTC) e base | 2026-11-11; branch `integracao/back-front`, pacote no commit `678b0d0` (HEAD `06863fc` na conferência) |
+| Responsável pelo aceite | Coordenação (o usuário), que pediu a conferência em 2026-11-11; comandos executados por Claude Code (Sonnet 5.5). Ciência individual dos devs continua a registrar nas tarefas |
+| Comandos de verificação e exits | `py -3 docs/contratos/validar.py --hash`:0 (30 operações/310 cenários); `py -3 docs/contratos/validar.py --conferir-hash 4e5dfad5…33b0`:0; `py -3 -B -m unittest discover -s docs/contratos -p "test_*.py"`:0 (120 testes/36 s); `node docs/agents/validar-documentacao.mjs --ancoras`:0 (0 falhas); `git diff --check`:0 |
+| Achados P0/P1 abertos | `0`. A auditoria de 2026-11-11 ([relatórios](relatorios/README.md)) achou um P1 (`GET /lanternas?setor=N` sempre 400), corrigido e coberto por teste de regressão |
+| Limite desta revisão | Aceita o **texto** do pacote contratual. O 413 `CORPO_MUITO_GRANDE` está descrito na `API.md` mas fora da tabela e do `openapi.json`, para não alterar o contrato aceito; incluí-lo no OpenAPI exige novo registro G-1 |
+
+Quem consumiu a revisão 1 (`cd91fef5…`) deve registrar a revisão 2 na tarefa seguinte; como o OpenAPI e os cenários são idênticos, não há mudança de comportamento a reaplicar.
 
 **Ciência da dupla:** ao abrir sua primeira tarefa, cada dev escreve no registro da tarefa ([TAREFA](agents/TAREFA.md)) a versão e o hash de G-1 que leu e consumiu. Hash diferente do registro significa contrato alterado: parar e seguir o §5. Mudança do contrato depois de G-1 gera novo registro G-1.
 

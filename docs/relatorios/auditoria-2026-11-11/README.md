@@ -50,7 +50,7 @@ Teste de regressão: [`backend/test/correcoes-auditoria.e2e-spec.ts`](../../../b
 | Login com corpo inválido consome a cota do rate limit | Comportamento do throttler; sem decisão no contrato. |
 | Códigos 422 `TRANSICAO_INVALIDA` (atribuir) e `SETOR_OBRIGATORIO` (criar) inalcançáveis e não documentados nessas operações | Documentação/código mortos; remover ou documentar é decisão do dono do contrato. |
 | Precedência `afastado` × `em_missao` e resumo de mentor/aprendiz com status armazenado | Latentes: não reproduzidos pela API. |
-| `docs/contratos/openapi.json` não lista o 413 `CORPO_MUITO_GRANDE` | Alterar o OpenAPI muda o hash G-1; a verificação (`validar.py`) exige Python, ausente neste ambiente. Documentado em `API.md`. |
+| `docs/contratos/openapi.json` não lista o 413 `CORPO_MUITO_GRANDE` | Alterar o OpenAPI muda o hash G-1 e exige novo registro. Descrito em `API.md`, fora da tabela de códigos (o validador do contrato exige que a tabela bata com o OpenAPI). |
 | `seed-minimo` e `seed-dominio` (e2e) estouram o tempo quando rodam em paralelo com as outras suítes | Já falhavam antes das correções (um dos agentes viu o timeout de `seed-minimo` no `npm test` original). Cada uma passa isolada (cerca de 20 s). Rodar com menos workers (`--maxWorkers=2`) ou aumentar o `testTimeout` resolve; não mexi na configuração de teste do dono do back. |
 
 ## Divergências entre documentos (sem escolher lado)
@@ -83,4 +83,8 @@ Ver a seção "Registro de execução" abaixo.
 | `npm run test:e2e` (backend) | 17 suítes; 16 passam, 1 estoura o tempo na execução paralela (`seed-minimo` na última execução, `seed-dominio` na anterior). Isoladas, as duas passam (1/1 cada, cerca de 20 s) |
 | `npx tsc --noEmit`, `npx eslint`, `npm run test:run` (front, raiz) | exit 0; 40 arquivos, 204 testes |
 
-Limites desta auditoria: modelo pequeno nos agentes; erros 500 provocados renomeando tabelas, não por falha injetada no código; concorrência, contraste e acessibilidade não testados; o validador de contrato e o hash G-1 não foram executados (sem Python).
+Limites desta auditoria: modelo pequeno nos agentes; erros 500 provocados renomeando tabelas, não por falha injetada no código; concorrência, contraste e acessibilidade não testados.
+
+## Hash G-1
+
+Depois das correções, o validador do contrato rodou com Python 3.14 (`py -3`): `validar.py --hash` exit 0 (30 operações, 310 cenários), `unittest` do pacote exit 0 (120 testes) e a verificação de âncoras da documentação exit 0. O hash do conjunto mudou de `cd91fef5…` para `4e5dfad5…`; o OpenAPI e os cenários são idênticos. O registro foi atualizado em [INTEGRACAO §2](../../INTEGRACAO.md#g-1--aceite-do-contrato).

@@ -13,11 +13,11 @@ O projeto está **em migração** de uma API de demonstração (json-server) par
 | Back-end NestJS (`backend/`) | Documentado, **ainda não implementado** |
 | Migração do front para a API real | Preparação independente por contrato; ativação após aceite da API |
 | Features novas (linha do tempo, comentários, dashboard, fila, Ficha completa) | Especificadas, ainda não implementadas |
-| Planos separados e contrato v1 (DOC-03) | Consolidados, revisados e com aceite técnico documental G-1; implementação ainda planejada |
+| Planos separados e contrato v1 (DOC-03) | Consolidados, revisados e com aceite técnico documental G-1; implementação do front autorizada em 2026-11-10 pelo plano FE, back ainda planejado |
 
 Documentação completa em [docs/README.md](docs/README.md).
-Planejamento atual: [plano por frente](docs/PLANO.md). A [DOC-03](docs/agents/DOC-03-PLANEJAMENTO.md) está concluída; a implementação permanece suspensa até a atribuição de uma nova tarefa. O contrato consumível está identificado em [G-1](docs/INTEGRACAO.md#g-1--aceite-do-contrato).
-O [handoff OANET](docs/agents/HANDOFF-OANET.md) preserva o contexto da UI-01 parcial; não comprova seu aceite.
+Planejamento atual: [plano por frente](docs/PLANO.md). A [DOC-03](docs/agents/DOC-03-PLANEJAMENTO.md) está concluída; a implementação do front está autorizada desde 2026-11-10 e segue o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md). O contrato consumível está identificado em [G-1](docs/INTEGRACAO.md#g-1--aceite-do-contrato).
+A UI-01 (casca OANET com identidade da sessão) foi concluída e integrada à `main` pela PR #1 em 2026-11-10 (merge `f0cb363`). O [handoff OANET](docs/agents/HANDOFF-OANET.md) preserva o histórico dessa transferência.
 Todo design novo parte de [docs/UI.md](docs/UI.md) e dos assets em código do laboratório.
 
 ## Guia para os dois desenvolvedores

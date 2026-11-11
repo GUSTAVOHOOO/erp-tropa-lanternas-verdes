@@ -21,7 +21,7 @@ type CampoSelectProps = {
 export function CampoSelect({ id, rotulo, itens, valor, aoMudar, aoSair, refCampo, erro, placeholder = 'Escolha uma opção' }: CampoSelectProps) {
   const idErro = `${id}-erro`
   return (
-    <div className="grid gap-1.5">
+    <div className="oa-field">
       <Label htmlFor={id}>{rotulo}</Label>
       <Select items={itens} value={valor || null} onValueChange={(novo) => aoMudar(novo)}> {/* [FORM-16] */}
         <SelectTrigger

@@ -1,4 +1,4 @@
-import { CircleAlertIcon } from 'lucide-react'
+import { IconeOa } from '@/components/oanet/IconeOa'
 
 type MensagemErroProps = {
   id?: string
@@ -8,8 +8,8 @@ type MensagemErroProps = {
 /** Erro de formulário: texto + ícone (nunca só a cor), anunciado pelo leitor de tela. [FORM-10][CSS-10] */
 export function MensagemErro({ id, children }: MensagemErroProps) {
   return (
-    <p id={id} role="alert" className="flex items-center gap-1.5 text-sm text-destructive">
-      <CircleAlertIcon aria-hidden className="size-4 shrink-0" />
+    <p id={id} role="alert" className="oa-tone-danger flex items-center gap-1.5 text-xs">
+      <IconeOa nome="ocorrencias" className="size-4 shrink-0" />
       {children}
     </p>
   )

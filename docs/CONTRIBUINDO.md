@@ -28,7 +28,7 @@ O [plano FE](frontend/PLANO-IMPLEMENTACAO.md) e o [plano BE](backend/PLANO-IMPLE
 
 Antes de desenvolver, registre versão/hash do contrato e exemplos usados. Depois de uma mudança de contrato, alinhe OpenAPI, API/DTO, exemplos e consumidores na mesma tarefa. Um teste contra mock não encerra integração. Scripts futuros de mock, e2e e banco só podem ser executados depois de criados na tarefa correspondente; consulte `package.json` real.
 
-1. Confira `git status --short` e preserve alterações de outras pessoas. Trabalhe em uma branch por tarefa: `be-03-autenticacao`, `fe-05-ciclo-de-vida`.
+1. Confira `git status --short` e preserve alterações de outras pessoas. Trabalhe em uma branch por tarefa, a partir da `main`: no front, `front/<id>` (p. ex. `front/ui-02-00-componentes`), entrando por PR para a `main`; no back, siga o nome do plano (p. ex. `be-03-autenticacao`).
 2. Registre a tarefa com [agents/TAREFA.md](agents/TAREFA.md) na descrição da PR: objetivo, arquivos, aceite, verificações.
 3. Escreva o teste junto com o código. Para regras de negócio, o roteiro é [backend/CENARIOS-DE-TESTE.md](backend/CENARIOS-DE-TESTE.md).
 4. Rode as verificações (abaixo) e cole os resultados reais na PR.

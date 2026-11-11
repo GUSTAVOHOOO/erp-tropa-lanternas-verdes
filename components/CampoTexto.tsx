@@ -23,7 +23,7 @@ export function CampoTexto({ id, rotulo, registro, erro, type = 'text', autoComp
     'aria-describedby': erro ? idErro : undefined,
   }
   return (
-    <div className="grid gap-1.5">
+    <div className="oa-field">
       <Label htmlFor={id}>{rotulo}</Label> {/* [FORM-09] */}
       {multilinha ? (
         <Textarea id={id} rows={4} {...registro} {...acessibilidade} />

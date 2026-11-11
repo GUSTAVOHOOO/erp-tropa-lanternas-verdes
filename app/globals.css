@@ -413,3 +413,16 @@
 .oa-lab .oa-back-button { width: 100%; background: transparent; border: 0; border-top: 1px solid var(--oa-line); color: var(--oa-muted); font: inherit; text-align: left; }
 .oa-lab .oa-back-button:hover { color: var(--oa-text); background: var(--oa-raised); }
 .oa-lab .oa-back-form { margin: 0; }
+
+/* UI-02.00: campos nas rotas reais */
+.oa-field > label:first-child, [data-slot=label] { font-size: .8125rem; color: var(--oa-text); transition: color .2s ease-out; }
+.oa-lab .oa-field:focus-within > label:first-child { color: var(--oa-energy); }
+button.oa-select { min-width: 0; padding-right: 13px; }
+.oa-lab .oa-select:focus-visible { outline: 1px solid var(--oa-energy); outline-offset: 3px; border-color: var(--oa-energy); }
+.oa-select[aria-invalid=true], .oa-lab .oa-select[aria-invalid=true]:hover:not(:disabled):not(:focus) { border-color: var(--oa-danger); }
+.oa-select:disabled { color: var(--oa-muted); opacity: .6; }
+.oa-lab[data-slot=select-content] { background: var(--oa-glass-dense); border: 1px solid var(--oa-line); border-radius: 0; color: var(--oa-text); }
+.oa-lab [data-slot=select-item][data-highlighted], .oa-lab [data-slot=select-item]:focus { background: var(--oa-raised); color: var(--oa-text); }
+.oa-lab [data-slot=select-item][data-selected] { color: var(--oa-energy); }
+/* UI-02.00: link com aparência de botão. O recorte (clip-path) esconde contorno externo e sombra; o foco fica por dentro, como nos botões. */
+a.oa-button:focus-visible { outline: 2px solid var(--oa-text, currentColor); outline-offset: -4px; box-shadow: none; border-radius: 0; }

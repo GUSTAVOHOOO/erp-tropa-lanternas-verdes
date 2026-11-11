@@ -14,7 +14,7 @@ export function Juramento() {
           <span key={verso} className="block">{verso} </span> // [COMP-13] cada verso é único e serve de key
         ))}
       </blockquote>
-      <figcaption className="text-sm text-muted-foreground">Juramento da Tropa dos Lanternas Verdes</figcaption>
+      <figcaption className="text-sm text-(--oa-muted)">Juramento da Tropa dos Lanternas Verdes</figcaption>
     </figure>
   )
 }

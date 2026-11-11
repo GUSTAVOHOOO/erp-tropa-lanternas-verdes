@@ -17,6 +17,7 @@
 @keyframes oa-motion-vec-ping { 0% { opacity: .7; transform: scale(.4); } 100% { opacity: 0; transform: scale(3.2); } }
 @keyframes oa-motion-vec-beacon { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
 @keyframes oa-motion-vec-vehicle { 0% { opacity: 0; transform: translateX(-36px); } 25%, 70% { opacity: 1; } 100% { opacity: 0; transform: translateX(48px); } }
+@keyframes oa-motion-vec-trail { 0% { stroke-dashoffset: 22; opacity: 0; } 8%, 50% { opacity: 1; } 61% { opacity: 0; } 100% { stroke-dashoffset: -178; opacity: 0; } }
 @keyframes oa-motion-vec-drift-a { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(70px, -22px) scale(1.07); } }
 @keyframes oa-motion-vec-drift-b { 0%, 100% { transform: translate(0, 0) scale(1.04); } 50% { transform: translate(-60px, 26px) scale(.96); } }
 
@@ -41,8 +42,9 @@
 .oa-lab .oa-vec-bateria-fluxo-1 { animation-duration: 3s; animation-delay: -.7s; }
 .oa-lab .oa-vec-bateria-fluxo-2 { animation-duration: 2.7s; animation-delay: -1.5s; }
 
-/* Cidade: céu cintila, torres acendem janelas e a torre central emite sinal. */
+/* Cidade: céu cintila, a aura circular atrás da torre respira, torres acendem janelas, a torre central emite sinal e rastros de voo cruzam o céu. */
 .oa-lab .oa-vec-cidade-halo { animation: oa-motion-vec-breathe 12s ease-in-out infinite; }
+.oa-lab .oa-vec-cidade-aura { animation: oa-motion-vec-glow 8s ease-in-out -3s infinite; }
 .oa-lab .oa-vec-cidade-estrelas { animation: oa-motion-vec-twinkle 5s ease-in-out infinite; }
 .oa-lab .oa-vec-cidade-estrelas-1 { animation-duration: 7s; animation-delay: -2s; }
 .oa-lab .oa-vec-cidade-estrelas-2 { animation-duration: 9s; animation-delay: -5s; }
@@ -57,10 +59,17 @@
 .oa-lab .oa-vec-cidade-ping { fill: none; opacity: 0; animation: oa-motion-vec-ping 4.8s ease-out infinite; }
 .oa-lab .oa-vec-cidade-ping-atrasado { animation-delay: -2.4s; }
 .oa-lab .oa-vec-cidade-farol { animation: oa-motion-vec-beacon 2.4s ease-in-out infinite; }
+.oa-lab .oa-vec-cidade-farol-1 { animation-delay: -.9s; animation-duration: 3.2s; }
+.oa-lab .oa-vec-cidade-farol-2 { animation-delay: -1.9s; animation-duration: 4.1s; }
 .oa-lab .oa-vec-cidade-cone { animation: oa-motion-vec-glow 6s ease-in-out infinite; }
 .oa-lab .oa-vec-cidade-veiculo { animation: oa-motion-vec-vehicle 11s ease-in-out infinite; }
 .oa-lab .oa-vec-cidade-veiculo-1 { animation-delay: -4s; animation-duration: 14s; }
 .oa-lab .oa-vec-cidade-veiculo-2 { animation-delay: -8s; animation-duration: 13s; }
+.oa-lab .oa-vec-cidade-rastro { animation: oa-motion-vec-trail 13s linear infinite; }
+.oa-lab .oa-vec-cidade-rastro-1 { animation-duration: 17s; animation-delay: -6s; }
+.oa-lab .oa-vec-cidade-rastro-2 { animation-duration: 11s; animation-delay: -3s; }
+.oa-lab .oa-vec-cidade-rastro-3 { animation-duration: 19s; animation-delay: -11s; }
+.oa-lab .oa-vec-cidade-rastro-4 { animation-duration: 15s; animation-delay: -8s; }
 
 /* Céu: estrelas e faróis cintilam; camada de névoa sem filtro deriva devagar. */
 .oa-lab .oa-vec-cosmos-estrelas { animation: oa-motion-vec-twinkle 6s ease-in-out infinite; }

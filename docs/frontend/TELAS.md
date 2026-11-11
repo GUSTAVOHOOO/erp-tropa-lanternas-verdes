@@ -13,7 +13,7 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Início | `/` | Atual (UI-01, UI-02.01) | Apresentação da Central de Oa e acesso ao login |
 | Sobre | `/sobre` | Atual (UI-01, UI-02.02) | Oa, a Tropa e o juramento |
 | Lanternas | `/lanternas` | Atual (UI-01, UI-02.04) | Lista com filtro por Setor. **Muda:** busca, filtro de status e paginação, vindos da API |
-| Ficha do Lanterna | `/lanternas/[id]` | Existe, será ampliada | **Muda:** dados completos (identidade, espécie, planeta, Setor, ingresso, primeira aparição, habilidades, citação, biografia), mentor e aprendizes navegáveis, estatísticas (resolvidas, em andamento, tempo médio, carga atual) e selo "não verificado" nos campos sem fonte |
+| Ficha do Lanterna | `/lanternas/[id]` | Atual (UI-01, UI-02.05) | Ficha pública com identidade, espécie, planeta, Setor navegável, status operacional com SeloOa, construto vetorial OANET e link de retorno |
 | Login | `/login` | Atual (UI-01, UI-02.03) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
 | Cadastro | `/cadastro` | **Nova** | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
 | Acesso negado | `/acesso-negado` | Existe | Só para 403 de papel |
@@ -24,10 +24,10 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 
 | Tela | Rota | Quem | Estado | Função e mudanças |
 |---|---|---|---|---|
-| Resumo | `/painel` | Guardião, Lanterna | Existe, será ampliada | Vira o **dashboard**: totais por Status e Gravidade, vencidas, tempo médio, série de 30 dias e ranking de Lanternas. O Guardião filtra por Setor; o Lanterna vê o próprio |
+| Resumo | `/painel` | Guardião, Lanterna | Atual (UI-01, UI-02.06) | Visão geral operacional: saudação contextual por papel/setor, BarraStatus com contadores e links filtrados em MolduraOa, lista de ocorrências recentes em MolduraOa e botão de registro OANET |
 | Minha fila | `/painel/minha-fila` | Lanterna | **Nova** | Ocorrências atribuídas ao usuário, por Prazo e Gravidade, com destaque às vencidas. O Guardião não a acessa |
-| Ocorrências | `/painel/ocorrencias` | Guardião, Lanterna | Existe, será ampliada | Filtros de Status, Gravidade, Setor, responsável e vencida; busca; ordenação por prazo, criação ou Gravidade; paginação; indicador de Prazo |
-| Nova ocorrência | `/painel/ocorrencias/nova` | Guardião, Lanterna | Existe | Registro. O Setor é fixo para o Lanterna |
+| Ocorrências | `/painel/ocorrencias` | Guardião, Lanterna | Atual (UI-01, UI-02.07) | Lista operacional com filtros de status, gravidade e setor dentro de MolduraOa, tabela OANET, estado vazio com ação de limpar e botão de novo registro |
+| Nova ocorrência | `/painel/ocorrencias/nova` | Guardião, Lanterna | Atual (UI-01, UI-02.08) | Formulário de registro em MolduraOa com BotaoOa, CampoTexto, CampoSelect e validação zóide cliente/servidor |
 | Detalhe | `/painel/ocorrencias/[id]` | Guardião, Lanterna | Existe, será ampliada | **Muda:** linha do tempo de Eventos, Comentários (comentar e apagar), Prazo e "vencida", ações conforme o Status e o papel, edição dos dados, exclusão (Guardião) e reabertura com motivo (Guardião) |
 | Atribuir | `/painel/ocorrencias/[id]/atribuir` | Guardião | Existe | Escolhe o Responsável do mesmo Setor; mostra por que um Lanterna afastado não pode ser escolhido |
 | Lanternas (gestão) | `/painel/lanternas` | Guardião | **Nova** | Lista, criar, editar, afastar e reativar. Mostra a carga de cada um |

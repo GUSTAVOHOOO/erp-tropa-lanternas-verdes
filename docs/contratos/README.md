@@ -35,7 +35,7 @@ Códigos acrescentados ao fechar lacunas, todos estáveis (o front trata código
 - **`cenarios[]`**: cada item é independente e tem `id`, `operationId`, `ator` (`Pub` ou chave de conta; o teste gera o token, que nunca é fixture), `mundo`, `ajustes` opcionais (mudanças bem definidas sobre o mundo: `mesclar`, `adicionar`, `remover`), `request`, `esperado` e, nas escritas, `efeitos` (a mesma gramática, descrevendo o estado final). Tipos: `sucesso`, `pedido_invalido` (400), `rejeicao` (401/403/404/409/422/429/500) e `global` (rota sem operação). Entidade criada usa ID novo; snapshots de cenários diferentes não se misturam e nenhum cenário depende da ordem de execução.
 - **`precondicao`**, quando o estado não é só dado: `token_ausente|token_adulterado|token_expirado` (401), `throttle` (429, tentativas anteriores esgotando o limite), `falha_controlada` (500, falha injetada no ponto indicado). Pedido inválido que o schema aceita (Lanterna enviando `setorId`, `setorId` com destino `guardiao`) é marcado `invalidoPor: papel|destino`; cenário que prova a esteira com pedido inválido de propósito usa `precedencia`.
 
-Como cada frente materializa um cenário (nada disto está implementado ainda):
+Como cada frente materializa um cenário (o provedor BE já carrega os 310 cenários em `backend/test/contrato.e2e-spec.ts`, mas a auditoria de 2026-11-11 mostrou que ele não cobre todos os casos: ver [relatórios](../relatorios/README.md); o consumidor do front ainda não existe):
 
 | Frente | Materialização |
 |---|---|
@@ -73,7 +73,7 @@ Neste Windows `py -3` existe; os aliases `python` e `python3` apontam para a Mic
 - Listas além do declarado: ordem e filtros de Ocorrências e Lanternas (só pertinência à busca e meta), filtros combinados, total das listas de Lanternas e Ocorrências.
 - Que o `efeito` escrito seja o **único** correto: o validador exige apenas que o estado final seja um mundo válido e coerente com a linha do tempo.
 - Que o provedor realmente responda como o cenário: a cobertura prova um cenário identificável com estado compatível, não a resposta de uma implementação.
-- Seed: o teste de seed contra o schema (D37) ainda não existe.
+- Seed: o teste de seed contra o schema (D37) cobre só as Fichas públicas (`backend/test/seed-dominio.e2e-spec.ts`); os demais recursos do seed não são validados contra o schema.
 - Validação integral de OpenAPI 3.1/JSON Schema 2020-12, formatos RFC completos e referências externas; DNS, URLs e existência de contas fora dos mundos.
 - Intenção de uma mudança arbitrária no schema: o script não infere o que um autor quis. O gate é o hash (abaixo).
 

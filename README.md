@@ -4,15 +4,15 @@ Sistema web da Tropa para registrar, acompanhar e atribuir ocorrências intergal
 
 ## Estado do projeto
 
-O projeto está **em migração** de uma API de demonstração (json-server) para um back-end real. Esta tabela diz o que existe hoje e o que está planejado; só o que está em "Pronto" funciona neste repositório.
+O projeto está **em migração** de uma API de demonstração (json-server) para um back-end real. Esta tabela diz o que existe hoje e o que está planejado; só o que está em "Pronto" funciona neste repositório. Estado conferido em 2026-11-11.
 
 | Parte | Estado |
 |---|---|
 | Front-end Next.js (site público e painel) | Pronto, ainda consumindo o json-server |
-| UI OANET oficial (D28) | Base aprovada e implementada em `/laboratorio`; adoção nas rotas reais em migração |
-| Back-end NestJS (`backend/`) | Documentado, **ainda não implementado** |
-| Migração do front para a API real | Preparação independente por contrato; ativação após aceite da API |
-| Features novas (linha do tempo, comentários, dashboard, fila, Ficha completa) | Especificadas, ainda não implementadas |
+| UI OANET oficial (D28) | Base aprovada e implementada em `/laboratorio`; telas UI-02.01 a UI-02.12 migradas nas branches `front/ui-02-bloco-*` |
+| Back-end NestJS (`backend/`) | **Implementado** (BE-01 a BE-12): 30 operações do contrato, SQLite/TypeORM, JWT, seeds e testes. Auditado em 2026-11-11 ([relatórios](docs/relatorios/README.md)); os defeitos encontrados no back foram corrigidos |
+| Migração do front para a API real | **Pendente**: o front ainda chama o json-server (login, listas, ocorrências); o Corte 1 troca tudo de uma vez ([auditoria do front](docs/relatorios/auditoria-2026-11-11/front-api.md)) |
+| Features novas (linha do tempo, comentários, dashboard, fila, Ficha completa) | Existem na API; ainda sem tela no front |
 | Planos separados e contrato v1 (DOC-03) | Consolidados, revisados e com aceite técnico documental G-1; implementação do front autorizada em 2026-11-10 pelo plano FE, back ainda planejado |
 
 Documentação completa em [docs/README.md](docs/README.md).
@@ -27,7 +27,7 @@ Todo design novo parte de [docs/UI.md](docs/UI.md) e dos assets em código do la
 3. O dev de back segue [PLANO-IMPLEMENTACAO do back](docs/backend/PLANO-IMPLEMENTACAO.md): API NestJS, migrations e testes do provedor, usando o mesmo contrato, sem esperar telas prontas.
 4. A primeira ativação reúne todos os consumidores existentes no **Corte 1**, depois das evidências de cada frente. Histórico/comentários, fila e gestão entram como incrementos aditivos. Simulação aprovada não equivale a integração real; persistência, sessão e permissões são verificadas contra a API.
 
-A ativação do back real no app é um corte integrado único (login, cadastro, catálogo, ocorrências e dashboard juntos), seguido de recursos aditivos; ver [INTEGRACAO](docs/INTEGRACAO.md). Cada tarefa tem um responsável por arquivo. Contratos mudam nos dois lados no mesmo incremento; o código atual continua com json-server até a troca aceita. Os planos descrevem trabalho futuro, não afirmam que os adaptadores de teste ou o back-end já existem.
+A ativação do back real no app é um corte integrado único (login, cadastro, catálogo, ocorrências e dashboard juntos), seguido de recursos aditivos; ver [INTEGRACAO](docs/INTEGRACAO.md). Cada tarefa tem um responsável por arquivo. Contratos mudam nos dois lados no mesmo incremento; o front continua com json-server até a troca aceita. O back-end já existe em `backend/` e cumpre o contrato; o que ainda é trabalho futuro é a ligação do front a ele (Corte 1) e o servidor falso de contrato do front (FE-00).
 
 ### Pastas da documentação
 
@@ -79,7 +79,23 @@ npm run dev     # Next.js em http://localhost:3000
 
 Em Bash (Git Bash, WSL, macOS, Linux) o atalho `npm run iniciar` prepara e inicia os dois.
 
-Quando o back-end existir, estas instruções passam a iniciar `backend/` no lugar do json-server, e o `SESSION_SECRET` deixa de existir (a sessão será o JWT da API; ver [ADR 0001](docs/adr/0001-token-jwt-fica-no-servidor-do-next.md)).
+### Executar o back-end (NestJS)
+
+O back-end já existe e roda separado do front, também na porta 3001 (a mesma do json-server: use um **ou** o outro). Passo a passo completo, seeds e contas de demonstração em [backend/README.md](backend/README.md). Resumo, dentro de `backend/`:
+
+```bash
+cd backend
+cp .env.example .env           # troque JWT_SECRET por um segredo com 32+ caracteres
+npm install
+npm run build
+npm run migration:run
+npm run seed -- --etapa completa
+npm start                      # http://localhost:3001  (GET /saude confirma)
+```
+
+Testes do back: `npm test` (unitários) e `npm run test:e2e` (sobem a API em porta livre com SQLite temporário; não tocam no seu banco). Exige Node `^22.13` ou `>=24.11`.
+
+Quando o front for ligado a esta API (Corte 1), ele deixa de usar o json-server e o `SESSION_SECRET` deixa de existir (a sessão passa a ser o JWT da API; ver [ADR 0001](docs/adr/0001-token-jwt-fica-no-servidor-do-next.md)).
 
 ### Usuários de demonstração (json-server)
 
@@ -136,4 +152,4 @@ Antes de um commit: `npm run test:run`, `npm run lint` e `npm run build`.
 
 ## Limitações conhecidas
 
-Até a migração, o json-server não autentica de verdade e as senhas de demonstração ficam em texto puro em `db.json`. É uma limitação da API de demonstração e some com o back-end real (bcrypt e JWT).
+Enquanto o front usar o json-server, ele não autentica de verdade e as senhas de demonstração ficam em texto puro em `db.json`. É uma limitação da API de demonstração: o back-end real em `backend/` já usa bcrypt e JWT, e o problema some quando o front for ligado a ele (Corte 1).

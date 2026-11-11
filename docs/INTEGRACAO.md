@@ -1,6 +1,6 @@
 # Integração entre front-end e back-end
 
-**Estado:** procedimento de destino para duas pessoas; tarefa DOC-03 é somente planejamento. A demonstração atual usa Next + json-server. NestJS, fake HTTP de contrato, fixture de integração, scripts novos e gates abaixo não estão concluídos por este documento. UI-01 foi herdada parcial, sem aceite; aprovação visual do laboratório não prova integração de rotas. A execução só começa depois que o usuário encerrar a pausa da DOC-03.
+**Estado (2026-11-11):** procedimento para duas pessoas. A pausa da DOC-03 terminou. O **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12, com a fixture de integração BE-FX e o comando `fixture:integracao`) e foi auditado contra o contrato em 2026-11-11 ([relatórios](relatorios/README.md)). O **front ainda usa Next + json-server**: o Corte 1 (cliente HTTP único, sessão JWT, todos os consumidores e dashboard) não foi feito, e o fake HTTP de contrato do front (FE-00) e os demais gates do front abaixo seguem pendentes. Aprovação visual do laboratório não prova integração de rotas. O gate G-9 do back aguarda a atualização do registro G-1 (divergência de hash anotada no plano BE).
 
 **Resultado:** front e back trabalham em branches separadas, sobre a mesma revisão contratual, e combinam os recursos reais em **um primeiro corte integrado único** (Corte 1, §3), seguido de recursos aditivos. Os detalhes executáveis de cada lado estão no [plano front](frontend/PLANO-IMPLEMENTACAO.md) e [plano back](backend/PLANO-IMPLEMENTACAO.md); a visão de sequência fica em [PLANO](PLANO.md).
 

@@ -6,8 +6,9 @@ API NestJS. Toda tela nova ou migrada deriva dos componentes e assets abaixo.
 O front antigo conserva valor funcional durante a transição; sua aparência,
 `/design-system` antigo e as pranchas raster não orientam o design novo.
 
-**Estado real:** a base visual está implementada; as rotas reais ainda não
-foram migradas integralmente. Não confundir aprovação do design com integração
+**Estado real:** a base visual está implementada; as rotas reais (UI-02.01 a
+UI-02.12) foram migradas nas branches `front/ui-02-bloco-*`, ainda sem ligação à
+API NestJS. Não confundir aprovação do design com integração
 pronta. [Handoff de implementação](agents/HANDOFF-OANET.md),
 [plano](PLANO.md), [migração de dados](frontend/MIGRACAO.md).
 

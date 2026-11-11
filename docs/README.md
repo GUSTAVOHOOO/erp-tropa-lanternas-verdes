@@ -1,6 +1,6 @@
 # Documentação do projeto
 
-Atualizada em 2026-11-09. **Atual:** Next + json-server e laboratório OANET aprovado. **Parcial:** casca UI-01 herdada, sem aceite final. **Destino:** NestJS, JWT, novas funcionalidades e migração completa. A [DOC-03](agents/DOC-03-PLANEJAMENTO.md) está concluída com planos e contrato revisados; [G-1](INTEGRACAO.md#g-1--aceite-do-contrato) identifica a revisão consumível. Implementação permanece suspensa até tarefa explícita.
+Atualizada em 2026-11-11. **Atual:** o **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12; 30 operações do contrato; auditado em 2026-11-11, ver [relatórios](relatorios/README.md)); o front Next.js ainda consome o json-server, com a UI OANET migrada nas telas UI-02.01 a UI-02.12 (branches do front). **Pendente:** ligar o front à API real (Corte 1, [INTEGRACAO](INTEGRACAO.md)) e as telas novas (cadastro, minha fila, gestão, comentários, linha do tempo). A [DOC-03](agents/DOC-03-PLANEJAMENTO.md) está concluída; [G-1](INTEGRACAO.md#g-1--aceite-do-contrato) identifica a revisão consumível do contrato (o aceite G-9 aguarda a atualização do hash G-1 pela coordenação, ver o [plano BE](backend/PLANO-IMPLEMENTACAO.md)).
 
 ## Comece pelo seu trabalho
 
@@ -23,9 +23,11 @@ As skills canônicas de [front](../.claude/skills/frontend-web/SKILL.md) e [back
 | `docs/` | Este índice, [PLANO](PLANO.md), [CONTRIBUINDO](CONTRIBUINDO.md), [INTEGRACAO](INTEGRACAO.md) e [UI](UI.md) | Entradas de execução e contrato visual |
 | `docs/agents/` | [Fluxo](agents/README.md), [mapa](agents/MAPA.md), [modelo de tarefa](agents/TAREFA.md), [handoff da UI-01](agents/HANDOFF-OANET.md), [handoff do front](agents/HANDOFF-FRONT.md), [registro DOC-03](agents/DOC-03-PLANEJAMENTO.md) | Operação e estado datado; não redefine produto |
 | `docs/agents/revisoes/` | [Índice](agents/revisoes/README.md), relatórios e correções por rodada | Evidência, não fonte de contrato |
-| `docs/contratos/` | [Entrada](contratos/README.md), OpenAPI JSON, exemplos e validador documental | Formato HTTP acordado de destino; não API implementada |
+| `docs/contratos/` | [Entrada](contratos/README.md), OpenAPI JSON, exemplos e validador documental | Formato HTTP acordado entre front e back; o back em `backend/` o implementa e é verificado contra ele |
 | `docs/contratos/exemplos/` | Requisições/respostas e cenários identificados por operação | Fixtures sintéticas de contrato; não dados do produto |
-| `docs/backend/` | Decisões, dados, regras, API, DTOs, arquitetura, seed, cenários e plano BE | Destino, com decisões vigentes explícitas |
+| `docs/backend/` | Decisões, dados, regras, API, DTOs, arquitetura, seed, cenários e plano BE | Vigente: descreve o back-end implementado em `backend/`, com as decisões explícitas |
+| `docs/relatorios/` | [Índice](relatorios/README.md) e relatórios de auditoria datados (back e front contra o contrato) | Evidência datada; não redefine contrato nem regras |
+| `docs/relatorios/auditoria-2026-11-11/` | [Resumo](relatorios/auditoria-2026-11-11/README.md) e cinco relatórios (três do back, dois do front) | Auditoria de 2026-11-11; defeitos do back corrigidos, ligação do front pendente |
 | `docs/frontend/` | Arquitetura, telas, migração e plano FE/UI | Atual/destino distinguidos em cada documento |
 | `docs/adr/` | Decisões arquiteturais com consequências e alternativas | Permanente; [ADR 0001](adr/0001-token-jwt-fica-no-servidor-do-next.md) mantém JWT no Next |
 | `docs/research/` | Pesquisa primária datada e recomendações | Insumo; [pesquisa para agentes](research/2026-11-09-documentacao-para-agentes.md) orienta esta organização |

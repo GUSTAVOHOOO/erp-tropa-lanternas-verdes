@@ -134,7 +134,7 @@ Escolha verificações pelo impacto:
 
 Os comandos gerais de validação do front são os do `package.json`:
 `npm run test:run`, `npm run lint` e `npm run build`. No back-end, os do
-`package.json` de `backend/` (testes unitários, e2e e build), quando existir.
+`package.json` de `backend/` (`npm test`, `npm run test:e2e` e `npm run build`).
 Falha já presente antes da sua mudança deve ser reproduzida antes de atribuí-la
 ao trabalho atual.
 

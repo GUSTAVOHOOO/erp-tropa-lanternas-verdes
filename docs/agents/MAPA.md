@@ -8,8 +8,9 @@ de alterá-los. As regras de código estão nas skills
 [`backend-api`](../../.claude/skills/backend-api/SKILL.md).
 
 > **Em migração.** Este mapa descreve o **código de hoje**: front-end Next.js
-> consumindo o json-server. O destino (back-end NestJS, JWT em cookie `httpOnly`,
-> features novas) está em [docs/README.md](../README.md), e o caminho entre os dois
+> consumindo o json-server. O back-end NestJS já está implementado em `backend/`
+> (ver a seção abaixo); a ligação do front a ele (JWT em cookie `httpOnly`,
+> features novas) é o Corte 1 e está em [docs/README.md](../README.md), e o caminho entre os dois
 > em [frontend/MIGRACAO.md](../frontend/MIGRACAO.md). As seções "Sessão e dados
 > privados" e "Leitura, cache e erros" serão reescritas quando a migração
 > chegar ao passo correspondente.
@@ -58,10 +59,10 @@ oferecida pelo json-server.
 | UI oficial e assets | `components/oanet/`, `app/globals.css`, `app/laboratorio/` | `docs/UI.md` (D28), `docs/agents/HANDOFF-OANET.md`; `/design-system` antigo é histórico |
 | Dados de demonstração | `db.json` | Schemas e testes que importam os dados (saem na migração) |
 | Adoção nas rotas reais | Layouts `(site)`/`(painel)`, páginas e componentes OANET | UI-01/UI-02 em `docs/PLANO.md`; propriedade transferida pelo handoff, conferir alterações locais |
-| Regras, rotas e dados da API | `docs/backend/` (`ESCOPO`, `REGRAS-DE-NEGOCIO`, `API`, `MODELO-DE-DADOS`, `ARQUITETURA`) | Skill `backend-api`; o código virá em `backend/` |
+| Regras, rotas e dados da API | `docs/backend/` (`ESCOPO`, `REGRAS-DE-NEGOCIO`, `API`, `MODELO-DE-DADOS`, `ARQUITETURA`) | Skill `backend-api`; o código está em `backend/` (NestJS) |
 | Telas atuais e planejadas | `docs/frontend/TELAS.md` | `docs/frontend/ARQUITETURA.md` |
 | Trabalho independente FE/BE | `docs/frontend/PLANO-IMPLEMENTACAO.md`, `docs/backend/PLANO-IMPLEMENTACAO.md` | `docs/PLANO.md`, `docs/INTEGRACAO.md` |
-| Contrato verificável e exemplos | `docs/contratos/` | `docs/backend/API.md`, `DTOS.md`; mock e API reais ainda precisam ser implementados |
+| Contrato verificável e exemplos | `docs/contratos/` | `docs/backend/API.md`, `DTOS.md`; a API real existe em `backend/`; o mock HTTP do front (FE-00) ainda não |
 | Componentes compartilhados (cabeçalho, tabela, badges, campos, estados) | `components/*.tsx`, `components/ui/*` | Inventário e destino em UI-02.00 do plano FE; consumidores em `app/` |
 | Ordem de ativação real (Corte 1 e aditivos) e fixture de integração | `docs/INTEGRACAO.md` §3 e §4 | Planos FE/BE; BE-01/02/03/04/05/06/07a/07b/08/09/10 e fixture etapas a–e existem |
 

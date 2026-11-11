@@ -52,6 +52,8 @@ Determinística (D35). Campos: **Usuários** por nome OU e-mail; **Lanternas** p
 | 429 | `MUITAS_TENTATIVAS` | Limite de login. |
 | 500 | `ERRO_INTERNO` | Mensagem genérica; detalhe só no log. |
 
+Corpo JSON acima do limite do servidor (100 kB) responde 413 `CORPO_MUITO_GRANDE`: erro transversal acrescentado em 2026-11-11 (antes saía com o código `ERRO_INTERNO`), mantido fora da tabela e do `openapi.json` para não alterar o contrato aceito (G-1). Outro erro 4xx do cliente sem código próprio responde `REQUISICAO_NAO_ACEITA`; nenhum 4xx usa `ERRO_INTERNO`. Em 400, `detalhes` traz **um item por campo** (`campo` e a lista de `mensagens` daquele campo); o corpo vazio em `PATCH` parcial usa `campo: "corpo"`. Parâmetro de query desconhecido é 400 em **qualquer** rota, inclusive nas que não declaram query (`/saude`, `/auth/me`, `/setores`, `/lanternas/:id`...).
+
 Todas as operações podem responder 500 `ERRO_INTERNO` com mensagem genérica; esse erro transversal está explicitado em cada operação do OpenAPI. Query/path malformado e campo desconhecido são 400. Sem autenticação é 401; papel insuficiente é 403; recurso fora do Setor é 404.
 
 ### Ordem de avaliação (esteira)

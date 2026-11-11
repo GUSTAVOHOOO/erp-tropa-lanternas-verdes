@@ -233,6 +233,8 @@ UI-02.11 usa nomes abreviados `{loading,error}` apenas para os dois arquivos exi
 
 ## FE-07b — Minha fila (aditivo, depois do Corte 1)
 
+> **Status em 2026-11-11:** Preparado contra contrato (P) na branch `front/fe-07b-minha-fila`, aditivo depois do Corte 1. `/painel/minha-fila` usa `GET /ocorrencias/minha-fila` na ordem da API, com paginação, vazio próprio e, para `409 CONTA_SEM_LANTERNA`, a mensagem de vínculo pendente (nunca uma fila vazia falsa); o Guardião é barrado por `exigirPapel`. O link "Minha fila" só aparece para o Lanterna (`linksDoPainel` em `components/oanet/navegacao.ts`), com o teste "links por papel".
+
 **Depende P:** FE-04, UI-01 e UI-02.11; **A:** BE-08/09, BE-FX d e G7b. **Edita em sequência:** `app/(painel)/layout.tsx` (link “Minha fila” só para Lanterna) e `__tests__/components/casca-oanet.test.tsx` (teste “links por papel”). **Novos:** `app/(painel)/painel/minha-fila/page.tsx`, `loading.tsx`, `error.tsx`, `__tests__/components/minha-fila.test.tsx`, `e2e/fila.spec.ts`.
 
 - [ ] Usar `/ocorrencias/minha-fila` do usuário, só atribuídas não resolvidas e não excluídas, sem enviar um responsável arbitrário. G não vê o link e o acesso direto é bloqueado; conta sem ficha mostra a mensagem útil de `CONTA_SEM_LANTERNA`, sem fingir fila vazia.

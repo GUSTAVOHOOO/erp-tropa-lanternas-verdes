@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
 import { CascaOa, linkAtivo, type LinkCascaOa } from '@/components/oanet/CascaOa'
 import { IconeOa } from '@/components/oanet/IconeOa'
-import { linksDoSite } from '@/components/oanet/navegacao'
+import { linksDoPainel, linksDoSite } from '@/components/oanet/navegacao'
 
 const caminho = '/painel/ocorrencias/7'
 vi.mock('next/navigation', () => ({ usePathname: () => caminho }))
@@ -122,4 +122,20 @@ test('links por papel: linksDoSite(false) contém Cadastrar e linksDoSite(true) 
 
   expect(visitante.some((l) => l.href === '/cadastro' && l.nome === 'Cadastrar')).toBe(true)
   expect(logado.some((l) => l.href === '/cadastro')).toBe(false)
+})
+
+test('links por papel do painel: linksDoPainel("lanterna") tem Minha fila e guardiao não tem; códigos sequenciais', () => {
+  const lanterna = linksDoPainel('lanterna')
+  const guardiao = linksDoPainel('guardiao')
+
+  expect(lanterna.some((l) => l.href === '/painel/minha-fila' && l.nome === 'Minha fila')).toBe(true)
+  expect(guardiao.some((l) => l.href === '/painel/minha-fila')).toBe(false)
+
+  // O Lanterna tem Minha fila logo depois de Resumo (posição 1)
+  expect(lanterna[1].href).toBe('/painel/minha-fila')
+  expect(lanterna[1].icone).toBe('alvo')
+
+  // Códigos sequenciais 01..N
+  expect(lanterna.map((l) => l.codigo)).toEqual(['01', '02', '03', '04'])
+  expect(guardiao.map((l) => l.codigo)).toEqual(['01', '02', '03'])
 })

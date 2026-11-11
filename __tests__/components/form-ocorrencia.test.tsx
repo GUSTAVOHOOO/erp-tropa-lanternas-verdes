@@ -39,3 +39,10 @@ test('Guardião vê o campo setor', () => {
   expect(screen.getByText('Setor')).toBeDefined()
   expect(screen.getByText('Escolha o setor')).toBeDefined()
 })
+
+// UI-02.08: botão OANET e layout
+test('botão de envio usa BotaoOa', () => {
+  render(<FormOcorrencia setores={[]} setorFixo="2814" />)
+  const botao = screen.getByRole('button', { name: 'Registrar ocorrência' })
+  expect(botao.classList.contains('oa-button')).toBe(true)
+})

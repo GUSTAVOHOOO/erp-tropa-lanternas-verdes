@@ -4,11 +4,21 @@ import HomePage from '@/app/(site)/page'
 import SobrePage from '@/app/(site)/sobre/page'
 import NaoEncontrada from '@/app/not-found'
 
-test('homepage tem título e leva às três áreas', () => {
-  render(<HomePage />)
+test('homepage tem título e leva às três áreas na composição OANET do portal', () => {
+  const { container } = render(<HomePage />)
   expect(screen.getByRole('heading', { level: 1 })).toBeDefined()
-  const destinos = screen.getAllByRole('link').map((l) => l.getAttribute('href'))
+  expect(screen.getByText(/No dia mais claro, na noite mais densa/)).toBeDefined()
+
+  const links = screen.getAllByRole('link')
+  const destinos = links.map((l) => l.getAttribute('href'))
   expect(destinos).toEqual(expect.arrayContaining(['/lanternas', '/sobre', '/painel']))
+  expect(links.some((l) => l.classList.contains('oa-button'))).toBe(true)
+
+  expect(container.querySelector('.oa-portal-hero')).not.toBeNull()
+  expect(container.querySelector('.oa-portal-city')).not.toBeNull()
+  expect(container.querySelector('.oa-portal-bottom')).not.toBeNull()
+  expect(container.querySelector('.oa-portal-battery')).not.toBeNull()
+  expect(container.textContent).not.toMatch(/7\.200|98,7%/)
 })
 
 test('sobre tem título e o juramento', () => {

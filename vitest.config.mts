@@ -8,6 +8,6 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     // backend/ tem o próprio runner (Jest) e dependências; o vitest do front não o executa.
-    exclude: [...configDefaults.exclude, 'backend/**'],
+    exclude: [...configDefaults.exclude, 'backend/**', 'e2e/**', 'scripts/contrato/*.test.mjs'],
   },
 })

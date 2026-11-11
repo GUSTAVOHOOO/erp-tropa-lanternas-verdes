@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { env } from '@/lib/env'
 import { Barlow, Barlow_Condensed, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -8,7 +9,8 @@ const barlowCondensed = Barlow_Condensed({ variable: '--font-barlow-condensed', 
 const plexMono = IBM_Plex_Mono({ variable: '--font-plex-mono', subsets: ['latin'], weight: ['500'] })
 
 export const metadata: Metadata = {
-  title: 'Central de Oa | Tropa dos Lanternas Verdes',
+  metadataBase: new URL(env.SITE_URL),
+  title: { default: 'Central de Oa | Tropa dos Lanternas Verdes', template: '%s | Central de Oa' },
   description: 'Registro e acompanhamento de ocorrências intergalácticas da Tropa dos Lanternas Verdes.',
 }
 

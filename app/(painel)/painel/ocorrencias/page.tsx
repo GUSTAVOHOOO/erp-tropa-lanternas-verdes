@@ -5,29 +5,61 @@ import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
 import { IconeOa } from '@/components/oanet/IconeOa'
 import { MolduraOa } from '@/components/oanet/PainelOa'
+import { Paginacao } from '@/components/Paginacao'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
-import { normalizarFiltroOcorrencias } from '@/lib/filtro-ocorrencias'
 import { listarTodosLanternas } from '@/lib/lanternas'
 import { listarOcorrencias } from '@/lib/ocorrencias'
-import { setorParaFiltro } from '@/lib/escopo'
+import { filtroOcorrenciasSchema } from '@/lib/schemas/ocorrencia'
 import { listarSetores } from '@/lib/setores'
 import { FiltroOcorrencias } from '@/app/(painel)/painel/ocorrencias/_components/FiltroOcorrencias'
 
 export const metadata: Metadata = { title: 'Ocorrências | Central de Comando' }
 
-type OcorrenciasPageProps = { searchParams: Promise<{ status?: string | string[]; gravidade?: string | string[]; setor?: string | string[] }> }
+type OcorrenciasPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
-/** Lista de ocorrências com filtros na URL. */
+/** Lista de ocorrências com filtros e paginação na URL. [ROTA-10][ROTA-11][ROTA-14][API-07] */
 export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageProps) {
   const sessao = await verificarSessao() // [AUTH-04]
   const parametros = await searchParams // [ROTA-10]
-  const [setores, lanternas] = await Promise.all([listarSetores(), listarTodosLanternas()]) // [API-07]
-  const filtro = normalizarFiltroOcorrencias(parametros, setores.map((s) => String(s.id))) // [ROTA-11]
-  const setorDaUrl = filtro.setor === undefined ? undefined : Number(filtro.setor)
-  const setorDoFiltro = setorParaFiltro(sessao, setorDaUrl !== undefined && Number.isNaN(setorDaUrl) ? undefined : setorDaUrl)
-  const ocorrencias = await listarOcorrencias({ setorId: setorDoFiltro === undefined ? undefined : String(setorDoFiltro), status: filtro.status, gravidade: filtro.gravidade }) // [AUTH-07] // FE-04: setor inteiro do contrato
-  const temFiltro = Boolean(filtro.status || filtro.gravidade || (sessao.papel === 'guardiao' && filtro.setor))
+  const filtro = filtroOcorrenciasSchema.parse(parametros) // [ROTA-11]
+
+  const filtroConsulta = {
+    ...filtro,
+    setor: sessao.papel === 'guardiao' ? filtro.setor : undefined, // [AUTH-07] Lanterna ignora setor da URL
+    limite: 20,
+  }
+
+  const [resultado, setores, lanternas] = await Promise.all([ // [API-07]
+    listarOcorrencias(filtroConsulta),
+    listarSetores(),
+    listarTodosLanternas(),
+  ])
+
+  const temFiltro = Boolean(
+    filtro.status ||
+    filtro.gravidade ||
+    (sessao.papel === 'guardiao' && filtro.setor !== undefined) ||
+    filtro.responsavel ||
+    filtro.vencida ||
+    filtro.busca ||
+    filtro.ordenar ||
+    filtro.ordem ||
+    (filtro.pagina && filtro.pagina > 1),
+  )
+
+  const parametrosPaginacao: Record<string, string | undefined> = {
+    busca: filtro.busca,
+    status: filtro.status,
+    gravidade: filtro.gravidade,
+    setor: sessao.papel === 'guardiao' && filtro.setor !== undefined ? String(filtro.setor) : undefined,
+    responsavel: filtro.responsavel,
+    vencida: filtro.vencida ? 'true' : undefined,
+    ordenar: filtro.ordenar,
+    ordem: filtro.ordem,
+  }
 
   return (
     <section className="oa-screen grid gap-6">
@@ -43,25 +75,34 @@ export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageP
         </Link>
       </CabecalhoPagina>
       <MolduraOa titulo="Filtros operacionais" icone="painel">
-        <div className="oa-panel-body">
-          <Suspense fallback={null}> {/* [ROTA-15] */}
-            <FiltroOcorrencias setores={sessao.papel === 'guardiao' ? setores : []} />
-          </Suspense>
-        </div>
+        <Suspense fallback={null}> {/* [ROTA-15] */}
+          <FiltroOcorrencias
+            setores={sessao.papel === 'guardiao' ? setores : []}
+            lanternas={lanternas}
+          />
+        </Suspense>
       </MolduraOa>
       <MolduraOa titulo="Registros operacionais" icone="ocorrencias">
-        {ocorrencias.length === 0 ? ( // [API-09]
+        {resultado.itens.length === 0 ? ( // [API-09]
           <EstadoVazio
             titulo="Nenhuma ocorrência encontrada"
             descricao={temFiltro ? 'Nenhuma ocorrência combina com esses filtros.' : 'Ainda não há ocorrências registradas.'}
             acao={temFiltro ? { href: '/painel/ocorrencias', rotulo: 'Limpar filtros' } : undefined}
           />
         ) : (
-          <TabelaOcorrencias
-            ocorrencias={ocorrencias}
-            nomeSetor={Object.fromEntries(setores.map((s) => [String(s.id), s.nome]))}
-            nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))}
-          />
+          <div className="grid gap-4">
+            <TabelaOcorrencias
+              ocorrencias={resultado.itens}
+              nomeSetor={Object.fromEntries(setores.map((s) => [s.id, s.nome]))}
+              nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))}
+            />
+            <Paginacao
+              pagina={resultado.meta.pagina}
+              paginas={resultado.meta.paginas}
+              caminho="/painel/ocorrencias"
+              parametros={parametrosPaginacao}
+            />
+          </div>
         )}
       </MolduraOa>
     </section>

@@ -47,12 +47,12 @@ test('BadgeStatus é um selo OANET com o tom do laboratório', () => {
 })
 
 test('BarraStatus acende um segmento por ocorrência e a legenda filtra', () => {
-  const ocorrencias = [
-    { id: 'a', status: 'aberta' as const },
-    { id: 'b', status: 'aberta' as const },
-    { id: 'c', status: 'resolvida' as const },
-  ]
-  const { container } = render(<BarraStatus ocorrencias={ocorrencias} />)
+  const contagens = {
+    aberta: 2,
+    em_andamento: 0,
+    resolvida: 1,
+  }
+  const { container } = render(<BarraStatus contagens={contagens} />)
   expect(container.querySelectorAll('[data-status]')).toHaveLength(3)
   expect(screen.getByRole('link', { name: /2\s*abertas/ }).getAttribute('href')).toBe('/painel/ocorrencias?status=aberta')
   expect(screen.getByRole('link', { name: /0\s*em andamento/ }).getAttribute('href')).toBe('/painel/ocorrencias?status=em_andamento')
@@ -60,7 +60,12 @@ test('BarraStatus acende um segmento por ocorrência e a legenda filtra', () => 
 })
 
 test('BarraStatus sem ocorrências não desenha a barra e mostra zeros', () => {
-  const { container } = render(<BarraStatus ocorrencias={[]} />)
+  const contagens = {
+    aberta: 0,
+    em_andamento: 0,
+    resolvida: 0,
+  }
+  const { container } = render(<BarraStatus contagens={contagens} />)
   expect(container.querySelectorAll('[data-status]')).toHaveLength(0)
   expect(screen.getByRole('link', { name: /0\s*abertas/ })).toBeDefined()
 })
@@ -87,8 +92,24 @@ test('CabecalhoPagina sem descrição nem ação mostra só o título', () => {
 test('TabelaOcorrencias não tem texto solto entre células (hidratação)', () => {
   const { container } = render(
     <TabelaOcorrencias
-      ocorrencias={[{ id: 'o1', titulo: 'Ataque', descricao: 'x', planeta: 'Terra', setorId: '2814', gravidade: 'alta', status: 'aberta', envolvidos: 1, responsavelId: null, resolucao: null, criadaPor: 'u1', criadaEm: '2026-10-01T12:00:00.000Z' }]}
-      nomeSetor={{ '2814': 'Setor 2814' }}
+      ocorrencias={[{
+        id: '00000000-0000-4000-8000-000000000001',
+        titulo: 'Ataque',
+        descricao: 'Ataque extraterrestre.',
+        planeta: 'Terra',
+        setorId: 2814,
+        gravidade: 'alta',
+        status: 'aberta',
+        envolvidos: 1,
+        responsavelId: null,
+        resolucao: null,
+        criadaPorId: '00000000-0000-4000-8000-000000000099',
+        criadaEm: '2026-10-01T12:00:00.000Z',
+        resolvidaEm: null,
+        prazoEm: '2026-10-02T12:00:00.000Z',
+        vencida: false,
+      }]}
+      nomeSetor={{ 2814: 'Setor 2814' }}
       nomeLanterna={{}}
     />,
   )

@@ -1,3 +1,4 @@
+// FE-07a: substituído pelo /dashboard
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { BarraStatus } from '@/components/BarraStatus'
@@ -8,20 +9,31 @@ import { MolduraOa } from '@/components/oanet/PainelOa'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
 import { listarTodosLanternas } from '@/lib/lanternas'
-import { listarOcorrencias } from '@/lib/ocorrencias'
-import { setorParaFiltro } from '@/lib/escopo'
+import { contarOcorrencias, listarOcorrencias } from '@/lib/ocorrencias'
+import type { StatusOcorrencia } from '@/lib/schemas/ocorrencia'
 import { listarSetores } from '@/lib/setores'
 
 export const metadata: Metadata = { title: 'Resumo | Central de Comando' }
 
-/** Resumo: barra de status e as 5 ocorrências mais recentes (do setor, para o Lanterna). */
+/** Resumo: barra de status com contagens do servidor e as 5 ocorrências mais recentes. */
 export default async function PainelPage() {
   const sessao = await verificarSessao() // [AUTH-04]
-  const [ocorrencias, setores, lanternas] = await Promise.all([ // [API-07]
-    listarOcorrencias({ setorId: setorParaFiltro(sessao) === undefined ? undefined : String(setorParaFiltro(sessao)) }), // [AUTH-07] // FE-04: setor inteiro do contrato
+  const [aberta, emAndamento, resolvida, respostaRecentes, setores, lanternas] = await Promise.all([ // [API-07]
+    contarOcorrencias({ status: 'aberta' }),
+    contarOcorrencias({ status: 'em_andamento' }),
+    contarOcorrencias({ status: 'resolvida' }),
+    listarOcorrencias({ limite: 5 }),
     listarSetores(),
     listarTodosLanternas(),
   ])
+
+  const contagens: Record<StatusOcorrencia, number> = {
+    aberta,
+    em_andamento: emAndamento,
+    resolvida,
+  }
+
+  const ocorrencias = respostaRecentes.itens
 
   return (
     <section className="oa-screen grid gap-8">
@@ -38,9 +50,7 @@ export default async function PainelPage() {
       </CabecalhoPagina>
 
       <MolduraOa titulo="Status operacional" icone="painel">
-        <div className="oa-panel-body">
-          <BarraStatus ocorrencias={ocorrencias} />
-        </div>
+        <BarraStatus contagens={contagens} />
       </MolduraOa>
 
       <MolduraOa titulo="Mais recentes" icone="ocorrencias">
@@ -48,8 +58,8 @@ export default async function PainelPage() {
           <EstadoVazio titulo="Nenhuma ocorrência registrada" descricao="Quando algo acontecer no setor, registre aqui." acao={{ href: '/painel/ocorrencias/nova', rotulo: 'Registrar ocorrência' }} />
         ) : (
           <TabelaOcorrencias
-            ocorrencias={ocorrencias.slice(0, 5)}
-            nomeSetor={Object.fromEntries(setores.map((s) => [String(s.id), s.nome]))}
+            ocorrencias={ocorrencias}
+            nomeSetor={Object.fromEntries(setores.map((s) => [s.id, s.nome]))}
             nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))}
           />
         )}

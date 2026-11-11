@@ -70,3 +70,17 @@ test('recusa campo de corpo incompatível com o schema', async () => {
   assert.equal(response.status, 400);
   assert.equal((await response.json()).erro.codigo, 'DADOS_INVALIDOS');
 });
+
+test('o cenário escolhido vale só para a sua operação; reset volta ao sucesso', async () => {
+  fake.setScenario('consultarUsuarioAtual.401.NAO_AUTENTICADO');
+  const me = await fetch(`${fake.url}/auth/me`);
+  assert.equal(me.status, 401);
+  await me.body?.cancel();
+  const setores = await fetch(`${fake.url}/setores`);
+  assert.equal(setores.status, 200);
+  await setores.body?.cancel();
+  fake.reset();
+  const deNovo = await fetch(`${fake.url}/auth/me`);
+  assert.equal(deNovo.status, 200);
+  await deNovo.body?.cancel();
+});

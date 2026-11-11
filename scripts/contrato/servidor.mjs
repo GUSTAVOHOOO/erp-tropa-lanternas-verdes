@@ -46,7 +46,8 @@ function erro(res, status, codigo, mensagem, pathname = '/', rota = null) {
 
 export async function createContractServer({ port, latencyMs = 0 } = {}) {
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Informe uma porta exclusiva válida.');
-  let escolhido = null;
+  // Um cenário escolhido por operação; as demais respondem o sucesso documentado.
+  const escolhidos = new Map();
   let atraso = latencyMs;
   const servidor = createServer(async (req, res) => {
     try {
@@ -77,8 +78,9 @@ export async function createContractServer({ port, latencyMs = 0 } = {}) {
       if (bodySchema && !validar(bodySchema, body)) return erro(res, 400, 'DADOS_INVALIDOS', 'Corpo incompatível com o contrato.', url.pathname, rota);
       if (!bodySchema && body !== undefined) return erro(res, 400, 'DADOS_INVALIDOS', 'Esta operação não aceita corpo.', url.pathname, rota);
 
-      const scenario = escolhido ? cenarios.find((item) => item.id === escolhido) : cenarios.find((item) => item.operationId === rota.op.operationId && item.tipo === 'sucesso');
-      if (!scenario || scenario.operationId !== rota.op.operationId) return erro(res, 404, 'NAO_ENCONTRADO', 'Nenhum cenário local configurado para esta operação.', url.pathname, rota);
+      const idEscolhido = escolhidos.get(rota.op.operationId);
+      const scenario = idEscolhido ? cenarios.find((item) => item.id === idEscolhido) : cenarios.find((item) => item.operationId === rota.op.operationId && item.tipo === 'sucesso');
+      if (!scenario) return erro(res, 404, 'NAO_ENCONTRADO', 'Nenhum cenário local configurado para esta operação.', url.pathname, rota);
       const status = scenario.esperado.status;
       const nomeExemplo = `${rota.op.operationId}_${scenario.esperado.codigo ?? 'sucesso'}`;
       const resposta = scenario.esperado.corpo ?? contrato.components.examples[nomeExemplo]?.value;
@@ -99,9 +101,14 @@ export async function createContractServer({ port, latencyMs = 0 } = {}) {
     server: servidor,
     url: `http://127.0.0.1:${port}`,
     setScenario(id, options = {}) {
-      if (!cenarios.some((item) => item.id === id)) throw new Error(`Cenário desconhecido: ${id}`);
-      escolhido = id;
+      const cenario = cenarios.find((item) => item.id === id);
+      if (!cenario) throw new Error(`Cenário desconhecido: ${id}`);
+      escolhidos.set(cenario.operationId, id);
       atraso = options.latencyMs ?? latencyMs;
+    },
+    reset() {
+      escolhidos.clear();
+      atraso = latencyMs;
     },
     close: () => new Promise((resolve, reject) => servidor.close((cause) => cause ? reject(cause) : resolve())),
   };

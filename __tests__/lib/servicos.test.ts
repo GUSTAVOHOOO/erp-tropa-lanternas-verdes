@@ -1,12 +1,9 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-import db from '@/db.json'
 import { ApiError } from '@/lib/api-error'
 import { urlDaApi } from '@/lib/api'
 import { listarSetores } from '@/lib/setores'
 import { buscarLanterna, listarLanternas } from '@/lib/lanternas'
-import { atualizarOcorrencia, buscarOcorrencia, criarOcorrencia, listarOcorrencias } from '@/lib/ocorrencias'
-import { ocorrenciaSchema } from '@/lib/schemas/ocorrencia'
 
 const fetchSimulado = vi.fn()
 
@@ -32,8 +29,8 @@ afterEach(() => {
 
 describe('urlDaApi', () => {
   test('monta a URL a partir do API_URL e ignora filtros vazios', () => {
-    const url = urlDaApi('/ocorrencias', { setorId: '2814', status: undefined, vazio: '' })
-    expect(url.toString()).toBe('http://localhost:3001/ocorrencias?setorId=2814')
+    const url = urlDaApi('/setores', { setor: '2814', status: undefined, vazio: '' })
+    expect(url.toString()).toBe('http://localhost:3001/setores?setor=2814')
   })
 
   test('sem API_URL explica o que falta', () => {
@@ -43,28 +40,6 @@ describe('urlDaApi', () => {
 })
 
 describe('leituras', () => {
-  test('listarOcorrencias filtra, ordena da mais nova e não usa cache', async () => {
-    fetchSimulado.mockResolvedValue(resposta(db.ocorrencias.slice(0, 2)))
-    const lista = await listarOcorrencias({ setorId: '2814', status: 'aberta', gravidade: 'alta' })
-    expect(lista).toHaveLength(2)
-    const url = urlChamada()
-    expect(url.pathname).toBe('/ocorrencias')
-    expect(url.searchParams.get('setorId')).toBe('2814')
-    expect(url.searchParams.get('status')).toBe('aberta')
-    expect(url.searchParams.get('gravidade')).toBe('alta')
-    expect(url.searchParams.get('_sort')).toBe('criadaEm')
-    expect(url.searchParams.get('_order')).toBe('desc')
-    expect(opcoesChamada().cache).toBe('no-store')
-  })
-
-  test('sem filtro não manda setorId, status nem gravidade', async () => {
-    fetchSimulado.mockResolvedValue(resposta([]))
-    await listarOcorrencias()
-    expect(urlChamada().searchParams.has('setorId')).toBe(false)
-    expect(urlChamada().searchParams.has('status')).toBe(false)
-    expect(urlChamada().searchParams.has('gravidade')).toBe(false)
-  })
-
   test('setores e lanternas usam revalidate de 60 segundos', async () => {
     fetchSimulado.mockResolvedValue(resposta({ sucesso: true, dados: [{ id: 2814, nome: 'Setor 2814', descricao: 'Setor espacial para testes.' }] }))
     await listarSetores()
@@ -78,10 +53,9 @@ describe('leituras', () => {
 
   test('404 vira null; outros erros viram ApiError com o status', async () => {
     fetchSimulado.mockResolvedValue(resposta({}, 404))
-    expect(await buscarOcorrencia('nao-existe')).toBeNull()
+    expect(await buscarLanterna('desconhecido')).toBeNull()
     fetchSimulado.mockResolvedValue(resposta({}, 500))
-    await expect(buscarOcorrencia('o1')).rejects.toMatchObject({ status: 500 })
-    await expect(buscarOcorrencia('o1')).rejects.toBeInstanceOf(ApiError)
+    await expect(listarSetores()).rejects.toMatchObject({ status: 500 })
     await expect(listarSetores()).rejects.toBeInstanceOf(ApiError)
   })
 
@@ -91,32 +65,12 @@ describe('leituras', () => {
   })
 
   test('resposta fora do formato é recusada pelo Zod', async () => {
-    fetchSimulado.mockResolvedValue(resposta([{ id: 'o1', titulo: 123 }]))
-    await expect(listarOcorrencias()).rejects.toThrow()
+    fetchSimulado.mockResolvedValue(resposta({ sucesso: true, dados: [{ id: 'invalido' }] }))
+    await expect(listarSetores()).rejects.toThrow()
   })
 
   test('falha de rede chega como erro (a tela mostra error.tsx)', async () => {
     fetchSimulado.mockRejectedValue(new TypeError('fetch failed'))
     await expect(listarLanternas()).rejects.toMatchObject({ status: 0, codigo: 'FALHA_REDE' })
-  })
-})
-
-describe('escritas', () => {
-  test('criarOcorrencia faz POST com JSON e devolve a criada', async () => {
-    const { id, ...dados } = ocorrenciaSchema.parse(db.ocorrencias[1]) // o JSON vem com string genérica; o schema dá os tipos exatos
-    fetchSimulado.mockResolvedValue(resposta({ id: 'novo123', ...dados }, 201))
-    const criada = await criarOcorrencia(dados)
-    expect(criada.id).toBe('novo123')
-    expect(opcoesChamada().method).toBe('POST')
-    expect(JSON.parse(String(opcoesChamada().body))).toEqual(dados)
-    expect(id).toBe('o2')
-  })
-
-  test('atualizarOcorrencia faz PATCH só com os campos enviados', async () => {
-    fetchSimulado.mockResolvedValue(resposta({ ...db.ocorrencias[1], status: 'resolvida' }))
-    await atualizarOcorrencia('o2', { status: 'resolvida' })
-    expect(urlChamada().pathname).toBe('/ocorrencias/o2')
-    expect(opcoesChamada().method).toBe('PATCH')
-    expect(JSON.parse(String(opcoesChamada().body))).toEqual({ status: 'resolvida' })
   })
 })

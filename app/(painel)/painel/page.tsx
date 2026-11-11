@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { PlusIcon } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button'
 import { BarraStatus } from '@/components/BarraStatus'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
+import { IconeOa } from '@/components/oanet/IconeOa'
+import { MolduraOa } from '@/components/oanet/PainelOa'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
 import { listarLanternas } from '@/lib/lanternas'
@@ -24,19 +24,24 @@ export default async function PainelPage() {
   ])
 
   return (
-    <section className="grid gap-8">
+    <section className="oa-screen grid gap-8">
       <CabecalhoPagina
         titulo={`Bem-vindo, ${sessao.nome}`}
         descricao={sessao.papel === 'guardiao' ? 'Visão de todos os setores.' : `Ocorrências do Setor ${sessao.setorId}.`}
       >
-        <Link href="/painel/ocorrencias/nova" className={buttonVariants()}> {/* [ROTA-16] */}
-          <PlusIcon aria-hidden />
-          Registrar ocorrência
+        <Link href="/painel/ocorrencias/nova" className="oa-button oa-button--energia"> {/* [ROTA-16] */}
+          <span className="oa-button-content">
+            <IconeOa nome="mais" />
+            Registrar ocorrência
+          </span>
         </Link>
       </CabecalhoPagina>
-      <BarraStatus ocorrencias={ocorrencias} />
-      <section aria-labelledby="mais-recentes" className="grid gap-3">
-        <h2 id="mais-recentes" className="font-heading text-2xl font-semibold">Mais recentes</h2> {/* [CSS-07] */}
+
+      <MolduraOa titulo="Status operacional" icone="painel">
+        <BarraStatus ocorrencias={ocorrencias} />
+      </MolduraOa>
+
+      <MolduraOa titulo="Mais recentes" icone="ocorrencias">
         {ocorrencias.length === 0 ? ( // [API-09]
           <EstadoVazio titulo="Nenhuma ocorrência registrada" descricao="Quando algo acontecer no setor, registre aqui." acao={{ href: '/painel/ocorrencias/nova', rotulo: 'Registrar ocorrência' }} />
         ) : (
@@ -46,7 +51,7 @@ export default async function PainelPage() {
             nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.nome]))}
           />
         )}
-      </section>
+      </MolduraOa>
     </section>
   )
 }

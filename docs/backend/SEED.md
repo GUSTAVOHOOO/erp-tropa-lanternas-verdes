@@ -1,13 +1,13 @@
 # Especificação do seed
 
-Versão de 2026-11-06. Diz o que o `npm run seed` do `backend/` grava e de onde cada dado vem. Entidades em [MODELO-DE-DADOS.md](MODELO-DE-DADOS.md), pesquisa em `docs/research/lanternas/` (aceita em D18).
+Versão de 2026-11-10. Descreve o seed mínimo e completo de `backend/`, os dados e suas origens. Entidades em [MODELO-DE-DADOS.md](MODELO-DE-DADOS.md), pesquisa em `docs/research/lanternas/` (aceita em D18).
 
 > Decisões que moldam este seed: D25 (Setor opcional), D26 (status do Lanterna) e D27 (vínculo conta e Ficha), todas aceitas em [ESCOPO.md](ESCOPO.md).
 
 ## Princípios
 
 1. **Idempotente.** Reexecutar não duplica: o seed faz `upsert` pela chave natural (Setor `id`, Lanterna `id`, Usuário `email`) e usa **UUIDs fixos** nas Ocorrências, Eventos e Comentários, definidos como constantes no código do seed.
-2. **Nada inventado.** Dado sem fonte fica `null`, com `fontes.<campo> = { estado: "nao_verificado" }` (D14). Dado de demonstração herdado do `db.json` usa o mesmo estado `nao_verificado`; não existe terceiro estado nem grafia com espaço.
+2. **Nada inventado.** Dado sem fonte fica `null`, com `fontes.<campo> = { estado: "nao_verificado" }` (D14). Como `LanternaFicha` exige `codinome`, quando a pesquisa não verificou esse campo o nome do personagem que encabeça a ficha é usado somente como rótulo, marcado `nao_verificado`. Dado de demonstração herdado do `db.json` usa o mesmo estado; não existe terceiro estado nem grafia com espaço.
 3. **Estado coerente.** Status de Lanterna, Eventos e datas obedecem às regras de [REGRAS-DE-NEGOCIO.md](REGRAS-DE-NEGOCIO.md); o seed passa pelas mesmas funções de domínio, não grava estado impossível.
 4. **Datas relativas.** As datas das Ocorrências são calculadas a partir do momento da execução (tabela abaixo), para a demonstração sempre mostrar um mix de vencidas e dentro do prazo.
 
@@ -42,7 +42,7 @@ São **7 Setores** (a D12 previa pelo menos 8; um oitavo só existiria por inven
 | `citacao` | Só fala real, até 15 palavras e verificada; senão `null` |
 | `biografia` | O texto da ficha (já está em palavras próprias) |
 | `fontes` | Por campo: `{ estado, url }` copiado da coluna Estado e Fonte da ficha |
-| `status` | `ativo`, exceto o que o `db.json` já tinha (John Stewart `em_missao`, Arisia `afastado`). Depois de inserir as Ocorrências, o status é **recalculado** pela RN-20, que prevalece |
+| `status` | `ativo`, exceto Arisia Rrab (`afastado`). John Stewart começa `ativo`, pois antes da carga de Ocorrências não há responsabilidade que sustente `em_missao`. Depois de inserir Ocorrências, o status é **recalculado** pela RN-20, que prevalece |
 
 Lanterna sem Setor aparece na lista e na Ficha com "Setor não verificado"; não recebe Atribuição e não tem conta (D25).
 
@@ -50,7 +50,7 @@ Verificação: depois do seed, a contagem esperada é 25 Lanternas, 9 com Setor 
 
 ### Conversão da pesquisa (D37)
 
-O seed ainda não existe. Conferência documental feita em 2026-11-09 sobre as tabelas de `docs/research/lanternas/grupo-*.md` (25 fichas), contra os limites do schema `LanternaFicha`: com `primeiraAparicao` em 300 caracteres, as 17 células preenchidas cabem. Nenhuma célula da pesquisa foi reescrita. Ao converter, o seed separa **valor**, **nota** e **fonte**: só o valor vai para a coluna, a fonte vira `fontes.<campo>.url` quando for URL HTTP(S), e a nota livre permanece na pesquisa. Células que **não podem ser copiadas literalmente** (excedem o limite ou misturam nota ao valor) e exigem extração explícita, a ser conferida pelo autor do seed contra a pesquisa aceita:
+Conferência documental feita em 2026-11-09 sobre as tabelas de `docs/research/lanternas/grupo-*.md` (25 fichas), contra os limites do schema `LanternaFicha`: com `primeiraAparicao` em 300 caracteres, as 17 células preenchidas cabem. Nenhuma célula da pesquisa foi reescrita. Ao converter, o seed separa **valor**, **nota** e **fonte**: só o valor vai para a coluna, a fonte vira `fontes.<campo>.url` quando for URL HTTP(S), e a nota livre permanece na pesquisa. Células que **não podem ser copiadas literalmente** (excedem o limite ou misturam nota ao valor) recebem extração explícita conforme abaixo:
 
 | Ficha | Campo | Célula | Extração esperada |
 |---|---|---|---|
@@ -64,7 +64,7 @@ O seed ainda não existe. Conferência documental feita em 2026-11-09 sobre as t
 
 Fichas com `primeiraAparicao` que carregam ressalva na própria célula (Hal Jordan, Kyle Rayner, Jessica Cruz, Simon Baz, Katma Tui, Sinestro e outras) mantêm a ressalva dentro desse campo, porque o texto foi aceito assim em D18 e cabe nos 300 caracteres.
 
-**Requisito do teste de seed:** depois do `npm run seed`, um teste lê as 25 Fichas, monta a forma de `LanternaFicha` (campos base e `fontes`; os derivados são calculados) e a valida contra o schema do OpenAPI, incluindo todos os limites: `codinome` ≤ 60, `identidadeCivil` ≤ 80, `especie` ≤ 50, `planetaNatal` ≤ 60, `anoIngresso` 1900–2100 ou `null`, `primeiraAparicao` ≤ 300, `habilidades` ≤ 10 itens de 2 a 60, `citacao` ≤ 15 palavras, `biografia` ≤ 1200 e `fontes` só com `estado` válido. Esse teste não existe ainda e não foi executado.
+**Verificação implementada:** `backend/test/seed-dominio.e2e-spec.ts` executa duas vezes o seed completo, inicia a API e valida as 25 respostas públicas de Ficha contra `LanternaFicha` em `docs/contratos/openapi.json`, inclusive `fontes`, nulos e limites. Também confirma 7 Setores, 25 Lanternas, 3 contas de demonstração, as 12 fichas sem Setor, 9 Ocorrências, 24 Eventos e 6 Comentários (5 visíveis). Na repetição, usa outro `SEED_INSTANTE` e compara o snapshot para garantir que datas e histórico não sejam renovados.
 
 ## Usuários
 
@@ -101,5 +101,5 @@ Resultado: 2 vencidas, 4 abertas ou em andamento no prazo e 3 resolvidas. Ocorr�
 
 ## Comando e verificação
 
-- `npm run seed` no `backend/`, depois das migrations. `npm run seed -- --limpar` recria o banco de desenvolvimento (recusa rodar com `NODE_ENV=production`).
+- `npm run seed -- --etapa minima` ou `npm run seed -- --etapa completa` no `backend/`, depois das migrations. `SEED_INSTANTE` opcional aceita data ISO com fuso e define uma referência única para as datas relativas. `--limpar` com uma das etapas recria o banco de desenvolvimento (exige `NODE_ENV=development` e caminho absoluto; recusa produção).
 - Aceite: executar duas vezes seguidas dá a mesma contagem em todas as tabelas; `GET /lanternas` devolve 25; `GET /setores` devolve 7; `GET /dashboard` do Guardião mostra 2 vencidas.

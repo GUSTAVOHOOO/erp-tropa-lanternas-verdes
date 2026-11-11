@@ -135,7 +135,7 @@ O pacote `docs/contratos/` fornece exemplos de formato. A tarefa consumidora/pro
 
 ### Fixture de integração (BE-FX)
 
-Mecanismo **somente de teste**, do dev back, que monta o estado dos cenários abaixo em banco novo. Nada disto existe hoje; é entregue por etapas, **antes** dos gates que o usam. Detalhes e arquivos no [plano back](backend/PLANO-IMPLEMENTACAO.md#be-fx--fixture-de-integração-somente-de-teste).
+Mecanismo **somente de teste**, do dev back, que monta o estado dos cenários abaixo em banco novo. As etapas a–e já existem. Detalhes e arquivos no [plano back](backend/PLANO-IMPLEMENTACAO.md#be-fx--fixture-de-integração-somente-de-teste).
 
 | Etapa | Entregue com | Conteúdo | Gates que a usam |
 |---|---|---|---|
@@ -145,7 +145,7 @@ Mecanismo **somente de teste**, do dev back, que monta o estado dos cenários ab
 | FX d | BE-09 | Atribuídas, em andamento, resolvida e histórica por transições reais; Eventos coerentes | G5, G7a, G7b, G8 |
 | FX e | BE-10 | Comentários, inclusive um apagado | G6 |
 
-- **Comando planejado:** `npm run fixture:integracao` em `backend/`, com `DATABASE_PATH` absoluto exclusivo e `FIXTURE_SENHA` fornecida pelo ambiente, sem valor padrão. Grava um **manifesto de estado** (JSON, sem senha nem token) com `versaoContrato`, instante de referência, ids estáveis, e-mails, casos e contagens. Recusa produção e banco que já tenha dados; não existe endpoint de bootstrap.
+- **Comando disponível para as etapas a–e:** `npm run fixture:integracao -- --etapa a|b|c|d|e` em `backend/`, com `DATABASE_PATH` absoluto exclusivo e `FIXTURE_SENHA` fornecida pelo ambiente, sem valor padrão. Grava um **manifesto de estado** (JSON, sem senha nem token) com `versaoContrato`, instante de referência, ids estáveis, e-mails, casos e contagens. Recusa produção e banco que já tenha dados; não existe endpoint de bootstrap.
 - **Quem chama:** FE e integração invocam o comando depois que a etapa existir e leem o manifesto; não recriam dados à mão nem dependem do seed demonstrativo.
 - **Tempo:** o instante de referência é o da execução da fixture. O E2E usa datas relativas a ele, com margem de pelo menos 1 hora do limite do Prazo. Os casos exatos de relógio (Prazo no limite, igualdade ainda não vencida) ficam no teste do provedor com relógio injetável; nenhum relógio configurável existe em produção.
 
@@ -201,7 +201,7 @@ Esta seção é roteiro de execução futura. O package é a fonte da disponibil
 | Front focado | `npm exec -- vitest run __tests__/lib/api.test.ts` | Script Vitest existe; arquivo será criado FE-01. Cliente contra HTTP/fixtures, não regra do backend. |
 | Back depois BE-01, `backend/` | `npm run test -- --runInBand`; `npm run test:e2e -- --runInBand`; `npm run build` | Scripts **planejados** em BE-01. Exigir suíte de respostas reais e regras, não mocks isolados de service apenas. |
 | Back depois BE-02/07, `backend/` | `npm run migration:run`; `npm run seed` | Scripts **planejados**. Banco exclusivo conhecido; repetir seed e verificar contagens; nunca limpeza em produção. |
-| Back, fixture de integração, `backend/` | `npm run fixture:integracao` | Script **planejado** em BE-FX (etapas de §4). Banco novo migrado, `DATABASE_PATH` e `FIXTURE_SENHA` no ambiente; exit0 e manifesto gravado. Recusa produção e banco com dados. |
+| Back, fixture de integração, `backend/` | `npm run fixture:integracao -- --etapa a|b|c|d|e` | Todas as etapas disponíveis; requerem banco novo migrado, `DATABASE_PATH` e `FIXTURE_SENHA` no ambiente; gravam manifesto. Recusam produção e banco com dados. |
 | Navegadores do E2E, raiz | `npx playwright install chromium` | Passo **planejado** em FE-00, exige rede e disco fora de `package.json`; o dev front o executa por autorização explícita no registro da tarefa. |
 | Build integrado depois FE-00, raiz | `npm run test:e2e` | Script **planejado** em FE-00. API real + SQLite isolado + fixture + build Next, login real e roteiros do Corte 1 e dos gates aditivos. Registrar como P se usar fake. |
 | Remoção em FE-09 | Procedimento canônico de [FE-09](frontend/PLANO-IMPLEMENTACAO.md#procedimento-canônico-de-remoção) | Única definição do comando e do resultado esperado (saída vazia). Não repetir regex em outros documentos. |

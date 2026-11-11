@@ -38,7 +38,7 @@ async function portaLivre(): Promise<number> {
   const servidor = createServer()
   await new Promise<void>((resolve, reject) => servidor.once('error', reject).listen(0, '127.0.0.1', resolve))
   const endereco = servidor.address()
-  if (!endereco || typeof endereco === 'string') throw new Error('NÃ£o foi possÃ­vel reservar porta')
+  if (!endereco || typeof endereco === 'string') throw new Error('Não foi possível reservar porta')
   await new Promise<void>((resolve, reject) => servidor.close((erro) => erro ? reject(erro) : resolve()))
   return endereco.port
 }
@@ -60,7 +60,7 @@ function ocorrencia(
 ) {
   return {
     id: randomUUID(), titulo: 'Caso do Dashboard', tituloBusca: 'caso do dashboard',
-    descricao: 'OcorrÃªncia usada pela fixture isolada do Dashboard.', planeta: 'Terra', setorId,
+    descricao: 'Ocorrência usada pela fixture isolada do Dashboard.', planeta: 'Terra', setorId,
     gravidade, status, envolvidos: 1, responsavelId: options.responsavelId ?? null,
     resolucao: status === 'resolvida' ? 'Resolvida na fixture do Dashboard.' : null,
     criadaPorId: IDS_FIXTURE_INTEGRACAO_A.guardiao, criadaEm,
@@ -171,7 +171,7 @@ describe('Dashboard HTTP', () => {
       body: JSON.stringify({ email, senha }),
     })
     const corpo = await resposta.json() as { dados: { token: string } }
-    if (!resposta.ok) throw new Error('NÃ£o foi possÃ­vel autenticar a fixture do Dashboard')
+    if (!resposta.ok) throw new Error('Não foi possível autenticar a fixture do Dashboard')
     return corpo.dados.token
   }
 

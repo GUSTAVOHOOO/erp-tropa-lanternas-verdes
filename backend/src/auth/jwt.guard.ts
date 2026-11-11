@@ -11,6 +11,7 @@ interface TokenAutenticacao {
   sub: string
   email: string
   papel: PapelUsuario
+  exp?: number
 }
 
 @Injectable()
@@ -41,6 +42,8 @@ export class JwtGuard implements CanActivate {
         !verificado ||
         typeof verificado.sub !== 'string' ||
         typeof verificado.email !== 'string' ||
+        // Todo token emitido pela API expira; token sem `exp` nunca é aceito.
+        typeof verificado.exp !== 'number' ||
         !['guardiao', 'lanterna'].includes(verificado.papel)
       ) {
         throw new Error('Claims JWT inválidas')

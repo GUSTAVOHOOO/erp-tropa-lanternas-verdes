@@ -1,8 +1,7 @@
-import { Transform, Type } from 'class-transformer'
+import { Transform } from 'class-transformer'
 import { IsInt, IsString, Max, MaxLength, Min, MinLength } from 'class-validator'
 
 export class CriarSetorDto {
-  @Type(() => Number)
   @IsInt()
   @Min(0)
   @Max(9999)

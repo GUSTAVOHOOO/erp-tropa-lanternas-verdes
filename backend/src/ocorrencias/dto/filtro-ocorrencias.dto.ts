@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer'
 import { IsBoolean, IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min, Matches } from 'class-validator'
+import { Aparar, inteiroDecimal, inteiroDecimalOuPadrao } from '../../comum/transformacoes.js'
 import type { GravidadeOcorrencia, StatusOcorrencia } from '../ocorrencia.entity.js'
 
 export class FiltroOcorrenciasDto {
@@ -12,7 +13,7 @@ export class FiltroOcorrenciasDto {
   gravidade?: GravidadeOcorrencia
 
   @IsOptional()
-  @Transform(({ value }) => inteiroQuery(value))
+  @Transform(({ value }) => inteiroDecimal(value))
   @IsInt()
   @Min(0)
   @Max(9999)
@@ -30,18 +31,19 @@ export class FiltroOcorrenciasDto {
   vencida?: boolean | string
 
   @IsOptional()
+  @Aparar()
   @IsString()
   @MaxLength(100)
   busca?: string
 
   @IsOptional()
-  @Transform(({ value }) => value === undefined ? 1 : inteiroQuery(value))
+  @Transform(({ value }) => inteiroDecimalOuPadrao(value, 1))
   @IsInt()
   @Min(1)
   pagina = 1
 
   @IsOptional()
-  @Transform(({ value }) => value === undefined ? 20 : inteiroQuery(value))
+  @Transform(({ value }) => inteiroDecimalOuPadrao(value, 20))
   @IsInt()
   @Min(1)
   @Max(50)
@@ -54,10 +56,4 @@ export class FiltroOcorrenciasDto {
   @IsOptional()
   @IsIn(['asc', 'desc'])
   ordem: 'asc' | 'desc' = 'desc'
-}
-
-function inteiroQuery(valor: unknown): number {
-  if (typeof valor === 'number' && Number.isInteger(valor)) return valor
-  if (typeof valor !== 'string' || !/^-?\d+$/.test(valor)) return Number.NaN
-  return Number(valor)
 }

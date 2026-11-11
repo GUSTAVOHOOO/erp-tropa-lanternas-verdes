@@ -1,4 +1,4 @@
-import { Transform, Type } from 'class-transformer'
+import { Transform } from 'class-transformer'
 import { IsEmail, IsInt, IsString, Max, MaxLength, Min, MinLength } from 'class-validator'
 import { SenhaValida } from './senha-valida.decorator.js'
 
@@ -18,7 +18,6 @@ export class CadastroDto {
   @SenhaValida(8)
   senha!: string
 
-  @Type(() => Number)
   @IsInt()
   @Min(0)
   @Max(9999)

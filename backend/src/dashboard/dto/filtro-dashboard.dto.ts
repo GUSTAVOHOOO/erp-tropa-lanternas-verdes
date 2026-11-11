@@ -1,21 +1,16 @@
 import { Transform } from 'class-transformer'
 import { IsInt, IsOptional, Max, Min } from 'class-validator'
-
-function inteiroQuery(valor: unknown): number {
-  if (typeof valor === 'number' && Number.isInteger(valor)) return valor
-  if (typeof valor !== 'string' || !/^\d+$/.test(valor)) return Number.NaN
-  return Number(valor)
-}
+import { inteiroDecimal, inteiroDecimalOuPadrao } from '../../comum/transformacoes.js'
 
 export class FiltroDashboardDto {
   @IsOptional()
-  @Transform(({ value }) => inteiroQuery(value))
+  @Transform(({ value }) => inteiroDecimal(value))
   @IsInt()
   @Min(0)
   @Max(9999)
   setor?: number
 
-  @Transform(({ value }) => value === undefined ? 30 : inteiroQuery(value))
+  @Transform(({ value }) => inteiroDecimalOuPadrao(value, 30))
   @IsInt()
   @Min(7)
   @Max(90)

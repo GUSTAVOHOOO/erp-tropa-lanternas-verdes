@@ -51,7 +51,7 @@ async function portaLivre(): Promise<number> {
   const servidor = createServer()
   await new Promise<void>((resolveListen, reject) => servidor.once('error', reject).listen(0, '127.0.0.1', resolveListen))
   const endereco = servidor.address()
-  if (!endereco || typeof endereco === 'string') throw new Error('NÃ£o foi possÃ­vel reservar porta')
+  if (!endereco || typeof endereco === 'string') throw new Error('Não foi possível reservar porta')
   await new Promise<void>((resolveClose, reject) => servidor.close((erro) => erro ? reject(erro) : resolveClose()))
   return endereco.port
 }
@@ -64,14 +64,14 @@ function referencia(documento: Record<string, any>, ref: string): Schema | undef
 function validarSchema(valor: unknown, schema: Schema, documento: Record<string, any>, caminho = '$'): string[] {
   if (schema.$ref) {
     const apontado = referencia(documento, schema.$ref)
-    return apontado ? validarSchema(valor, apontado, documento, caminho) : [`${caminho}: ref invÃ¡lida ${schema.$ref}`]
+    return apontado ? validarSchema(valor, apontado, documento, caminho) : [`${caminho}: ref inválida ${schema.$ref}`]
   }
   if (schema.allOf) return schema.allOf.flatMap((parte) => validarSchema(valor, parte, documento, caminho))
   if (schema.anyOf && !schema.anyOf.some((parte) => validarSchema(valor, parte, documento, caminho).length === 0)) {
-    return [`${caminho}: nÃ£o corresponde a nenhuma alternativa anyOf`]
+    return [`${caminho}: não corresponde a nenhuma alternativa anyOf`]
   }
   if (schema.oneOf && schema.oneOf.filter((parte) => validarSchema(valor, parte, documento, caminho).length === 0).length !== 1) {
-    return [`${caminho}: nÃ£o corresponde a exatamente uma alternativa oneOf`]
+    return [`${caminho}: não corresponde a exatamente uma alternativa oneOf`]
   }
   if (schema.const !== undefined && valor !== schema.const) return [`${caminho}: valor diferente de const`]
   if (schema.enum && !schema.enum.includes(valor)) return [`${caminho}: valor fora do enum`]
@@ -85,13 +85,13 @@ function validarSchema(valor: unknown, schema: Schema, documento: Record<string,
     if (tipo === 'number') return typeof valor === 'number' && Number.isFinite(valor)
     return typeof valor === tipo
   })
-  if (!tipoOk) return [`${caminho}: tipo invÃ¡lido`]
+  if (!tipoOk) return [`${caminho}: tipo inválido`]
 
   if (typeof valor === 'string') {
     const pontos = [...valor].length
     if (schema.minLength !== undefined && pontos < schema.minLength) return [`${caminho}: string curta`]
     if (schema.maxLength !== undefined && pontos > schema.maxLength) return [`${caminho}: string longa`]
-    if (schema.pattern && !new RegExp(schema.pattern, 'u').test(valor)) return [`${caminho}: padrÃ£o invÃ¡lido`]
+    if (schema.pattern && !new RegExp(schema.pattern, 'u').test(valor)) return [`${caminho}: padrão inválido`]
     if (schema['x-max-palavras'] !== undefined && valor.trim().split(/\s+/u).filter(Boolean).length > schema['x-max-palavras']) {
       return [`${caminho}: excede limite de palavras`]
     }
@@ -99,25 +99,25 @@ function validarSchema(valor: unknown, schema: Schema, documento: Record<string,
       return [`${caminho}: excede limite de bytes`]
     }
     if (schema.format === 'uuid' && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu.test(valor)) {
-      return [`${caminho}: UUID invÃ¡lido`]
+      return [`${caminho}: UUID inválido`]
     }
     if (schema.format === 'date' && (!/^\d{4}-\d{2}-\d{2}$/u.test(valor) || Number.isNaN(Date.parse(`${valor}T00:00:00Z`)))) {
-      return [`${caminho}: data invÃ¡lida`]
+      return [`${caminho}: data inválida`]
     }
     if (schema.format === 'date-time' && (!/(?:Z|[+-]\d{2}:\d{2})$/u.test(valor) || Number.isNaN(Date.parse(valor)))) {
-      return [`${caminho}: data e fuso invÃ¡lidos`]
+      return [`${caminho}: data e fuso inválidos`]
     }
-    if (schema.format === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(valor)) return [`${caminho}: e-mail invÃ¡lido`]
+    if (schema.format === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(valor)) return [`${caminho}: e-mail inválido`]
     if (schema.format === 'uri') {
       try {
         const url = new URL(valor)
-        if (!['http:', 'https:'].includes(url.protocol)) return [`${caminho}: URI nÃ£o HTTP(S)`]
-      } catch { return [`${caminho}: URI invÃ¡lida`] }
+        if (!['http:', 'https:'].includes(url.protocol)) return [`${caminho}: URI não HTTP(S)`]
+      } catch { return [`${caminho}: URI inválida`] }
     }
   }
   if (typeof valor === 'number') {
-    if (schema.minimum !== undefined && valor < schema.minimum) return [`${caminho}: abaixo do mÃ­nimo`]
-    if (schema.maximum !== undefined && valor > schema.maximum) return [`${caminho}: acima do mÃ¡ximo`]
+    if (schema.minimum !== undefined && valor < schema.minimum) return [`${caminho}: abaixo do mínimo`]
+    if (schema.maximum !== undefined && valor > schema.maximum) return [`${caminho}: acima do máximo`]
   }
   if (Array.isArray(valor)) {
     if (schema.minItems !== undefined && valor.length < schema.minItems) return [`${caminho}: poucos itens`]
@@ -129,7 +129,7 @@ function validarSchema(valor: unknown, schema: Schema, documento: Record<string,
   if (valor !== null && typeof valor === 'object') {
     const objeto = valor as Record<string, unknown>
     const chaves = Object.keys(objeto)
-    const erros = (schema.required ?? []).filter((chave) => !(chave in objeto)).map((chave) => `${caminho}.${chave}: obrigatÃ³rio`)
+    const erros = (schema.required ?? []).filter((chave) => !(chave in objeto)).map((chave) => `${caminho}.${chave}: obrigatório`)
     if (schema.minProperties !== undefined && chaves.length < schema.minProperties) erros.push(`${caminho}: propriedades insuficientes`)
     if (schema.maxProperties !== undefined && chaves.length > schema.maxProperties) erros.push(`${caminho}: propriedades demais`)
     for (const [chave, item] of Object.entries(objeto)) {
@@ -223,7 +223,7 @@ describe('contrato do provedor HTTP', () => {
       if (processo.exitCode !== null) throw new Error(`API encerrou: ${erroApi}`)
       await new Promise((resolveWait) => setTimeout(resolveWait, 100))
     }
-    throw new Error(`API nÃ£o iniciou: ${erroApi}`)
+    throw new Error(`API não iniciou: ${erroApi}`)
   }
 
   async function encerrarApi(): Promise<void> {
@@ -279,7 +279,7 @@ describe('contrato do provedor HTTP', () => {
     return resultado.corpo
   }
 
-  it('inventaria 30 operaÃ§Ãµes e verifica a cobertura dos cÃ³digos pelos 310 cenÃ¡rios', () => {
+  it('inventaria 30 operações e verifica a cobertura dos códigos pelos 310 cenários', () => {
     expect(openapi.info.version).toBe('1.0.0')
     expect(cenarios.versaoContrato).toBe(openapi.info.version)
     expect(operacoes).toHaveLength(30)
@@ -304,7 +304,7 @@ describe('contrato do provedor HTTP', () => {
     for (const par of paresDeclarados) expect(paresDeCenario.has(par)).toBe(true)
   })
 
-  it('executa sucesso real em cada operaÃ§Ã£o e valida cada corpo contra o schema OpenAPI', async () => {
+  it('executa sucesso real em cada operação e valida cada corpo contra o schema OpenAPI', async () => {
     const exercitadas = new Set<string>()
     const validar = async (...args: Parameters<typeof sucesso>) => {
       exercitadas.add(args[0])
@@ -333,7 +333,7 @@ describe('contrato do provedor HTTP', () => {
 
     await validar('listarSetores', 'GET', '/setores', {}, 200)
     await validar('criarSetor', 'POST', '/setores', { token: gToken, body: {
-      id: 4100, nome: 'Setor de contrato', descricao: 'Setor sem referÃªncias para verificar exclusÃ£o segura.',
+      id: 4100, nome: 'Setor de contrato', descricao: 'Setor sem referências para verificar exclusão segura.',
     } }, 201)
     await validar('consultarSetor', 'GET', '/setores/4100', {}, 200)
     await validar('editarSetor', 'PATCH', '/setores/4100', { token: gToken, body: { nome: 'Setor revisado' } }, 200)
@@ -356,8 +356,8 @@ describe('contrato do provedor HTTP', () => {
     await validar('listarLanternas', 'GET', '/lanternas?pagina=1&limite=50&ordenar=codinome&ordem=asc', {}, 200)
 
     const ocorrencia = await validar('criarOcorrencia', 'POST', '/ocorrencias', { token: l2814Token, body: {
-      titulo: 'OcorrÃªncia do teste de contrato',
-      descricao: 'DescriÃ§Ã£o vÃ¡lida da ocorrÃªncia criada pelo teste do contrato.',
+      titulo: 'Ocorrência do teste de contrato',
+      descricao: 'Descrição válida da ocorrência criada pelo teste do contrato.',
       planeta: 'Terra', gravidade: 'alta', envolvidos: 2,
     } }, 201)
     const ocorrenciaId = ocorrencia!.dados.id as string
@@ -365,7 +365,7 @@ describe('contrato do provedor HTTP', () => {
     await validar('listarMinhaFila', 'GET', '/ocorrencias/minha-fila?pagina=1&limite=20', { token: l2814Token }, 200)
     await validar('consultarOcorrencia', 'GET', `/ocorrencias/${ocorrenciaId}`, { token: l2814Token }, 200)
     await validar('editarOcorrencia', 'PATCH', `/ocorrencias/${ocorrenciaId}`, {
-      token: l2814Token, body: { titulo: 'OcorrÃªncia de contrato editada' },
+      token: l2814Token, body: { titulo: 'Ocorrência de contrato editada' },
     }, 200)
     await validar('atribuirResponsavel', 'PATCH', `/ocorrencias/${ocorrenciaId}/responsavel`, {
       token: gToken, body: { responsavelId: IDS_FIXTURE_INTEGRACAO_B.hal2814 },
@@ -374,14 +374,14 @@ describe('contrato do provedor HTTP', () => {
       token: l2814Token, body: { status: 'em_andamento' },
     }, 200)
     const comentario = await validar('criarComentario', 'POST', `/ocorrencias/${ocorrenciaId}/comentarios`, {
-      token: l2814Token, body: { texto: 'ComentÃ¡rio criado pelo teste e2e do contrato.' },
+      token: l2814Token, body: { texto: 'Comentário criado pelo teste e2e do contrato.' },
     }, 201)
     const comentarioId = comentario!.dados.id as string
     await validar('listarEventos', 'GET', `/ocorrencias/${ocorrenciaId}/eventos?pagina=1&limite=20`, { token: l2814Token }, 200)
     await validar('listarComentarios', 'GET', `/ocorrencias/${ocorrenciaId}/comentarios?pagina=1&limite=20`, { token: l2814Token }, 200)
     await validar('excluirComentario', 'DELETE', `/comentarios/${comentarioId}`, { token: l2814Token }, 204)
     await validar('alterarStatusOcorrencia', 'PATCH', `/ocorrencias/${ocorrenciaId}/status`, {
-      token: gToken, body: { status: 'resolvida', resolucao: 'A ocorrÃªncia foi resolvida no teste contratual.' },
+      token: gToken, body: { status: 'resolvida', resolucao: 'A ocorrência foi resolvida no teste contratual.' },
     }, 200)
     await validar('excluirOcorrencia', 'DELETE', `/ocorrencias/${ocorrenciaId}`, { token: gToken }, 204)
     await validar('excluirSetor', 'DELETE', '/setores/4100', { token: gToken }, 204)
@@ -392,8 +392,8 @@ describe('contrato do provedor HTTP', () => {
     expect([...exercitadas].sort()).toEqual(operacoes.map(({ id }) => id).sort())
 
     const novaOcorrenciaOutroSetor = await validar('criarOcorrencia', 'POST', '/ocorrencias', { token: l674Token, body: {
-      titulo: 'OcorrÃªncia de outro setor',
-      descricao: 'DescriÃ§Ã£o vÃ¡lida para provar o limite entre setores.',
+      titulo: 'Ocorrência de outro setor',
+      descricao: 'Descrição válida para provar o limite entre setores.',
       planeta: 'Bolovax Vik', gravidade: 'media', envolvidos: 1,
     } }, 201)
     const alheia = await enviar('GET', `/ocorrencias/${novaOcorrenciaOutroSetor!.dados.id}`, { token: l2814Token })
@@ -412,7 +412,7 @@ describe('contrato do provedor HTTP', () => {
     const inexistente = await enviar('GET', '/setores/9999')
     expect(inexistente).toMatchObject({ status: 404, corpo: { sucesso: false, erro: { codigo: 'NAO_ENCONTRADO' } } })
     const permissao = await enviar('POST', '/setores', { token: l2814Token, body: {
-      id: 4101, nome: 'Sem permissÃ£o', descricao: 'Lanterna nÃ£o pode criar um Setor.',
+      id: 4101, nome: 'Sem permissão', descricao: 'Lanterna não pode criar um Setor.',
     } })
     expect(permissao).toMatchObject({ status: 403, corpo: { sucesso: false, erro: { codigo: 'SEM_PERMISSAO' } } })
     const mentorInvalido = await enviar('PATCH', `/lanternas/${fichaId}`, {

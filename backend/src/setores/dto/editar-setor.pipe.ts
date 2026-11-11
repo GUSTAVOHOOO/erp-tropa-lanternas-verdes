@@ -5,7 +5,7 @@ import type { EditarSetorDto } from './editar-setor.dto.js'
 export class EditarSetorPipe implements PipeTransform<EditarSetorDto, EditarSetorDto> {
   transform(dados: EditarSetorDto): EditarSetorDto {
     if (dados.nome === undefined && dados.descricao === undefined) {
-      throw new BadRequestException(['body informe ao menos um campo para atualizar'])
+      throw new BadRequestException(['corpo informe ao menos um campo para atualizar'])
     }
     return dados
   }

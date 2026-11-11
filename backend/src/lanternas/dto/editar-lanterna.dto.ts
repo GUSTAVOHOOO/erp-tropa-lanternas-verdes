@@ -47,14 +47,12 @@ export class EditarLanternaDto {
   planetaNatal?: string
 
   @ValidateIf((_objeto, valor) => valor !== undefined && valor !== null)
-  @Transform(({ value }) => value === null ? null : typeof value === 'string' && value.trim() !== '' ? Number(value) : value)
   @IsInt()
   @Min(0)
   @Max(9999)
   setorId?: number | null
 
   @ValidateIf((_objeto, valor) => valor !== undefined && valor !== null)
-  @Transform(({ value }) => value === null ? null : typeof value === 'string' && value.trim() !== '' ? Number(value) : value)
   @IsInt()
   @Min(1900)
   @Max(2100)

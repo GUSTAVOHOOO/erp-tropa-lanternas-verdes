@@ -14,6 +14,15 @@ interface DetalheValidacao {
   mensagens: string[]
 }
 
+/** Junta as mensagens do mesmo campo em um único detalhe, preservando a ordem de aparição. */
+function agruparPorCampo(detalhes: DetalheValidacao[]): DetalheValidacao[] {
+  const porCampo = new Map<string, string[]>()
+  for (const { campo, mensagens } of detalhes) {
+    porCampo.set(campo, [...(porCampo.get(campo) ?? []), ...mensagens])
+  }
+  return [...porCampo].map(([campo, mensagens]) => ({ campo, mensagens }))
+}
+
 @Catch()
 export class FiltroExcecoes implements ExceptionFilter {
   private readonly logger = new Logger(FiltroExcecoes.name)
@@ -44,17 +53,19 @@ export class FiltroExcecoes implements ExceptionFilter {
             ? (corpo as { message?: unknown }).message
             : undefined
         detalhes = Array.isArray(mensagens)
-          ? mensagens.map((item: unknown) => {
-              if (typeof item === 'string') {
-                const desconhecido = item.match(/^property (\S+) should not exist$/)
-                if (desconhecido) {
-                  return { campo: desconhecido[1], mensagens: ['não é permitido'] }
+          ? agruparPorCampo(
+              mensagens.map((item: unknown): DetalheValidacao => {
+                if (typeof item === 'string') {
+                  const desconhecido = item.match(/^property (\S+) should not exist$/)
+                  if (desconhecido) {
+                    return { campo: desconhecido[1], mensagens: ['não é permitido'] }
+                  }
+                  const regra = item.match(/^(\S+)\s+(.+)$/)
+                  if (regra) return { campo: regra[1], mensagens: [regra[2]] }
                 }
-                const regra = item.match(/^(\S+)\s+(.+)$/)
-                if (regra) return { campo: regra[1], mensagens: [regra[2]] }
-              }
-              return { campo: 'geral', mensagens: [String(item)] }
-            })
+                return { campo: 'geral', mensagens: [String(item)] }
+              }),
+            )
           : [{ campo: 'geral', mensagens: ['Requisição inválida'] }]
       } else if (status === HttpStatus.NOT_FOUND) {
         codigo = 'NAO_ENCONTRADO'
@@ -70,7 +81,12 @@ export class FiltroExcecoes implements ExceptionFilter {
         mensagem = 'Muitas tentativas. Tente novamente mais tarde.'
       } else if (status >= 500) {
         status = HttpStatus.INTERNAL_SERVER_ERROR
+      } else if (status === HttpStatus.PAYLOAD_TOO_LARGE) {
+        codigo = 'CORPO_MUITO_GRANDE'
+        mensagem = 'Corpo da requisição muito grande'
       } else {
+        // Erro 4xx do cliente nunca usa o código de falha interna.
+        codigo = 'REQUISICAO_NAO_ACEITA'
         mensagem = 'Requisição não aceita'
       }
     }

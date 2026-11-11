@@ -48,11 +48,11 @@ export class UsuariosService {
 
       const setorId = dados.setorId ?? usuario.setorId
       if (setorId === null) throw this.setorObrigatorio()
-      if (!(await this.setores.buscarPorId(setorId, manager))) throw this.naoEncontrado('Setor nÃ£o encontrado')
+      if (!(await this.setores.buscarPorId(setorId, manager))) throw this.naoEncontrado('Setor não encontrado')
 
       if (usuario.lanternaId !== null) {
         const lanterna = await this.lanternas.buscarPorId(usuario.lanternaId, manager)
-        if (!lanterna) throw this.naoEncontrado('Ficha de Lanterna nÃ£o encontrada')
+        if (!lanterna) throw this.naoEncontrado('Ficha de Lanterna não encontrada')
         if (lanterna.setorId === null || lanterna.setorId !== setorId) throw this.setorDiferente()
       }
 
@@ -71,7 +71,7 @@ export class UsuariosService {
       }
 
       const lanterna = await this.lanternas.buscarPorId(dados.lanternaId, manager)
-      if (!lanterna) throw this.naoEncontrado('Ficha de Lanterna nÃ£o encontrada')
+      if (!lanterna) throw this.naoEncontrado('Ficha de Lanterna não encontrada')
       if (usuario.papel !== 'lanterna') throw this.vinculoNaoPermitido()
       if (usuario.setorId === null || lanterna.setorId === null || usuario.setorId !== lanterna.setorId) {
         throw this.setorDiferente()
@@ -101,12 +101,12 @@ export class UsuariosService {
     return UsuarioRespostaDto.de(usuario)
   }
 
-  private naoEncontrado(mensagem = 'UsuÃ¡rio nÃ£o encontrado'): ErroDominio {
+  private naoEncontrado(mensagem = 'Usuário não encontrado'): ErroDominio {
     return new ErroDominio(404, 'NAO_ENCONTRADO', mensagem)
   }
 
   private ultimoGuardiao(): ErroDominio {
-    return new ErroDominio(409, 'ULTIMO_GUARDIAO', 'NÃ£o Ã© possÃ­vel rebaixar o Ãºltimo GuardiÃ£o')
+    return new ErroDominio(409, 'ULTIMO_GUARDIAO', 'Não é possível rebaixar o último Guardião')
   }
 
   private setorObrigatorio(): ErroDominio {
@@ -122,7 +122,7 @@ export class UsuariosService {
   }
 
   private lanternaJaVinculada(): ErroDominio {
-    return new ErroDominio(409, 'LANTERNA_JA_VINCULADA', 'Ficha jÃ¡ vinculada a outra conta')
+    return new ErroDominio(409, 'LANTERNA_JA_VINCULADA', 'Ficha já vinculada a outra conta')
   }
 
   private eVinculoDuplicado(erro: unknown): boolean {

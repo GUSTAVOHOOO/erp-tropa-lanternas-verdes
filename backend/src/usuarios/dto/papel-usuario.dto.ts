@@ -1,4 +1,3 @@
-import { Transform } from 'class-transformer'
 import {
   IsDefined,
   IsIn,
@@ -20,20 +19,14 @@ class SetorSomenteParaLanterna implements ValidatorConstraintInterface {
   }
 }
 
-function inteiroOpcional(valor: unknown): number | unknown {
-  if (typeof valor !== 'string') return valor
-  if (!/^\d+$/.test(valor)) return Number.NaN
-  return Number(valor)
-}
-
 export class PapelUsuarioDto {
   @IsDefined()
   @IsIn(['guardiao', 'lanterna'])
   papel!: PapelUsuario
 
+  // O corpo JSON não sofre coerção de tipo: "674" (texto) é recusado como inteiro.
   @ValidateIf((_objeto, valor) => valor !== undefined)
-  @Transform(({ value }) => inteiroOpcional(value))
-  @Validate(SetorSomenteParaLanterna)
+  @Validate(SetorSomenteParaLanterna, { message: 'setorId não é permitido para Guardião' })
   @IsInt()
   @Min(0)
   @Max(9999)

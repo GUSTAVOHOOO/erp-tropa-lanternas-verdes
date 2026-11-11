@@ -4,7 +4,7 @@ import { IsNull } from 'typeorm'
 import type { DeepPartial, EntityManager, Repository, UpdateResult } from 'typeorm'
 import { normalizarBusca } from '../comum/busca-normalizada.js'
 import { Ocorrencia, type GravidadeOcorrencia, type StatusOcorrencia } from './ocorrencia.entity.js'
-import { ordenarGravidadeSql, prazoSql } from './prazo.js'
+import { ordenarGravidadeCrescenteSql, ordenarGravidadeSql, prazoSql } from './prazo.js'
 
 export interface FiltroOcorrencias {
   status?: StatusOcorrencia
@@ -57,7 +57,7 @@ export class OcorrenciasRepository {
     }
     switch (filtros.ordenar) {
       case 'prazo': consulta.orderBy(prazoSql('ocorrencia'), filtros.ordem.toUpperCase() as 'ASC' | 'DESC'); break
-      case 'gravidade': consulta.orderBy(ordenarGravidadeSql('ocorrencia'), filtros.ordem.toUpperCase() as 'ASC' | 'DESC'); break
+      case 'gravidade': consulta.orderBy(ordenarGravidadeCrescenteSql('ocorrencia'), filtros.ordem.toUpperCase() as 'ASC' | 'DESC'); break
       default: consulta.orderBy('ocorrencia.criadaEm', filtros.ordem.toUpperCase() as 'ASC' | 'DESC')
     }
     consulta.addOrderBy('ocorrencia.id', 'ASC')

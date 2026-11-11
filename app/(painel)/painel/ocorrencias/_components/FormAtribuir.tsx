@@ -2,7 +2,7 @@
 
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
+import { BotaoOa } from '@/components/oanet/PainelOa'
 import { CampoSelect } from '@/components/CampoSelect'
 import { MensagemErro } from '@/components/MensagemErro'
 import { aplicarErrosDoServidor } from '@/lib/erros-formulario'
@@ -50,9 +50,9 @@ export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual }: Form
         )}
       />
       {errors.root && <MensagemErro>{errors.root.message}</MensagemErro>}
-      <Button type="submit" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
+      <BotaoOa type="submit" tom="energia" disabled={isSubmitting} className="sm:justify-self-end"> {/* [FORM-08] */}
         {isSubmitting ? 'Salvando...' : 'Atribuir responsável'}
-      </Button>
+      </BotaoOa>
     </form>
   )
 }

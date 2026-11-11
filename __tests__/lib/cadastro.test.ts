@@ -8,7 +8,8 @@ vi.mock('@/lib/env', () => ({
   },
 }))
 
-import { cadastrarConta, listarSetoresParaCadastro } from '@/lib/cadastro'
+import { cadastrarConta } from '@/lib/cadastro'
+import { listarSetores } from '@/lib/setores'
 
 describe('lib/cadastro contra o servidor de contrato', () => {
   let servidor: { url: string; setScenario: (id: string) => void; close: () => Promise<void> }
@@ -25,7 +26,7 @@ describe('lib/cadastro contra o servidor de contrato', () => {
 
   it('listarSetores.200 retorna lista de setores', async () => {
     servidor.setScenario('listarSetores.200')
-    const setores = await listarSetoresParaCadastro()
+    const setores = await listarSetores()
     expect(Array.isArray(setores)).toBe(true)
     expect(setores.length).toBeGreaterThan(0)
     expect(setores[0]).toHaveProperty('id')
@@ -35,7 +36,7 @@ describe('lib/cadastro contra o servidor de contrato', () => {
 
   it('listarSetores.500.ERRO_INTERNO lança ApiError 500', async () => {
     servidor.setScenario('listarSetores.500.ERRO_INTERNO')
-    await expect(listarSetoresParaCadastro()).rejects.toMatchObject({
+    await expect(listarSetores()).rejects.toMatchObject({
       status: 500,
       codigo: 'ERRO_INTERNO',
     })

@@ -4,15 +4,15 @@ import { render, screen } from '@testing-library/react'
 vi.mock('@/app/(painel)/painel/ocorrencias/actions', () => ({ atribuirResponsavel: vi.fn() }))
 vi.mock('@/lib/dal', () => ({ exigirPapel: vi.fn() }))
 vi.mock('@/lib/ocorrencias', () => ({ buscarOcorrencia: vi.fn() }))
-vi.mock('@/lib/lanternas', () => ({ listarLanternas: vi.fn() }))
+vi.mock('@/lib/lanternas', () => ({ listarTodosLanternas: vi.fn() }))
 
 import { FormAtribuir } from '@/app/(painel)/painel/ocorrencias/_components/FormAtribuir'
 import AtribuirPage from '@/app/(painel)/painel/ocorrencias/[id]/atribuir/page'
-import type { Lanterna } from '@/lib/schemas/lanterna'
+import type { LanternaLista } from '@/lib/schemas/lanterna'
 
-const lanternasMock: Lanterna[] = [
-  { id: '1', nome: 'Hal Jordan', especie: 'Humano', planetaNatal: 'Terra', setorId: '2814', status: 'ativo' },
-  { id: '2', nome: 'John Stewart', especie: 'Humano', planetaNatal: 'Terra', setorId: '2814', status: 'ativo' },
+const lanternasMock: LanternaLista[] = [
+  { id: 'hal-jordan', codinome: 'Hal Jordan', identidadeCivil: null, especie: 'Humano', planetaNatal: 'Terra', setorId: 2814, status: 'ativo', anoIngresso: null },
+  { id: 'john-stewart', codinome: 'John Stewart', identidadeCivil: null, especie: 'Humano', planetaNatal: 'Terra', setorId: 2814, status: 'ativo', anoIngresso: null },
 ]
 
 beforeEach(() => {
@@ -29,7 +29,7 @@ test('FormAtribuir renderiza select e botão OANET', () => {
 
 test('AtribuirPage renderiza casca OANET com link de volta e moldura', async () => {
   const { buscarOcorrencia } = await import('@/lib/ocorrencias')
-  const { listarLanternas } = await import('@/lib/lanternas')
+  const { listarTodosLanternas } = await import('@/lib/lanternas')
   vi.mocked(buscarOcorrencia).mockResolvedValue({
     id: 'o1',
     titulo: 'Incursão Sinestro',
@@ -44,7 +44,7 @@ test('AtribuirPage renderiza casca OANET com link de volta e moldura', async () 
     criadaEm: '2026-11-10T12:00:00.000Z',
     resolucao: null,
   })
-  vi.mocked(listarLanternas).mockResolvedValue(lanternasMock)
+  vi.mocked(listarTodosLanternas).mockResolvedValue(lanternasMock)
 
   const { container } = render(await AtribuirPage({ params: Promise.resolve({ id: 'o1' }) }))
 

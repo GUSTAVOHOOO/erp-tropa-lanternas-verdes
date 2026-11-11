@@ -12,8 +12,8 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 |---|---|---|---|
 | Início | `/` | Atual (UI-01, UI-02.01) | Apresentação da Central de Oa e acesso ao login |
 | Sobre | `/sobre` | Atual (UI-01, UI-02.02) | Oa, a Tropa e o juramento |
-| Lanternas | `/lanternas` | Atual (UI-01, UI-02.04) | Lista com filtro por Setor. **Muda:** busca, filtro de status e paginação, vindos da API |
-| Ficha do Lanterna | `/lanternas/[id]` | Atual (UI-01, UI-02.05) | Ficha pública com identidade, espécie, planeta, Setor navegável, status operacional com SeloOa, construto vetorial OANET e link de retorno |
+| Lanternas | `/lanternas` | Preparado contra contrato (FE-03, P) | Lista com filtro por Setor. **Muda:** busca, filtro de status e paginação, vindos da API |
+| Ficha do Lanterna | `/lanternas/[id]` | Preparado contra contrato (FE-03, P) | Ficha pública com identidade, espécie, planeta, Setor navegável, status operacional com SeloOa, construto vetorial OANET e link de retorno |
 | Login | `/login` | Preparado contra contrato (FE-02, P) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
 | Cadastro | `/cadastro` | Preparado contra contrato (FE-02, P) | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
 | Acesso negado | `/acesso-negado` | Atual (UI-01, UI-02.11) | Página de aviso 403 com PaginaAviso, EmblemaOa e botão de retorno ao painel |

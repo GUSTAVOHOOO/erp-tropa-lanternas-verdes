@@ -8,7 +8,7 @@ import { MolduraOa } from '@/components/oanet/PainelOa'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
 import { normalizarFiltroOcorrencias } from '@/lib/filtro-ocorrencias'
-import { listarLanternas } from '@/lib/lanternas'
+import { listarTodosLanternas } from '@/lib/lanternas'
 import { listarOcorrencias } from '@/lib/ocorrencias'
 import { setorParaFiltro } from '@/lib/escopo'
 import { listarSetores } from '@/lib/setores'
@@ -22,8 +22,8 @@ type OcorrenciasPageProps = { searchParams: Promise<{ status?: string | string[]
 export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageProps) {
   const sessao = await verificarSessao() // [AUTH-04]
   const parametros = await searchParams // [ROTA-10]
-  const [setores, lanternas] = await Promise.all([listarSetores(), listarLanternas()]) // [API-07]
-  const filtro = normalizarFiltroOcorrencias(parametros, setores.map((s) => s.id)) // [ROTA-11]
+  const [setores, lanternas] = await Promise.all([listarSetores(), listarTodosLanternas()]) // [API-07]
+  const filtro = normalizarFiltroOcorrencias(parametros, setores.map((s) => String(s.id))) // [ROTA-11]
   const setorDaUrl = filtro.setor === undefined ? undefined : Number(filtro.setor)
   const setorDoFiltro = setorParaFiltro(sessao, setorDaUrl !== undefined && Number.isNaN(setorDaUrl) ? undefined : setorDaUrl)
   const ocorrencias = await listarOcorrencias({ setorId: setorDoFiltro === undefined ? undefined : String(setorDoFiltro), status: filtro.status, gravidade: filtro.gravidade }) // [AUTH-07] // FE-04: setor inteiro do contrato
@@ -59,8 +59,8 @@ export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageP
         ) : (
           <TabelaOcorrencias
             ocorrencias={ocorrencias}
-            nomeSetor={Object.fromEntries(setores.map((s) => [s.id, s.nome]))}
-            nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.nome]))}
+            nomeSetor={Object.fromEntries(setores.map((s) => [String(s.id), s.nome]))}
+            nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))}
           />
         )}
       </MolduraOa>

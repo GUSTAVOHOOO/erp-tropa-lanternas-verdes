@@ -4,8 +4,8 @@ import { EmblemaOa } from '@/components/oanet/EmblemaOa'
 import { MolduraOa } from '@/components/oanet/PainelOa'
 import { BateriaOa } from '@/components/oanet/ConstructosOa'
 import { EstadoVazio } from '@/components/EstadoVazio'
-import { listarSetoresParaCadastro } from '@/lib/cadastro'
-import type { Setor } from '@/lib/schemas/cadastro'
+import { listarSetores } from '@/lib/setores'
+import type { Setor } from '@/lib/schemas/setor'
 import { FormCadastro } from '@/app/(site)/cadastro/_components/FormCadastro'
 
 export const metadata: Metadata = { title: 'Cadastrar | Central de Oa' }
@@ -15,7 +15,7 @@ export default async function CadastroPage() {
   let falhaAoCarregar = false
 
   try {
-    setores = await listarSetoresParaCadastro()
+    setores = await listarSetores()
   } catch {
     falhaAoCarregar = true
   }

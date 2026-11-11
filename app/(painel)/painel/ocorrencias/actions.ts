@@ -21,7 +21,7 @@ export async function registrarOcorrencia(dados: unknown): Promise<ResultadoAcao
   let criada: Ocorrencia
   try {
     const setores = await listarSetores()
-    if (setorId === null || !Number.isInteger(setorId) || !setores.some((s) => s.id === String(setorId))) {
+    if (setorId === null || !Number.isInteger(setorId) || !setores.some((s) => s.id === setorId)) {
       return { ok: false, errors: { setorId: ['Escolha um setor válido.'] } }
     }
     criada = await criarOcorrencia({
@@ -77,7 +77,7 @@ export async function atribuirResponsavel(id: unknown, dados: unknown): Promise<
     const ocorrencia = await buscarOcorrencia(id)
     if (!ocorrencia) return { ok: false, erro: 'Ocorrência não encontrada.' }
     const lanterna = await buscarLanterna(parsed.data.responsavelId)
-    if (!lanterna || lanterna.setorId !== ocorrencia.setorId) {
+    if (!lanterna || lanterna.setorId !== Number(ocorrencia.setorId)) {
       return { ok: false, errors: { responsavelId: ['Escolha um lanterna do setor desta ocorrência.'] } }
     }
     await atualizarOcorrencia(id, { responsavelId: lanterna.id })

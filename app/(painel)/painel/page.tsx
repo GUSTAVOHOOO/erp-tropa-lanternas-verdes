@@ -7,7 +7,7 @@ import { IconeOa } from '@/components/oanet/IconeOa'
 import { MolduraOa } from '@/components/oanet/PainelOa'
 import { TabelaOcorrencias } from '@/components/TabelaOcorrencias'
 import { verificarSessao } from '@/lib/dal'
-import { listarLanternas } from '@/lib/lanternas'
+import { listarTodosLanternas } from '@/lib/lanternas'
 import { listarOcorrencias } from '@/lib/ocorrencias'
 import { setorParaFiltro } from '@/lib/escopo'
 import { listarSetores } from '@/lib/setores'
@@ -20,7 +20,7 @@ export default async function PainelPage() {
   const [ocorrencias, setores, lanternas] = await Promise.all([ // [API-07]
     listarOcorrencias({ setorId: setorParaFiltro(sessao) === undefined ? undefined : String(setorParaFiltro(sessao)) }), // [AUTH-07] // FE-04: setor inteiro do contrato
     listarSetores(),
-    listarLanternas(),
+    listarTodosLanternas(),
   ])
 
   return (
@@ -49,8 +49,8 @@ export default async function PainelPage() {
         ) : (
           <TabelaOcorrencias
             ocorrencias={ocorrencias.slice(0, 5)}
-            nomeSetor={Object.fromEntries(setores.map((s) => [s.id, s.nome]))}
-            nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.nome]))}
+            nomeSetor={Object.fromEntries(setores.map((s) => [String(s.id), s.nome]))}
+            nomeLanterna={Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))}
           />
         )}
       </MolduraOa>

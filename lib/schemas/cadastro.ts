@@ -29,17 +29,3 @@ export const cadastroSchema = z.object({
 })
 
 export type CadastroData = z.infer<typeof cadastroSchema>
-
-/**
- * Setor retornado pelo endpoint público GET /setores.
- * O FE-03 vai consolidá-lo em lib/schemas/setor.ts.
- */
-export const setorPublicoSchema = z
-  .object({
-    id: z.number().int().min(0).max(9999),
-    nome: z.string().min(2).max(60),
-    descricao: z.string().min(10).max(300),
-  })
-  .strict()
-
-export type Setor = z.infer<typeof setorPublicoSchema>

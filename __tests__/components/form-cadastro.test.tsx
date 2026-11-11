@@ -4,12 +4,10 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 vi.mock('@/app/(site)/cadastro/actions', () => ({
   cadastrar: vi.fn(),
 }))
-vi.mock('@/lib/cadastro', () => ({
-  listarSetoresParaCadastro: vi.fn(),
-}))
+vi.mock('@/lib/setores', () => ({ listarSetores: vi.fn() }))
 
 import { cadastrar } from '@/app/(site)/cadastro/actions'
-import { listarSetoresParaCadastro } from '@/lib/cadastro'
+import { listarSetores } from '@/lib/setores'
 import { FormCadastro } from '@/app/(site)/cadastro/_components/FormCadastro'
 import CadastroPage from '@/app/(site)/cadastro/page'
 
@@ -146,7 +144,7 @@ describe('CadastroPage', () => {
   })
 
   it('com setores renderiza a página de acesso e o formulário de cadastro', async () => {
-    vi.mocked(listarSetoresParaCadastro).mockResolvedValueOnce(setoresExemplo)
+vi.mocked(listarSetores).mockResolvedValueOnce(setoresExemplo)
     const { container } = render(await CadastroPage())
 
     expect(screen.getByRole('heading', { level: 1, name: 'Criar conta na Central' })).toBeDefined()
@@ -160,7 +158,7 @@ describe('CadastroPage', () => {
   })
 
   it('com falha na API exibe estado de erro com link "Tentar de novo" e sem formulário', async () => {
-    vi.mocked(listarSetoresParaCadastro).mockRejectedValueOnce(new Error('API offline'))
+vi.mocked(listarSetores).mockRejectedValueOnce(new Error('API offline'))
     render(await CadastroPage())
 
     expect(screen.getByText('Não foi possível carregar os setores')).toBeDefined()
@@ -170,7 +168,7 @@ describe('CadastroPage', () => {
   })
 
   it('com lista vazia exibe EstadoVazio e sem formulário', async () => {
-    vi.mocked(listarSetoresParaCadastro).mockResolvedValueOnce([])
+vi.mocked(listarSetores).mockResolvedValueOnce([])
     render(await CadastroPage())
 
     expect(screen.getByText('Nenhum setor disponível para cadastro')).toBeDefined()

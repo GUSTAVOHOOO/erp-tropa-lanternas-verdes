@@ -13,7 +13,7 @@ import { exigirPapel, verificarSessao } from '@/lib/dal'
 import { buscarLanterna } from '@/lib/lanternas'
 import { atualizarOcorrencia, buscarOcorrencia } from '@/lib/ocorrencias'
 import { MENSAGEM_ERRO_API } from '@/lib/resultado-acao'
-import { lanternaSchema } from '@/lib/schemas/lanterna'
+import { lanternaFichaSchema } from '@/lib/schemas/lanterna'
 import { ocorrenciaSchema } from '@/lib/schemas/ocorrencia'
 import type { Sessao } from '@/lib/schemas/usuario'
 import { atribuirResponsavel, atualizarStatus } from '@/app/(painel)/painel/ocorrencias/actions'
@@ -22,7 +22,13 @@ const hal: Sessao = { id: '00000000-0000-4000-8000-000000000002', nome: 'Hal Jor
 const ganthet: Sessao = { id: '00000000-0000-4000-8000-000000000001', nome: 'Ganthet', email: 'ganthet@oa.tropa', papel: 'guardiao', setorId: null, lanternaId: null, criadoEm: '2026-01-01T00:00:00.000Z' }
 const o2 = ocorrenciaSchema.parse(db.ocorrencias[1])
 const o7 = ocorrenciaSchema.parse(db.ocorrencias[6])
-const lanterna = (id: string) => lanternaSchema.parse(db.lanternas.find((l) => l.id === id))
+const lanterna = (id: string) => lanternaFichaSchema.parse({
+  id, codinome: id, identidadeCivil: null, especie: null, planetaNatal: null,
+  setorId: id === 'kilowog' ? 674 : 2814, status: 'ativo', anoIngresso: null,
+  primeiraAparicao: null, habilidades: [], mentorId: null, citacao: null, biografia: null,
+  fontes: {}, estatisticas: { resolvidas: 0, emAndamento: 0, tempoMedioResolucaoHoras: null, cargaAtual: 0 },
+  mentor: null, aprendizes: [],
+})
 
 beforeEach(() => {
   vi.clearAllMocks()

@@ -18,7 +18,7 @@ type SetoresPageProps = {
 export default async function SetoresPage({ searchParams }: SetoresPageProps) {
   await exigirPapel('guardiao') // [AUTH-05][AUTH-06]
   const { editar } = await searchParams
-  const setores = await listarSetores()
+  const setores = await listarSetores({ cache: 'no-store' }) // gestão: sem cache [API-14]
 
   const idEditar = editar !== undefined && editar !== '' ? Number(editar) : undefined
   const setorEmEdicao =

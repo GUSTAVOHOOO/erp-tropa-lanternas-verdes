@@ -1,6 +1,6 @@
 import 'server-only'
 import * as z from 'zod'
-import { requisitarApi, requisitarApiSemConteudo, type OpcoesApi } from '@/lib/api'
+import { requisitarApi, requisitarApiSemConteudo, type OpcoesApi, type CacheApi } from '@/lib/api'
 import { ApiError } from '@/lib/api-error'
 import { lerTokenObrigatorio } from '@/lib/dal'
 import { idSetorSchema, setorSchema, type Setor } from '@/lib/schemas/setor'
@@ -25,8 +25,8 @@ function caminho(id: number): string {
 }
 
 /** Lista os setores publicos do contrato. */
-export async function listarSetores(): Promise<Setor[]> {
-  return requisitarApi('/setores', z.array(setorSchema), { cache: { revalidate: 60 } })
+export async function listarSetores(cache: CacheApi = { revalidate: 60 }): Promise<Setor[]> {
+  return requisitarApi('/setores', z.array(setorSchema), { cache })
 }
 
 /** Consulta um setor pelo id (público). Retorna null se não encontrado (404). */

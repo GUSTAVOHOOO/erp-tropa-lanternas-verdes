@@ -198,13 +198,13 @@ export function FiltroOcorrencias({ setores = [], lanternas = [] }: FiltroOcorre
             aoMudar={(v) => mudarFiltro('ordem', v)}
           />
         </div>
-        <div className="oa-field flex items-center gap-2 pb-2">
+        <div className="oa-field oa-field--inline">
           <input
             id="filtro-vencida"
             type="checkbox"
             checked={vencidaNaUrl === 'true'}
             onChange={(e) => mudarFiltro('vencida', e.target.checked ? 'true' : null)}
-            className="size-4 rounded border-border"
+            className="oa-checkbox"
           />
           <Label htmlFor="filtro-vencida">Somente vencidas</Label>
         </div>

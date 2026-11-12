@@ -12,6 +12,9 @@ import { listarSetores } from '@/lib/setores'
 import { FormPapel } from '@/app/(painel)/painel/usuarios/_components/FormPapel'
 import { FormVinculo } from '@/app/(painel)/painel/usuarios/_components/FormVinculo'
 
+// Tela de gestão: Fichas e Setores recém-criados ou alterados precisam aparecer na hora. [API-14]
+const SEM_CACHE = { cache: 'no-store' } as const
+
 export const metadata: Metadata = { title: 'Usuários | Central de Comando' }
 
 type UsuariosPageProps = {
@@ -31,8 +34,8 @@ export default async function UsuariosPage({ searchParams }: UsuariosPageProps) 
       ...filtro,
       limite: filtro.limite ?? 20,
     }),
-    listarSetores(),
-    listarTodosLanternas(),
+    listarSetores(SEM_CACHE),
+    listarTodosLanternas({}, SEM_CACHE),
   ])
 
   const nomeSetorMap = new Map(setores.map((s) => [s.id, s.nome]))

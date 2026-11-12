@@ -211,6 +211,8 @@ UI-02.11 usa nomes abreviados `{loading,error}` apenas para os dois arquivos exi
 
 ## FE-06 — Eventos e Comentários
 
+> **Status em 2026-11-11:** Preparado contra contrato (P) na branch `front/fe-06-eventos-comentarios`, empilhada sobre `front/fe-07a-dashboard` (PR #15), com contrato v1.0.0 e pacote `cd91fef5a43bb239a67be5bbc1a942caedda7129bb268da7dbfdd0632b9a4730`. O detalhe ganhou Linha do tempo (frase por tipo de evento, com codinome do responsável) e Comentários (texto puro, "Apagar" só para o autor ou Guardião, com confirmação acessível, e formulário que limpa e anuncia "Comentário publicado."), com cada coleção paginada pela URL (`?eventos=` e `?comentarios=`) preservando a outra; `Paginacao` ganhou a prop opcional `parametro`. Verificado em 2026-11-11: `npm run test:run` (60 arquivos, 388 testes), lint, tsc, build e `npx playwright test` (18 testes), todos com exit 0; nada disso prova a API real, e não há edição de comentário ou evento.
+
 **Depende P:** FE-05 e UI-02.09; **A (aditivo, depois do Corte 1):** BE-10, BE-FX etapa e e G6. **Existentes:** detalhe/schema de ocorrência; **novos:** `lib/{eventos,comentarios}.ts`, `lib/schemas/{evento,comentario}.ts`, `app/(painel)/painel/ocorrencias/_components/{LinhaDoTempo,Comentarios,FormComentario}.tsx`, `app/(painel)/painel/ocorrencias/comentarios-actions.ts`, `__tests__/acoes/comentarios.test.ts`, `__tests__/components/comentarios.test.tsx`, `e2e/comentarios.spec.ts`.
 
 - [ ] Validar formatos de eventos por tipo e autor/datas pelo contrato; buscar detalhe/eventos/comentários independentes em paralelo, sem cache privado, paginação de cada coleção pela URL.

@@ -1,35 +1,56 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
+import * as z from 'zod'
 import { BadgeGravidade } from '@/components/BadgeGravidade'
 import { BadgeStatus } from '@/components/BadgeStatus'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { LinkVoltar } from '@/components/LinkVoltar'
+import { Paginacao } from '@/components/Paginacao'
 import { IconeOa } from '@/components/oanet/IconeOa'
 import { MolduraOa, SeloOa } from '@/components/oanet/PainelOa'
+import { listarComentarios } from '@/lib/comentarios'
 import { verificarSessao } from '@/lib/dal'
 import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { podeAcessarSetor } from '@/lib/escopo'
+import { listarEventos } from '@/lib/eventos'
 import { formatarData } from '@/lib/formatar'
 import { listarTodosLanternas } from '@/lib/lanternas'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
 import { acoesPermitidas, transicoesPermitidas } from '@/lib/permissoes-ocorrencia'
 import { listarSetores } from '@/lib/setores'
+import { Comentarios } from '@/app/(painel)/painel/ocorrencias/_components/Comentarios'
 import { ConfirmarExclusao } from '@/app/(painel)/painel/ocorrencias/_components/ConfirmarExclusao'
 import { FormEditarOcorrencia } from '@/app/(painel)/painel/ocorrencias/_components/FormEditarOcorrencia'
 import { FormStatus } from '@/app/(painel)/painel/ocorrencias/_components/FormStatus'
+import { LinhaDoTempo } from '@/app/(painel)/painel/ocorrencias/_components/LinhaDoTempo'
 
 export const metadata: Metadata = { title: 'Ocorrência | Central de Comando' }
 
-type OcorrenciaPageProps = { params: Promise<{ id: string }> }
+const paginaParamSchema = z.coerce.number().int().min(1).optional().catch(undefined)
+
+type OcorrenciaPageProps = {
+  params: Promise<{ id: string }>
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
 /** Detalhe da ocorrência com ciclo de vida, edição e exclusão. [ROTA-10][API-07][API-12] */
-export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
+export default async function OcorrenciaPage({ params, searchParams }: OcorrenciaPageProps) {
   const sessao = await verificarSessao() // [AUTH-04]
   const { id } = await params // [ROTA-10]
-  let ocorrencia, setores, lanternas
+  const sp = (await searchParams) ?? {}
+  const paginaEventos = paginaParamSchema.parse(sp.eventos) ?? 1
+  const paginaComentarios = paginaParamSchema.parse(sp.comentarios) ?? 1
+
+  let ocorrencia, setores, lanternas, eventosPaginados, comentariosPaginados
   try {
-    ;[ocorrencia, setores, lanternas] = await Promise.all([buscarOcorrencia(id), listarSetores(), listarTodosLanternas()]) // [API-07]
+    ;[ocorrencia, setores, lanternas, eventosPaginados, comentariosPaginados] = await Promise.all([
+      buscarOcorrencia(id),
+      listarSetores(),
+      listarTodosLanternas(),
+      listarEventos(id, paginaEventos),
+      listarComentarios(id, paginaComentarios),
+    ]) // [API-07]
   } catch (erro) {
     tratarErroDetalhe(erro) // [API-12]
   }
@@ -38,8 +59,14 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
 
   const setor = setores.find((s) => s.id === ocorrencia.setorId)
   const responsavel = lanternas.find((l) => l.id === ocorrencia.responsavelId)
+  const nomeLanterna: Record<string, string> = Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))
   const acoes = acoesPermitidas(sessao, ocorrencia)
   const transicoes = transicoesPermitidas(acoes)
+
+  const parametrosPaginacao = {
+    eventos: paginaEventos > 1 ? String(paginaEventos) : undefined,
+    comentarios: paginaComentarios > 1 ? String(paginaComentarios) : undefined,
+  }
 
   return (
     <article className="oa-screen mx-auto grid max-w-3xl gap-8">
@@ -122,6 +149,36 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
           <FormEditarOcorrencia ocorrencia={ocorrencia} />
         </MolduraOa>
       )}
+
+      <MolduraOa titulo="Linha do tempo" icone="relatorios">
+        <div className="p-4 md:p-6">
+          <LinhaDoTempo eventos={eventosPaginados.itens} nomeLanterna={nomeLanterna} />
+          <Paginacao
+            pagina={eventosPaginados.meta.pagina}
+            paginas={eventosPaginados.meta.paginas}
+            caminho={`/painel/ocorrencias/${ocorrencia.id}`}
+            parametros={parametrosPaginacao}
+            parametro="eventos"
+          />
+        </div>
+      </MolduraOa>
+
+      <MolduraOa titulo="Comentários" icone="comunicacoes">
+        <div className="p-4 md:p-6">
+          <Comentarios
+            ocorrenciaId={ocorrencia.id}
+            comentarios={comentariosPaginados.itens}
+            sessao={sessao}
+          />
+          <Paginacao
+            pagina={comentariosPaginados.meta.pagina}
+            paginas={comentariosPaginados.meta.paginas}
+            caminho={`/painel/ocorrencias/${ocorrencia.id}`}
+            parametros={parametrosPaginacao}
+            parametro="comentarios"
+          />
+        </div>
+      </MolduraOa>
 
       {acoes.excluir && (
         <div className="oa-button-row justify-end">

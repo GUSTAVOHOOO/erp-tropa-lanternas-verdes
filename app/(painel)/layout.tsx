@@ -1,6 +1,7 @@
 import { CascaOa, type LinkCascaOa } from '@/components/oanet/CascaOa'
 import { FormSairOa } from '@/components/oanet/FormSairOa'
 import { identidadeDaSessao } from '@/components/oanet/identidade'
+import { linksDoPainel } from '@/components/oanet/navegacao'
 import { lerSessao } from '@/lib/dal'
 
 const LINKS_PAINEL: LinkCascaOa[] = [
@@ -12,9 +13,11 @@ const LINKS_PAINEL: LinkCascaOa[] = [
 /** Casca da Central de Comando. Lê a sessão só para mostrar a identidade: a proteção fica nas páginas. */
 export default async function PainelLayout({ children }: { children: React.ReactNode }) {
   const sessao = await lerSessao() // [AUTH-10]
+  const links = sessao ? linksDoPainel(sessao.papel) : LINKS_PAINEL
+
   return (
     <CascaOa
-      links={LINKS_PAINEL}
+      links={links}
       rotuloNavegacao="Navegação da Central de Comando"
       identidade={
         sessao ? identidadeDaSessao(sessao) : { titulo: 'Central de Comando', detalhe: 'Sessão não identificada' }

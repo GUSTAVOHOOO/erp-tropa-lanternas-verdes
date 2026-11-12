@@ -73,3 +73,12 @@ export async function definirResponsavel(id: string, responsavelId: string | nul
 export async function excluirOcorrencia(id: string): Promise<void> {
   await requisitarApiSemConteudo(caminho(id), await opcoes({ metodo: 'DELETE' }))
 }
+
+/** Fila pessoal do Lanterna: ocorrências abertas e em andamento atribuídas ao seu lanternaId. [API-19] */
+export async function listarMinhaFila(pagina: number = 1): Promise<Pagina<Ocorrencia>> {
+  return requisitarApi(
+    '/ocorrencias/minha-fila',
+    paginaDe(ocorrenciaSchema),
+    await opcoes({ consulta: { pagina, limite: 20 } }),
+  )
+}

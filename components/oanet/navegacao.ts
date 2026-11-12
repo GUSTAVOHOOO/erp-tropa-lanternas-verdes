@@ -1,3 +1,4 @@
+import type { Papel } from '@/lib/schemas/usuario'
 import type { LinkCascaOa } from './CascaOa'
 
 const LINKS_BASE: LinkCascaOa[] = [
@@ -20,4 +21,28 @@ export function linksDoSite(logado: boolean): LinkCascaOa[] {
     return [...LINKS_BASE]
   }
   return [...LINKS_BASE, LINK_CADASTRO]
+}
+
+const LINKS_PAINEL_BASE: Omit<LinkCascaOa, 'codigo'>[] = [
+  { href: '/painel', nome: 'Resumo', icone: 'painel' },
+  { href: '/painel/ocorrencias', nome: 'Ocorrências', icone: 'ocorrencias' },
+  { href: '/painel/ocorrencias/nova', nome: 'Registrar ocorrência', icone: 'mais' },
+]
+
+const LINK_MINHA_FILA: Omit<LinkCascaOa, 'codigo'> = {
+  href: '/painel/minha-fila',
+  nome: 'Minha fila',
+  icone: 'alvo',
+}
+
+/** Retorna os links da Central de Comando conforme o papel do usuário. */
+export function linksDoPainel(papel: Papel): LinkCascaOa[] {
+  const itens = papel === 'lanterna'
+    ? [LINKS_PAINEL_BASE[0], LINK_MINHA_FILA, ...LINKS_PAINEL_BASE.slice(1)]
+    : [...LINKS_PAINEL_BASE]
+
+  return itens.map((item, index) => ({
+    ...item,
+    codigo: String(index + 1).padStart(2, '0'),
+  }))
 }

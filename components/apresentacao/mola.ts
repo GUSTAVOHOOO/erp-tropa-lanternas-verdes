@@ -56,6 +56,8 @@ export const MOLAS = {
   pesada: { rigidez: 60, amortecimento: 14 },
   /** Criticamente amortecida: contadores sobem sem passar do valor. */
   contagem: { rigidez: 36, amortecimento: 12 },
+  /** Rápida e quase sem sobra: transições leves, assenta em ~360 ms. */
+  leve: { rigidez: 420, amortecimento: 38 },
 } satisfies Record<string, Mola>
 
 /** Variáveis CSS com curva e duração de cada mola, calculadas uma vez. */

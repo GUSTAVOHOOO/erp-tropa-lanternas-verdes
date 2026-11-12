@@ -320,6 +320,11 @@ Ordem da skill: **quem é você (401) → o que pode (403) → este recurso é s
 - As regras viraram **código com marcadores**, **testes** e **documentos verificados por script**.
 - Front e back foram construídos em paralelo sobre **um contrato com hash**, e a ligação real foi feita de uma vez.
 - Agentes (Orca, Claude Code, Codex, Gemini, Haiku) aceleraram o trabalho, **sempre com revisão humana e teste antes do merge**.
+- A Tropa reunida: os 25 Lanternas acendem em onda no rodapé do slide.
+
+### Slide 26: Encerramento, o nascimento de uma galáxia (~25 s)
+
+- Sem texto para ler: a galáxia nasce em tela cheia (teia cósmica, colapso, primeiras estrelas, braços espirais, núcleo), o juramento entra em dois tempos e "Perguntas?" aparece quando ela amadurece.
 - Agradecimentos e abertura para perguntas.
 
 ---

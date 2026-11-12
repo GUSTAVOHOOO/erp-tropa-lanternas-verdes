@@ -8,22 +8,40 @@ import { MOLAS, duracaoMola, posicaoMola } from './mola'
 
 /*
  * Blocos dos slides. A coreografia vem do CSS (`apresentacao.css`):
- * `dk-t1`…`dk-t9` atrasam um bloco inteiro e os filhos de `dk-cascata`
- * entram em sequência. Nada aqui depende de relógio na renderização.
+ * `dk-t1`…`dk-t10` atrasam um bloco inteiro e os filhos de `dk-cascata`
+ * entram em sequência. Cada bloco aceita `variante`, que escolhe a forma de
+ * entrar (biblioteca de entradas em apresentacao.css). Nada depende de relógio.
  */
 
 type ComClasse = { className?: string }
+
+export type VarianteTitulo = 'letra' | 'mascara' | 'palavras' | 'terminal'
+export type VariantePainel = 'varredura' | 'holograma' | 'desdobrar' | 'foco'
+export type VarianteTabela = 'varredura' | 'colunas' | 'celulas'
+export type VarianteLista = 'marcador' | 'digitar' | 'sublinhado'
+export type VarianteCartoes = 'entrar' | 'virar' | 'desdobrar' | 'montar'
+export type VarianteCodigo = 'digitar' | 'revelar' | 'foco'
+export type VarianteContador = 'mola' | 'odometro' | 'holograma'
+export type VarianteSelos = 'carimbo' | 'pisca' | 'desliza'
+export type VarianteEtapas = 'trilho' | 'pulso'
+export type VarianteProva = 'entrar' | 'deriva' | 'foco'
 
 /** Código e assunto do slide, em fonte de terminal. */
 export function Rotulo({ codigo, children, className = '' }: { codigo: string; children: ReactNode } & ComClasse) {
   return <p className={`dk-rotulo dk-entra ${className}`}><b>{codigo}</b><i aria-hidden="true">{'//'}</i>{children}</p>
 }
 
-/** Título que se monta letra a letra; leitores de tela recebem a frase inteira. */
-export function Titulo({ texto, className = '', nivel = 'slide' }: { texto: string; nivel?: 'capa' | 'capitulo' | 'slide' } & ComClasse) {
+/**
+ * Título do slide. `letra` monta letra a letra (só em poucos slides); as outras
+ * variantes mudam o gesto: máscara da esquerda, palavras subindo, cintilação.
+ * Leitores de tela recebem a frase inteira.
+ */
+export function Titulo({ texto, className = '', nivel = 'slide', variante = 'letra' }: {
+  texto: string; nivel?: 'capa' | 'capitulo' | 'slide'; variante?: VarianteTitulo
+} & ComClasse) {
   const palavras = texto.split(' ')
   return (
-    <h2 className={`dk-titulo dk-titulo--${nivel} ${className}`} aria-label={texto}>
+    <h2 className={`dk-titulo dk-titulo--${nivel} dk-titulo--${variante} ${className}`} aria-label={texto}>
       {palavras.map((palavra, p) => (
         <span key={`${palavra}-${p}`} className="dk-palavra" aria-hidden="true">
           {[...palavra].map((letra, l) => <span key={l} className="dk-letra">{letra}</span>)}
@@ -34,29 +52,30 @@ export function Titulo({ texto, className = '', nivel = 'slide' }: { texto: stri
 }
 
 export function Subtitulo({ children, className = '' }: { children: ReactNode } & ComClasse) {
-  return <p className={`dk-subtitulo dk-entra ${className}`}>{children}</p>
+  return <p className={`dk-subtitulo dk-entra dk-entra--foco ${className}`}>{children}</p>
 }
 
-/** Painel OANET que se constrói em luz sólida, da esquerda para a direita. */
-export function Painel({ titulo, icone, children, className = '', acao }: {
-  titulo?: string; icone?: IconeOaNome; children: ReactNode; acao?: ReactNode
+/** Painel OANET; a variante escolhe se a luz sólida varre, cintila, desdobra ou entra em foco. */
+export function Painel({ titulo, icone, children, className = '', acao, variante = 'varredura' }: {
+  titulo?: string; icone?: IconeOaNome; children: ReactNode; acao?: ReactNode; variante?: VariantePainel
 } & ComClasse) {
-  return <div className={`dk-constroi ${className}`}><MolduraOa titulo={titulo} icone={icone} acao={acao}><div className="dk-painel-corpo">{children}</div></MolduraOa></div>
+  const varredura = variante === 'varredura' ? 'dk-constroi' : ''
+  return <div className={`dk-painel dk-painel--${variante} ${varredura} ${className}`}><MolduraOa titulo={titulo} icone={icone} acao={acao}><div className="dk-painel-corpo">{children}</div></MolduraOa></div>
 }
 
-/** Lista com marcador de energia; cada item entra depois do anterior. */
-export function Lista({ itens, className = '' }: { itens: ReactNode[] } & ComClasse) {
-  return <ul className={`dk-lista dk-cascata ${className}`}>{itens.map((item, i) => <li key={i}><i aria-hidden="true" />{<span>{item}</span>}</li>)}</ul>
+/** Lista com marcador de energia; o marcador acende antes, e o texto entra depois. */
+export function Lista({ itens, variante = 'marcador', className = '' }: { itens: ReactNode[]; variante?: VarianteLista } & ComClasse) {
+  return <ul className={`dk-lista dk-lista--${variante} dk-cascata ${className}`}>{itens.map((item, i) => <li key={i}><i aria-hidden="true" /><span>{item}</span></li>)}</ul>
 }
 
 export type LinhaRegra = { id?: string; requisito: ReactNode; prova: ReactNode }
 
-/** Tabela "requisito → onde está": cada linha passa por uma varredura ao entrar. */
-export function TabelaRegras({ linhas, cabecalho = ['Requisito', 'No código'], className = '' }: {
-  linhas: LinhaRegra[]; cabecalho?: [string, string]
+/** Tabela "requisito → onde está": varredura por linha, colunas abrindo ou células acendendo. */
+export function TabelaRegras({ linhas, cabecalho = ['Requisito', 'No código'], variante = 'varredura', className = '' }: {
+  linhas: LinhaRegra[]; cabecalho?: [string, string]; variante?: VarianteTabela
 } & ComClasse) {
   return (
-    <table className={`dk-tabela ${className}`}>
+    <table className={`dk-tabela dk-tabela--${variante} ${className}`}>
       <thead className="dk-entra"><tr><th scope="col">{cabecalho[0]}</th><th scope="col">{cabecalho[1]}</th></tr></thead>
       <tbody className="dk-cascata">
         {linhas.map((linha, i) => (
@@ -71,9 +90,11 @@ export function TabelaRegras({ linhas, cabecalho = ['Requisito', 'No código'], 
 }
 
 /** Cenário de prova com o selo carimbado ao final da linha. */
-export function TabelaProva({ linhas, className = '' }: { linhas: [ReactNode, ReactNode][] } & ComClasse) {
+export function TabelaProva({ linhas, variante = 'entrar', className = '' }: {
+  linhas: [ReactNode, ReactNode][]; variante?: VarianteProva
+} & ComClasse) {
   return (
-    <ul className={`dk-prova dk-cascata ${className}`}>
+    <ul className={`dk-prova dk-prova--${variante} dk-cascata ${className}`}>
       {linhas.map(([cenario, resultado], i) => (
         <li key={i}>
           <span className="dk-prova-cenario">{cenario}</span>
@@ -90,14 +111,33 @@ function preferePoucoMovimento() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
-/** Número que sobe pela mola firme; o valor final está no texto desde o início. */
-export function Contador({ valor, rotulo, prefixo = '', sufixo = '', detalhe, className = '' }: {
-  valor: number; rotulo: string; prefixo?: string; sufixo?: string; detalhe?: string
+/** Dígitos que rolam como odômetro: cada coluna é uma faixa de 0 a 9 até o dígito final. */
+function Odometro({ texto }: { texto: string }) {
+  return (
+    <span className="dk-odo" aria-hidden="true">
+      {[...texto].map((caractere, i) => (/\d/.test(caractere)
+        ? (
+          <span key={i} className={`dk-odo-coluna dk-odo-d${caractere}`}>
+            <span className="dk-odo-faixa">{'0123456789'.split('').map((digito) => <span key={digito}>{digito}</span>)}</span>
+          </span>
+        )
+        : <span key={i} className="dk-odo-sep">{caractere}</span>))}
+    </span>
+  )
+}
+
+/**
+ * Número do slide. `mola` sobe pela curva firme (JavaScript, com valor final no
+ * texto desde o início); `odometro` rola por CSS; `holograma` cintila e depois
+ * conta. O valor final está sempre no texto lido por leitores de tela.
+ */
+export function Contador({ valor, rotulo, prefixo = '', sufixo = '', detalhe, variante = 'mola', className = '' }: {
+  valor: number; rotulo: string; prefixo?: string; sufixo?: string; detalhe?: string; variante?: VarianteContador
 } & ComClasse) {
   const [exibido, setExibido] = useState(valor)
   const raizRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (preferePoucoMovimento()) return
+    if (variante === 'odometro' || preferePoucoMovimento()) return
     const atraso = Number.parseFloat(getComputedStyle(raizRef.current!).animationDelay) * 1000 || 0
     const duracao = duracaoMola(MOLAS.contagem)
     const inicio = performance.now() + atraso
@@ -110,11 +150,12 @@ export function Contador({ valor, rotulo, prefixo = '', sufixo = '', detalhe, cl
     }
     quadro = requestAnimationFrame(passo)
     return () => cancelAnimationFrame(quadro)
-  }, [valor])
+  }, [valor, variante])
+  const texto = valor.toLocaleString('pt-BR')
   return (
-    <div ref={raizRef} className={`dk-contador dk-entra ${className}`}>
-      <strong aria-hidden="true">{prefixo}{exibido.toLocaleString('pt-BR')}{sufixo}</strong>
-      <span className="dk-sr">{prefixo}{valor.toLocaleString('pt-BR')}{sufixo}</span>
+    <div ref={raizRef} className={`dk-contador dk-entra dk-contador--${variante} ${className}`}>
+      <strong aria-hidden="true">{prefixo}{variante === 'odometro' ? <Odometro texto={texto} /> : exibido.toLocaleString('pt-BR')}{sufixo}</strong>
+      <span className="dk-sr">{prefixo}{texto}{sufixo}</span>
       <span className="dk-contador-rotulo">{rotulo}</span>
       {detalhe && <small>{detalhe}</small>}
     </div>
@@ -137,22 +178,25 @@ function colorir(linha: string): ReactNode[] {
   return partes
 }
 
-/** Trecho de código que é "digitado" linha a linha, com cursor no fim. */
-export function Codigo({ linhas, arquivo, className = '' }: { linhas: string[]; arquivo: string } & ComClasse) {
+/** Trecho de código: digitado, revelado por linha ou com foco em cada linha. */
+export function Codigo({ linhas, arquivo, variante = 'digitar', className = '' }: {
+  linhas: string[]; arquivo: string; variante?: VarianteCodigo
+} & ComClasse) {
+  const digitar = variante === 'digitar'
   return (
-    <figure className={`dk-codigo dk-constroi ${className}`}>
+    <figure className={`dk-codigo dk-codigo--${variante} ${digitar ? 'dk-constroi' : ''} ${className}`}>
       <figcaption><IconeOa nome="codigo" />{arquivo}</figcaption>
-      <pre><code className="dk-cascata dk-cascata--rapida">{linhas.map((linha, i) => <span key={i} className="dk-linha">{linha ? colorir(linha) : ' '}</span>)}</code></pre>
+      <pre><code className={`dk-cascata ${digitar ? 'dk-cascata--rapida' : `dk-cascata--${variante}`}`}>{linhas.map((linha, i) => <span key={i} className="dk-linha">{linha ? colorir(linha) : ' '}</span>)}</code></pre>
     </figure>
   )
 }
 
 export type Etapa = { titulo: string; texto: ReactNode; icone: IconeOaNome }
 
-/** Linha do tempo: o traço acende e cada marco liga quando a energia chega. */
-export function Etapas({ etapas, className = '' }: { etapas: Etapa[] } & ComClasse) {
+/** Linha do tempo: o traço acende (trilho) ou cada marco pulsa ao chegar (pulso). */
+export function Etapas({ etapas, variante = 'trilho', className = '' }: { etapas: Etapa[]; variante?: VarianteEtapas } & ComClasse) {
   return (
-    <ol className={`dk-etapas ${className}`}>
+    <ol className={`dk-etapas dk-etapas--${variante} ${className}`}>
       {etapas.map((etapa, i) => (
         <li key={etapa.titulo} className="dk-etapa">
           <span className="dk-etapa-no" aria-hidden="true"><IconeOa nome={etapa.icone} /></span>
@@ -167,9 +211,11 @@ export function Etapas({ etapas, className = '' }: { etapas: Etapa[] } & ComClas
 }
 
 /** Grade de cartões curtos com ícone. */
-export function Cartoes({ itens, className = '' }: { itens: { icone: IconeOaNome; titulo: string; texto: ReactNode; selo?: string }[] } & ComClasse) {
+export function Cartoes({ itens, variante = 'entrar', className = '' }: {
+  itens: { icone: IconeOaNome; titulo: string; texto: ReactNode; selo?: string }[]; variante?: VarianteCartoes
+} & ComClasse) {
   return (
-    <div className={`dk-cartoes dk-cascata ${className}`}>
+    <div className={`dk-cartoes dk-cartoes--${variante} dk-cascata ${className}`}>
       {itens.map((item) => (
         <article key={item.titulo} className="dk-cartao">
           <span className="dk-cartao-icone" aria-hidden="true"><IconeOa nome={item.icone} /></span>
@@ -280,17 +326,17 @@ export function CamadasBack() {
   )
 }
 
-/** Abertura de capítulo: numeral gigante, título e o construto do capítulo. */
-export function Capitulo({ numero, parte, titulo, texto, minutos, apresentador, Arte, legenda }: {
+/** Abertura de capítulo: numeral preenchido com a energia, título e o construto do capítulo. */
+export function Capitulo({ numero, parte, titulo, texto, minutos, apresentador, Arte, legenda, variante = 'palavras' }: {
   numero: string; parte: string; titulo: string; texto: string; minutos: number; apresentador?: string
-  Arte: ComponentType<{ className?: string }>; legenda: string
+  Arte: ComponentType<{ className?: string }>; legenda: string; variante?: VarianteTitulo
 }) {
   return (
     <div className="dk-capitulo">
       <span className="dk-capitulo-numeral" aria-hidden="true">{numero}</span>
       <div className="dk-capitulo-texto">
         <Rotulo codigo={parte}>{minutos} minutos</Rotulo>
-        <Titulo texto={titulo} nivel="capitulo" />
+        <Titulo texto={titulo} nivel="capitulo" variante={variante} />
         <Subtitulo>{texto}</Subtitulo>
         {apresentador && <p className="dk-capitulo-apresentador dk-entra dk-t6"><IconeOa nome="pessoal" />{apresentador}</p>}
       </div>

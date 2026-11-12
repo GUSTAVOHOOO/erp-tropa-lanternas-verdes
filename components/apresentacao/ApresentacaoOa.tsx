@@ -6,18 +6,21 @@ import { EmblemaOa } from '@/components/oanet/EmblemaOa'
 import { FundoCosmico } from '@/components/oanet/FundoCosmico'
 import { IconeOa } from '@/components/oanet/IconeOa'
 import { useMovimentoOa } from '@/components/oanet/useMovimentoOa'
-import { desenharDobra, gerarEstrelasDobra } from './dobra'
+import { gerarEstrelasDobra } from './dobra'
 import { variaveisMolas } from './mola'
+import { CamadaLanternas } from './lanternas'
 import { PARTES, SLIDES, type Parte } from './slides'
+import { CATALOGO, desenharPesada, ehPesada, escolherTransicao, type TipoTransicao } from './transicoes'
 
 const LARGURA = 1920
 const ALTURA = 1080
-const DURACAO_DOBRA = 1500
-const DURACAO_SAIDA: Record<TipoTransicao, number> = { dobra: 900, feixe: 650 }
 const ESTRELAS = gerarEstrelasDobra()
 const NUMERAIS: Record<Parte, string> = { 1: 'I', 2: 'II', 3: 'III' }
+/** Células da grade holográfica (16 × 9); acendem em diagonal, da esquerda-alto para a direita-baixo. */
+const CELULAS_GRADE = Array.from({ length: 144 }, (_, n) => (
+  <i key={n} style={{ '--dk-celula': `${((n % 16) + Math.floor(n / 16)) * 22}ms` } as CSSProperties} />
+))
 
-type TipoTransicao = 'dobra' | 'feixe'
 type Transicao = { tipo: TipoTransicao; chave: number; direcao: 1 | -1 }
 type Cronometro = { inicio: number | null; acumulado: number }
 
@@ -75,7 +78,7 @@ export function ApresentacaoOa() {
       return
     }
     setSaindo(atual)
-    const tipo: TipoTransicao = SLIDES[alvo].capitulo || SLIDES[atual].capitulo ? 'dobra' : 'feixe'
+    const tipo = escolherTransicao(SLIDES[atual].id, SLIDES[alvo].id, atual, alvo)
     setTransicao({ tipo, chave: performance.now(), direcao: alvo > atual ? 1 : -1 })
   }, [])
 
@@ -147,13 +150,15 @@ export function ApresentacaoOa() {
   // O slide que sai fica montado só durante a transição.
   useEffect(() => {
     if (!transicao) return
-    const espera = window.setTimeout(() => setSaindo(null), DURACAO_SAIDA[transicao.tipo])
+    const espera = window.setTimeout(() => setSaindo(null), CATALOGO[transicao.tipo].saida)
     return () => window.clearTimeout(espera)
   }, [transicao])
 
-  // Dobra espacial: cada quadro é `desenharDobra(t)`, com t = tempo decorrido / duração.
+  // Transições pesadas: cada quadro é `desenharPesada(t)`, com t = tempo decorrido / duração.
   useEffect(() => {
-    if (transicao?.tipo !== 'dobra') return
+    if (!transicao || !ehPesada(transicao.tipo)) return
+    const tipo = transicao.tipo
+    const duracao = CATALOGO[tipo].canvas ?? 1500
     const canvas = canvasRef.current
     const contexto = canvas?.getContext('2d')
     if (!canvas || !contexto) return
@@ -169,8 +174,8 @@ export function ApresentacaoOa() {
     const inicio = performance.now()
     let quadro = 0
     const pintar = (instante: number) => {
-      const t = Math.min(1, (instante - inicio) / DURACAO_DOBRA)
-      desenharDobra(contexto, t, canvas.width, canvas.height, ESTRELAS, cores)
+      const t = Math.min(1, (instante - inicio) / duracao)
+      desenharPesada(contexto, tipo, t, canvas.width, canvas.height, ESTRELAS, cores)
       if (t < 1) quadro = requestAnimationFrame(pintar)
     }
     quadro = requestAnimationFrame(pintar)
@@ -218,6 +223,7 @@ export function ApresentacaoOa() {
     >
       <FundoCosmico />
       <div className="dk-grade-fundo" aria-hidden="true" />
+      <CamadaLanternas slideId={slide.id} chave={transicao?.chave ?? 0} />
       <p className="dk-sr" aria-live="polite">{`Slide ${indice + 1} de ${SLIDES.length}: ${slide.titulo}`}</p>
 
       <main className="dk-palco" aria-roledescription="apresentação" aria-label="Apresentação final da Central de Oa">
@@ -235,6 +241,7 @@ export function ApresentacaoOa() {
         <section
           key={`ativo-${indice}`}
           className={`dk-slide dk-slide--ativo ${transicao ? `dk-slide--${transicao.tipo}` : ''}`}
+          style={transicao ? { '--dk-atraso-slide': `${CATALOGO[transicao.tipo].entrada}ms` } as CSSProperties : undefined}
           data-direcao={transicao?.direcao}
           aria-roledescription="slide"
           aria-label={`${indice + 1} de ${SLIDES.length}: ${slide.titulo}`}
@@ -242,6 +249,13 @@ export function ApresentacaoOa() {
           <Conteudo />
         </section>
         {transicao?.tipo === 'feixe' && <span key={transicao.chave} className="dk-feixe" data-direcao={transicao.direcao} aria-hidden="true" />}
+        {transicao?.tipo === 'fatias' && (
+          <div key={transicao.chave} className="dk-fatias" data-direcao={transicao.direcao} aria-hidden="true">
+            <i /><i /><i /><i /><i /><i />
+          </div>
+        )}
+        {transicao?.tipo === 'grade' && <div key={transicao.chave} className="dk-grade-holo" aria-hidden="true">{CELULAS_GRADE}</div>}
+        {transicao?.tipo === 'pulso' && <span key={transicao.chave} className="dk-pulso-borda" aria-hidden="true" />}
 
         <footer className="dk-hud dk-hud--base" aria-hidden="true">
           <ol className="dk-progresso">

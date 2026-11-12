@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, expect, test, vi } from 'vitest'
 import { ApresentacaoOa } from '@/components/apresentacao/ApresentacaoOa'
 import { SLIDES } from '@/components/apresentacao/slides'
+import { CATALOGO, escolherTransicao } from '@/components/apresentacao/transicoes'
 
 // Renderiza construtos SVG reais: rápido isolado, mais lento com a suíte em paralelo.
 vi.setConfig({ testTimeout: 20_000 })
@@ -23,7 +24,7 @@ test('começa pela capa e navega pelo teclado, guardando o slide no endereço', 
   expect(window.location.hash).toBe('#2')
 
   fireEvent.keyDown(window, { key: 'End' })
-  expect(slideAtual()).toBe(`${SLIDES.length} de ${SLIDES.length}: Conclusão`)
+  expect(slideAtual()).toBe(`${SLIDES.length} de ${SLIDES.length}: Perguntas`)
 
   fireEvent.keyDown(window, { key: 'ArrowRight' })
   expect(slideAtual()).toContain(`${SLIDES.length} de`)
@@ -49,6 +50,24 @@ test('N mostra as notas do slide e O abre a visão geral para pular', () => {
   fireEvent.click(visao.querySelectorAll('button')[6])
   expect(screen.queryByRole('dialog')).toBeNull()
   expect(slideAtual()).toBe(`6 de ${SLIDES.length}: ${SLIDES[5].titulo}`)
+})
+
+// Com movimento normal, a troca monta o tipo escolhido pelo catálogo; voltar usa leve.
+test('a troca usa o tipo do catálogo e voltar (←) usa versão leve', () => {
+  window.matchMedia = vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })
+  window.history.replaceState(null, '', '/apresentacao#3')
+  render(<ApresentacaoOa />)
+  expect(slideAtual()).toContain('3 de')
+
+  const ida = escolherTransicao(SLIDES[2].id, SLIDES[3].id, 2, 3)
+  fireEvent.keyDown(window, { key: 'ArrowRight' })
+  expect(document.querySelector('.dk-slide--saindo')).not.toBeNull()
+  expect(document.querySelector('.dk-slide--ativo')!.className).toContain(`dk-slide--${ida}`)
+
+  const volta = escolherTransicao(SLIDES[3].id, SLIDES[2].id, 3, 2)
+  expect(CATALOGO[volta].peso).toBe('leve')
+  fireEvent.keyDown(window, { key: 'ArrowLeft' })
+  expect(document.querySelector('.dk-slide--ativo')!.className).toContain(`dk-slide--${volta}`)
 })
 
 test('atalhos não roubam teclas digitadas em campos', () => {

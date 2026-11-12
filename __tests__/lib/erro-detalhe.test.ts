@@ -8,6 +8,9 @@ vi.mock('next/navigation', () => ({
   notFound: () => { throw new Error('NOT_FOUND') },
 }))
 
+test('400 (id malformado) apresenta não encontrado sem revelar o recurso', () => {
+  expect(() => tratarErroDetalhe(new ApiError(400))).toThrow('NOT_FOUND')
+})
 test('401 encaminha ao login', () => {
   expect(() => tratarErroDetalhe(new ApiError(401))).toThrow('REDIRECT:/login')
 })

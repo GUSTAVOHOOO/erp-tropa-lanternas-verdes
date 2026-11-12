@@ -125,15 +125,22 @@ export function CascaOa({ links, identidade, rotuloNavegacao, rodapeNavegacao, r
             </div>
             <div className="oa-headquarters"><strong>Tropa dos Lanternas Verdes</strong><span>Sede Central · Oa</span></div>
             <div className="oa-topbar-actions">
-              <div className="oa-topbar-globe"><IconeOa nome="setores" /></div>
+              <div className="oa-topbar-globe oa-has-tooltip" role="img" aria-label="Rede OANET: 3.600 setores sob a guarda de Oa">
+                <IconeOa nome="setores" />
+                <span className="oa-tooltip" aria-hidden="true">Rede OANET: 3.600 setores sob a guarda de Oa</span>
+              </div>
               <button
                 type="button"
-                className="oa-icon-button"
+                className="oa-icon-button oa-calm-toggle oa-has-tooltip"
                 aria-label="Reduzir efeitos luminosos"
                 aria-pressed={modoCalmo}
+                aria-describedby="oa-dica-modo-calmo"
                 onClick={() => setModoCalmo(!modoCalmo)}
               >
-                <IconeOa nome="configuracao" />
+                <IconeOa nome="brilho" />
+                <span className="oa-tooltip" role="tooltip" id="oa-dica-modo-calmo">
+                  {modoCalmo ? 'Modo calmo ligado: brilho e animações reduzidos' : 'Modo calmo: reduz brilho e animações'}
+                </span>
               </button>
             </div>
           </header>

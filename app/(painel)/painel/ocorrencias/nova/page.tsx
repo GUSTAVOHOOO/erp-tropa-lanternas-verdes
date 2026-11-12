@@ -19,7 +19,9 @@ export default async function NovaOcorrenciaPage() {
         descricao={sessao.papel === 'lanterna' ? `A ocorrência será registrada no Setor ${sessao.setorId}.` : undefined}
       />
       <MolduraOa titulo="Dados da ocorrência" icone="ocorrencias">
-        <FormOcorrencia setores={setores} setorFixo={sessao.papel === 'lanterna' ? sessao.setorId : null} />
+        <div className="oa-panel-body">
+          <FormOcorrencia setores={setores} setorFixo={sessao.papel === 'lanterna' ? sessao.setorId : null} />
+        </div>
       </MolduraOa>
     </article>
   )

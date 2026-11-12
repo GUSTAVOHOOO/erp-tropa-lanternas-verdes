@@ -228,10 +228,31 @@ describe('formulário FormPapel', () => {
     )
     expect(screen.queryByLabelText(/setor da conta/i)).toBeNull()
 
-    // Conta inicial lanterna: select de setor aparece com opção "Manter o setor atual"
+    // Conta inicial lanterna: o setor fica oculto até o Guardião marcar a transferência
     rerender(<FormPapel usuario={usuariosMock[1]} setores={setoresMock} />)
-    expect(screen.getByLabelText(/setor da conta/i)).toBeDefined()
-    expect(screen.getByText('Manter o setor atual')).toBeDefined()
+    expect(screen.queryByLabelText(/setor da conta/i)).toBeNull()
+    fireEvent.click(screen.getByRole('checkbox', { name: /transferir para outro setor/i }))
+    expect(screen.getByLabelText(/novo setor da conta/i)).toBeDefined()
+  })
+
+  test('Lanterna que continua Lanterna salva sem enviar setor', async () => {
+    vi.mocked(alterarPapelAcao).mockResolvedValue({ ok: true } as never)
+    render(<FormPapel usuario={usuariosMock[1]} setores={setoresMock} />)
+    fireEvent.click(screen.getByRole('button', { name: /salvar papel/i }))
+    await waitFor(() => {
+      expect(alterarPapelAcao).toHaveBeenCalledWith(usuariosMock[1].id, { papel: 'lanterna' })
+    })
+  })
+
+  test('transferência marcada sem setor escolhido mostra erro e não chama a API', async () => {
+    vi.mocked(alterarPapelAcao).mockClear()
+    render(<FormPapel usuario={usuariosMock[1]} setores={setoresMock} />)
+    fireEvent.click(screen.getByRole('checkbox', { name: /transferir para outro setor/i }))
+    fireEvent.click(screen.getByRole('button', { name: /salvar papel/i }))
+    await waitFor(() => {
+      expect(screen.getByText('Escolha o setor de destino da transferência.')).toBeDefined()
+    })
+    expect(alterarPapelAcao).not.toHaveBeenCalled()
   })
 
   test('submissão chama alterarPapelAcao e desabilita botão durante envio', async () => {

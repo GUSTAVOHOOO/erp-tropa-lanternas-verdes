@@ -341,7 +341,7 @@ describe('Componentes de gestão de Lanternas (FE-08)', () => {
       expect(screen.getByText('Kilowog')).toBeDefined()
 
       const linkFichaHal = screen.getByRole('link', { name: /Hal Jordan/ })
-      expect(linkFichaHal.getAttribute('href')).toBe('/lanternas/hal-jordan')
+      expect(linkFichaHal.getAttribute('href')).toBe('/painel/lanternas/hal-jordan')
 
       expect(screen.getByText('Ativo')).toBeDefined()
       expect(screen.getByText('Afastado')).toBeDefined()

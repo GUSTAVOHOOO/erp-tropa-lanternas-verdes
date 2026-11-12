@@ -65,7 +65,7 @@ export default async function UsuariosPage({ searchParams }: UsuariosPageProps) 
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
                     <h3 className="mb-4 text-base font-semibold">Papel da conta</h3>
-                    <FormPapel usuario={contaSelecionada} setores={setores} />
+                    <FormPapel key={contaSelecionada.id} usuario={contaSelecionada} setores={setores} />
                   </div>
                   <div>
                     <h3 className="mb-4 text-base font-semibold">Vínculo com Ficha de Lanterna</h3>

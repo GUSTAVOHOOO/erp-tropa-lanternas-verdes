@@ -99,7 +99,9 @@ export function CascaOa({ links, identidade, rotuloNavegacao, rodapeNavegacao, r
             ))}
           </nav>
           <div className="oa-sidebar-bottom">
-            <CidadeOa className="oa-sidebar-city" />
+            <div className="oa-sidebar-city-frame">
+              <CidadeOa className="oa-sidebar-city" />
+            </div>
             <p>No dia mais claro.<br />Na noite mais densa.</p>
             <span className="oa-sidebar-coordinate">OA / NÚCLEO CENTRAL</span>
           </div>

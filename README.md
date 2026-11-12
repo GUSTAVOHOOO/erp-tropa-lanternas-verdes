@@ -4,15 +4,15 @@ Sistema web da Tropa para registrar, acompanhar e atribuir ocorrências intergal
 
 ## Estado do projeto
 
-O projeto está **em migração** de uma API de demonstração (json-server) para um back-end real. Esta tabela diz o que existe hoje e o que está planejado; só o que está em "Pronto" funciona neste repositório. Estado conferido em 2026-11-11.
+O front e a API NestJS reais (`backend/`) estão integrados. O json-server e o `db.json` foram removidos: o front não usa mais servidor de demonstração. Esta tabela diz o que existe hoje; estado conferido em 2026-11-11.
 
 | Parte | Estado |
 |---|---|
-| Front-end Next.js (site público e painel) | Pronto, ainda consumindo o json-server |
+| Front-end Next.js (site público e painel) | **Pronto e ligado à API NestJS real**, sem json-server |
+| Integração front ↔ API (Corte 1 e aditivos) | **Ativada (A) em 2026-11-11**: login com JWT em cookie `httpOnly` no servidor do Next, cadastro, catálogo, ocorrências, dashboard, Minha fila, gestão, linha do tempo e comentários ([registro](docs/INTEGRACAO.md#registro-de-ativação-a--corte-1-e-aditivos)) |
 | UI OANET oficial (D28) | Concluída em todas as 12 rotas existentes (UI-01 e UI-02.00 a UI-02.12 integradas à `main`); refinamentos em [HANDOFF-UI-02](docs/agents/HANDOFF-UI-02.md) |
 | Back-end NestJS (`backend/`) | **Implementado** (BE-01 a BE-12): 30 operações do contrato, SQLite/TypeORM, JWT, seeds e testes. Auditado em 2026-11-11 ([relatórios](docs/relatorios/README.md)); os defeitos encontrados no back foram corrigidos |
-| Migração do front para a API real | **Pendente**: o front ainda chama o json-server (login, listas, ocorrências); o Corte 1 troca tudo de uma vez ([auditoria do front](docs/relatorios/auditoria-2026-11-11/front-api.md)) |
-| Features novas (linha do tempo, comentários, dashboard, fila, Ficha completa) | Existem na API; ainda sem tela no front |
+| Limpeza e E2E real (FE-09 e FE-10) | **Concluídos** na branch `front/fe-09-10-entrega`: json-server, `db.json` e `SESSION_SECRET` removidos; `npm run test:e2e:real` roda contra a API real. Aceite final **G9** ainda pendente até a execução registrada em [INTEGRACAO](docs/INTEGRACAO.md) |
 | Planos separados e contrato v1 (DOC-03) | Consolidados, revisados e com aceite técnico documental G-1; implementação do front autorizada em 2026-11-10 pelo plano FE; o back foi implementado em `backend/` |
 
 Documentação completa em [docs/README.md](docs/README.md).
@@ -27,7 +27,7 @@ Todo design novo parte de [docs/UI.md](docs/UI.md) e dos assets em código do la
 3. O dev de back segue [PLANO-IMPLEMENTACAO do back](docs/backend/PLANO-IMPLEMENTACAO.md): API NestJS, migrations e testes do provedor, usando o mesmo contrato, sem esperar telas prontas.
 4. A primeira ativação reúne todos os consumidores existentes no **Corte 1**, depois das evidências de cada frente. Histórico/comentários, fila e gestão entram como incrementos aditivos. Simulação aprovada não equivale a integração real; persistência, sessão e permissões são verificadas contra a API.
 
-A ativação do back real no app é um corte integrado único (login, cadastro, catálogo, ocorrências e dashboard juntos), seguido de recursos aditivos; ver [INTEGRACAO](docs/INTEGRACAO.md). Cada tarefa tem um responsável por arquivo. Contratos mudam nos dois lados no mesmo incremento; o front continua com json-server até a troca aceita. O back-end já existe em `backend/` e cumpre o contrato; o que ainda é trabalho futuro é a ligação do front a ele (Corte 1) e o servidor falso de contrato do front (FE-00).
+A ativação do back real no app é um corte integrado único (login, cadastro, catálogo, ocorrências e dashboard juntos), seguido de recursos aditivos; ver [INTEGRACAO](docs/INTEGRACAO.md). Cada tarefa tem um responsável por arquivo. Contratos mudam nos dois lados no mesmo incremento. O back-end está em `backend/` e cumpre o contrato; a ligação do front a ele foi ativada no Corte 1 (2026-11-11). O servidor falso de contrato (FE-00, `npm run contrato:servidor`) continua disponível para testes de consumidor, sem substituir a API real.
 
 ### Pastas da documentação
 
@@ -50,7 +50,9 @@ A ativação do back real no app é um corte integrado único (login, cadastro, 
 | `docs/superpowers/specs/` | Specs históricas; decisões recentes prevalecem em caso de divergência | [Índice e autoridade](docs/README.md) |
 | `docs/superpowers/plans/` | Planos históricos de incrementos; o plano ativo é `docs/PLANO.md` | [Plano do laboratório](docs/superpowers/plans/2026-11-06-laboratorio-oanet.md) |
 
-## Pré-requisitos
+## Como executar
+
+### Pré-requisitos
 
 - Node.js 26 ou mais novo, npm e Git.
 - Para verificar o pacote documental de contratos: Python 3.10+ (neste Windows, `py -3`), sem bibliotecas adicionais; [comandos e limites](docs/contratos/README.md#verificação-documental).
@@ -59,45 +61,43 @@ A ativação do back real no app é um corte integrado único (login, cadastro, 
 node --version
 ```
 
-## Executar o que existe hoje
+### Atalho: `npm run iniciar` (Bash: Git Bash, WSL, macOS, Linux)
 
-O front atual usa dois servidores: o Next.js na porta 3000 e o json-server na porta 3001.
+`scripts/iniciar.sh` faz tudo na ordem: checa Node 26 ou mais novo; instala as dependências da raiz e de `backend/`; cria `.env.local` e `backend/.env` (com `JWT_SECRET` aleatório) se faltarem; compila o back; roda as migrations e o seed completo (idempotente); e sobe a API em `http://localhost:3001` e o Next em `http://localhost:3000` juntos.
 
 ```bash
-npm install
-cp .env.example .env.local     # PowerShell: Copy-Item .env.example .env.local
+npm run iniciar
 ```
 
-Abra `.env.local` e troque `SESSION_SECRET` por um segredo aleatório. O arquivo é ignorado pelo Git.
+### Passo a passo manual (PowerShell)
 
-Em dois terminais, na raiz:
+Gere um segredo para o `JWT_SECRET` com `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` (64 caracteres, acima do mínimo de 32).
 
-```bash
-npm run api     # json-server em http://localhost:3001
-npm run dev     # Next.js em http://localhost:3000
-```
+Terminal 1, back-end (a partir da raiz do repositório):
 
-Em Bash (Git Bash, WSL, macOS, Linux) o atalho `npm run iniciar` prepara e inicia os dois.
-
-### Executar o back-end (NestJS)
-
-O back-end já existe e roda separado do front, também na porta 3001 (a mesma do json-server: use um **ou** o outro). Passo a passo completo, seeds e contas de demonstração em [backend/README.md](backend/README.md). Resumo, dentro de `backend/`:
-
-```bash
+```powershell
 cd backend
-cp .env.example .env           # troque JWT_SECRET por um segredo com 32+ caracteres
+Copy-Item .env.example .env     # troque JWT_SECRET pelo segredo gerado
 npm install
 npm run build
 npm run migration:run
 npm run seed -- --etapa completa
-npm start                      # http://localhost:3001  (GET /saude confirma)
+npm start                       # http://localhost:3001 (GET /saude confirma)
 ```
 
-Testes do back: `npm test` (unitários) e `npm run test:e2e` (sobem a API em porta livre com SQLite temporário; não tocam no seu banco). Exige Node `^22.13` ou `>=24.11`.
+Terminal 2, front-end (a partir da raiz do repositório, não de `backend/`):
 
-Quando o front for ligado a esta API (Corte 1), ele deixa de usar o json-server e o `SESSION_SECRET` deixa de existir (a sessão passa a ser o JWT da API; ver [ADR 0001](docs/adr/0001-token-jwt-fica-no-servidor-do-next.md)).
+```powershell
+Copy-Item .env.example .env.local
+npm install
+npm run dev                     # http://localhost:3000
+```
 
-### Usuários de demonstração (json-server)
+`.env.local` e `backend/.env` ficam fora do Git. O front lê `API_URL=http://localhost:3001` e `SITE_URL=http://localhost:3000` de `.env.example`.
+
+### Contas de demonstração
+
+O seed completo cria estas contas (senhas só para uso local; ver [backend/README.md](backend/README.md)):
 
 | Usuário | Papel | Setor | E-mail | Senha |
 |---|---|---|---|---|
@@ -105,7 +105,11 @@ Quando o front for ligado a esta API (Corte 1), ele deixa de usar o json-server 
 | Hal Jordan | Lanterna | 2814 | `hal@oa.tropa` | `lanterna123` |
 | Kilowog | Lanterna | 674 | `kilowog@oa.tropa` | `lanterna123` |
 
-O json-server grava em `db.json`. Para testes manuais de escrita, use uma cópia isolada e outra porta, conforme o [guia de agentes](docs/agents/README.md#estado-local-servidores-e-dados). Preserve a persistência compartilhada e as alterações locais.
+A sessão é o JWT emitido por `POST /auth/login` da API, guardado em cookie `httpOnly` pelo servidor do Next (ver [ADR 0001](docs/adr/0001-token-jwt-fica-no-servidor-do-next.md)). Para testes manuais de escrita, use um banco próprio por `DATABASE_PATH`, conforme o [guia de agentes](docs/agents/README.md#estado-local-servidores-e-dados).
+
+### Testes do back-end
+
+`npm test` (unitários) e `npm run test:e2e` (sobem a API em porta livre com SQLite temporário; não tocam no seu banco). O back isolado exige Node `^22.13` ou `>=24.11`; o atalho e o front exigem Node 26.
 
 ## Páginas
 
@@ -128,15 +132,18 @@ O mapa completo das telas atuais e planejadas está em [docs/frontend/TELAS.md](
 
 | Comando | Função |
 |---|---|
-| `npm run dev` | Next.js em desenvolvimento |
-| `npm run api` | json-server na porta 3001 (sai com a migração) |
+| `npm run iniciar` | Atalho em Bash: prepara e sobe a API (3001) e o Next (3000) juntos |
+| `npm run dev` | Next.js em desenvolvimento (porta 3000), precisa da API rodando |
+| `npm run build` | Build de produção do front |
+| `npm start` | Servidor de produção do front (após `npm run build`) |
 | `npm run test:run` | Vitest uma vez |
 | `npm test` | Vitest em observação |
 | `npm run lint` | ESLint |
-| `npm run build` | Build de produção |
-| `npm start` | Servidor de produção (após `npm run build`) |
+| `npm run test:e2e` | Playwright contra o servidor falso de contrato (`scripts/contrato/`), sem API real |
+| `npm run test:e2e:real` | Playwright contra a API NestJS real; exige `npm run build` do back (`backend/`) e do front, e a API rodando com o banco migrado e semeado |
+| `npm run contrato:servidor` | Servidor falso de contrato, para testes de consumidor |
 
-Antes de um commit: `npm run test:run`, `npm run lint` e `npm run build`.
+Antes de um commit: `npm run test:run`, `npm run lint` e `npm run build`. Para a integração, rode também `npm run test:e2e:real`.
 
 ## Estrutura
 
@@ -146,10 +153,14 @@ Antes de um commit: `npm run test:run`, `npm run lint` e `npm run build`.
 - `components`: componentes compartilhados, `ui/` (shadcn sobre Base UI) e `oanet/` (redesign).
 - `lib`: camada de dados (HTTP, sessão, autorização, schemas Zod, formatação).
 - `__tests__`: testes Vitest.
-- `backend/`: API NestJS, a criar.
+- `backend/`: API NestJS (TypeORM, SQLite, JWT), consumida pelo front em `lib/api.ts`.
 - `.claude/skills/frontend-web` e `.claude/skills/backend-api`: regras de código de cada lado.
 - `docs`: documentação do projeto.
 
 ## Limitações conhecidas
 
-Enquanto o front usar o json-server, ele não autentica de verdade e as senhas de demonstração ficam em texto puro em `db.json`. É uma limitação da API de demonstração: o back-end real em `backend/` já usa bcrypt e JWT, e o problema some quando o front for ligado a ele (Corte 1).
+- O front exige `API_URL` e `SITE_URL` no ambiente (`lib/env.ts` valida ao iniciar); sem a API no ar, as telas mostram erro, sem dados de demonstração.
+- O banco é um arquivo SQLite local, configurado por `DATABASE_PATH`. Não há deploy, réplica nem migração para outro banco.
+- As senhas de demonstração do seed são públicas neste README e servem só para uso local.
+- O seed demonstrativo grava no banco apontado por `DATABASE_PATH`. Testes de escrita usam um banco próprio, separado do de demonstração.
+- O aceite final G9 (E2E real, remoção da demonstração e instalação limpa) ainda depende da execução registrada em [INTEGRACAO](docs/INTEGRACAO.md).

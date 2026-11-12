@@ -175,6 +175,8 @@ UI-02.11 usa nomes abreviados `{loading,error}` apenas para os dois arquivos exi
 
 ## FE-03 — domínio público, busca e Ficha
 
+> **Status em 2026-11-11:** Preparado contra contrato (P) na branch `front/fe-03-lanternas`, empilhada sobre `front/fe-02-sessao` (PR #12), com contrato v1.0.0 (pacote `cd91fef5a43bb239a67be5bbc1a942caedda7129bb268da7dbfdd0632b9a4730`). Lista e Ficha usam schemas separados, preservam campos nulos e marcam a fonte de cada campo; busca, status, setor, ordenação e página ficam na URL, e a paginação preserva esses parâmetros. Verificações: `npm run test:run` (51 arquivos, 275 testes), lint, tsc, build e `npx playwright test` (8 passaram, com 1 worker porque os specs dividem a porta do servidor falso). A ativação real segue como corte único (A), descrito em INTEGRACAO.
+
 **Depende P:** FE-02 e UI-02.04/05 (assume as páginas de `/lanternas` só depois delas); **A (Corte 1):** BE-05/06/07b, BE-FX b e G3. **Existentes:** `lib/setores.ts`, `lib/lanternas.ts`, `lib/schemas/{setor,lanterna}.ts`, páginas/cartão de `/lanternas`; testes schemas/services. **Novos:** `components/Paginacao.tsx`, `__tests__/components/paginacao.test.tsx`, `e2e/lanternas.spec.ts`.
 
 - [ ] Separar schema da lista e Ficha; consumir Setores sem paginação e Lanternas com `dados.itens/meta`. Setor inteiro, Lanterna slug; null preservado como null, sem coerção de ID herdada.

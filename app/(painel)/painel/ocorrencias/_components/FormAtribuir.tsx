@@ -6,13 +6,13 @@ import { BotaoOa } from '@/components/oanet/PainelOa'
 import { CampoSelect } from '@/components/CampoSelect'
 import { MensagemErro } from '@/components/MensagemErro'
 import { aplicarErrosDoServidor } from '@/lib/erros-formulario'
-import type { Lanterna } from '@/lib/schemas/lanterna'
+import type { LanternaLista } from '@/lib/schemas/lanterna'
 import { atribuicaoSchema, type AtribuicaoData } from '@/lib/schemas/ocorrencia'
 import { atribuirResponsavel } from '@/app/(painel)/painel/ocorrencias/actions'
 
 type FormAtribuirProps = {
   ocorrenciaId: string
-  lanternas: Lanterna[]
+  lanternas: LanternaLista[]
   responsavelAtual: string | null
 }
 
@@ -39,7 +39,7 @@ export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual }: Form
           <CampoSelect
             id="responsavelId"
             rotulo="Lanterna responsável"
-            itens={Object.fromEntries(lanternas.map((l) => [l.id, l.nome]))}
+            itens={Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))}
             valor={field.value}
             aoMudar={field.onChange}
             aoSair={field.onBlur}

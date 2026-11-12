@@ -1,67 +1,118 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Suspense } from 'react'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { EstadoVazio } from '@/components/EstadoVazio'
-import { MolduraOa } from '@/components/oanet/PainelOa'
+import { MolduraOa, SeloOa } from '@/components/oanet/PainelOa'
+import { Paginacao } from '@/components/Paginacao'
 import { listarLanternas } from '@/lib/lanternas'
 import { listarSetores } from '@/lib/setores'
 import { filtroLanternasSchema } from '@/lib/schemas/lanterna'
 import { CartaoLanterna } from '@/app/(site)/lanternas/_components/CartaoLanterna'
+import { FiltroLanternas } from '@/app/(site)/lanternas/_components/FiltroLanternas'
 
 export const metadata: Metadata = {
   title: 'Lanternas | Central de Oa',
   description: 'Membros da Tropa dos Lanternas Verdes, por setor.',
 }
 
-type LanternasPageProps = { searchParams: Promise<{ setor?: string }> }
+type LanternasPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
-/** Listagem pública com filtro por setor na URL (?setor=2814). */
+/** Listagem pública com busca, filtros de status/setor, ordenação e paginação. [ROTA-10][ROTA-11][ROTA-14][API-07] */
 export default async function LanternasPage({ searchParams }: LanternasPageProps) {
-  const { setor } = filtroLanternasSchema.parse(await searchParams) // [ROTA-10][ROTA-11][ROTA-14]
-  const [setores, lanternas] = await Promise.all([listarSetores(), listarLanternas({ setorId: setor })]) // [API-07]
-  const nomeSetor = Object.fromEntries(setores.map((s) => [s.id, s.nome]))
+  const parametrosUrl = await searchParams // [ROTA-10]
+  const filtro = filtroLanternasSchema.parse(parametrosUrl) // [ROTA-11]
+  const [setores, resultado] = await Promise.all([
+    listarSetores(),
+    listarLanternas({ ...filtro, limite: 12 }),
+  ]) // [API-07]
+
+  const { itens: lanternas, meta } = resultado
+  const nomeSetorMap = new Map(setores.map((s) => [s.id, s.nome]))
+
+  const temFiltro = Boolean(
+    filtro.busca ||
+    filtro.status ||
+    filtro.setor !== undefined ||
+    (filtro.ordenar && filtro.ordenar !== 'codinome') ||
+    (filtro.ordem && filtro.ordem !== 'asc') ||
+    (filtro.pagina && filtro.pagina > 1)
+  )
+
+  const paramsPag1 = new URLSearchParams()
+  if (filtro.busca) paramsPag1.set('busca', filtro.busca)
+  if (filtro.status) paramsPag1.set('status', filtro.status)
+  if (filtro.setor !== undefined) paramsPag1.set('setor', String(filtro.setor))
+  if (filtro.ordenar) paramsPag1.set('ordenar', filtro.ordenar)
+  if (filtro.ordem) paramsPag1.set('ordem', filtro.ordem)
+  const qsPag1 = paramsPag1.toString()
+  const hrefPagina1 = qsPag1 ? `/lanternas?${qsPag1}` : '/lanternas'
+
+  const parametrosPaginacao: Record<string, string | undefined> = {
+    busca: filtro.busca,
+    status: filtro.status,
+    setor: filtro.setor !== undefined ? String(filtro.setor) : undefined,
+    ordenar: filtro.ordenar,
+    ordem: filtro.ordem,
+  }
 
   return (
     <section className="oa-screen">
       <CabecalhoPagina titulo="Lanternas da Tropa" descricao="Membros da Tropa, por setor." />
-      <nav aria-label="Filtrar por setor" className="oa-button-row">
-        <Link
-          href="/lanternas"
-          aria-current={!setor ? 'page' : undefined}
-          className={`oa-button ${!setor ? 'oa-button--energia' : 'oa-button--linha'}`}
-        >
-          <span className="oa-button-content">Todos</span>
-        </Link>
-        {setores.map((s) => {
-          const ativo = setor === s.id
-          return (
-            <Link
-              key={s.id}
-              href={`/lanternas?setor=${s.id}`}
-              aria-current={ativo ? 'page' : undefined}
-              className={`oa-button ${ativo ? 'oa-button--energia' : 'oa-button--linha'}`}
-            >
-              <span className="oa-button-content">{s.nome}</span>
-            </Link>
-          )
-        })}
-      </nav>
-      <MolduraOa titulo="Efetivo da Tropa" icone="pessoal">
-        <div className="p-4 md:p-6">
+
+      <MolduraOa titulo="Filtros" icone="busca">
+        <div className="oa-panel-body p-4 md:p-6">
+          <Suspense fallback={null}> {/* [ROTA-15] */}
+            <FiltroLanternas setores={setores} />
+          </Suspense>
+        </div>
+      </MolduraOa>
+
+      <MolduraOa
+        titulo="Efetivo da Tropa"
+        icone="pessoal"
+        acao={<SeloOa tom="neutro">{meta.total} {meta.total === 1 ? 'lanterna' : 'lanternas'}</SeloOa>}
+      >
+        <div className="oa-panel-body p-4 md:p-6">
           {lanternas.length === 0 ? ( // [COMP-14][API-09]
-            <EstadoVazio
-              titulo="Nenhum lanterna neste setor"
-              descricao="Este setor ainda não tem lanterna designado. Escolha outro setor ou veja todos."
-              acao={{ href: '/lanternas', rotulo: 'Ver todos' }}
-            />
+            meta.total > 0 ? (
+              <EstadoVazio
+                titulo="Nenhum lanterna nesta página"
+                descricao="A página solicitada está além do número de registros disponíveis."
+                acao={{ href: hrefPagina1, rotulo: 'Voltar à página 1' }}
+              />
+            ) : temFiltro ? (
+              <EstadoVazio
+                titulo="Nenhum lanterna encontrado"
+                descricao="Nenhum membro da Tropa corresponde aos critérios de busca ou filtros aplicados."
+                acao={{ href: '/lanternas', rotulo: 'Limpar filtros' }}
+              />
+            ) : (
+              <EstadoVazio
+                titulo="Ainda não há lanternas cadastrados"
+                descricao="O efetivo da Tropa dos Lanternas Verdes ainda não possui membros registrados."
+              />
+            )
           ) : (
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"> {/* [CSS-03][CSS-06] */}
-              {lanternas.map((l) => (
-                <li key={l.id}>
-                  <CartaoLanterna lanterna={l} nomeSetor={nomeSetor[l.setorId] ?? `Setor ${l.setorId}`} />
-                </li>
-              ))}
-            </ul>
+            <div className="grid gap-6">
+              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"> {/* [CSS-03] */}
+                {lanternas.map((l) => (
+                  <li key={l.id}>
+                    <CartaoLanterna
+                      lanterna={l}
+                      nomeSetor={l.setorId !== null ? (nomeSetorMap.get(l.setorId) ?? `Setor ${l.setorId}`) : null}
+                    />
+                  </li>
+                ))}
+              </ul>
+              <Paginacao
+                pagina={meta.pagina}
+                paginas={meta.paginas}
+                caminho="/lanternas"
+                parametros={parametrosPaginacao}
+              />
+            </div>
           )}
         </div>
       </MolduraOa>

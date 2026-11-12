@@ -25,7 +25,7 @@ const valida = { titulo: 'Invasão em Oa', descricao: 'Muitos invasores na Bater
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(listarSetores).mockResolvedValue(db.setores)
+  vi.mocked(listarSetores).mockResolvedValue(db.setores.map((s) => ({ id: Number(s.numero), nome: s.nome, descricao: 'Setor válido para o teste.' })))
   vi.mocked(criarOcorrencia).mockImplementation(async (dados) => ({ id: 'nova1', ...dados }))
 })
 

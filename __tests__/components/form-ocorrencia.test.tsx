@@ -35,7 +35,7 @@ test('Lanterna não vê o campo setor e envia o setor da sessão', async () => {
 })
 
 test('Guardião vê o campo setor', () => {
-  render(<FormOcorrencia setores={db.setores} setorFixo={null} />)
+  render(<FormOcorrencia setores={db.setores.map((s) => ({ id: Number(s.numero), nome: s.nome, descricao: 'Setor válido para o teste.' }))} setorFixo={null} />)
   expect(screen.getByText('Setor')).toBeDefined()
   expect(screen.getByText('Escolha o setor')).toBeDefined()
 })

@@ -48,7 +48,7 @@ oferecida pelo json-server.
 | Pedido | Ponto de entrada | Dependências a consultar |
 |---|---|---|
 | Home, Sobre e navegação pública | `app/(site)/page.tsx`, `sobre/`, layout público | `components/oanet/CascaOa.tsx` (substitui `MenuNavegacao` e `Marca`, removidos na UI-02.00), `Juramento` |
-| Lista e detalhe de lanternas | `app/(site)/lanternas/` | `lib/lanternas.ts`, `lib/setores.ts`, schemas correspondentes |
+| Lista e detalhe de lanternas | `app/(site)/lanternas/` | `lib/lanternas.ts`, `lib/setores.ts`, `lib/schemas/lanterna.ts`, `lib/schemas/setor.ts`, `components/Paginacao.tsx` |
 | Login | `app/(site)/login/` | `lib/auth.ts`, `lib/schemas/login.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Cadastro | `app/(site)/cadastro/` | `lib/cadastro.ts`, `lib/schemas/cadastro.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Logout | `app/(painel)/actions.ts` e layout privado | `lib/dal.ts` |

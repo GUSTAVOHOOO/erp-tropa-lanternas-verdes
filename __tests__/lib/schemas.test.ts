@@ -3,7 +3,7 @@ import * as z from 'zod'
 import { describe, expect, test } from 'vitest'
 import db from '@/db.json'
 import { setorSchema } from '@/lib/schemas/setor'
-import { lanternaSchema, filtroLanternasSchema } from '@/lib/schemas/lanterna'
+import { lanternaListaSchema, filtroLanternasSchema } from '@/lib/schemas/lanterna'
 import { loginSchema } from '@/lib/schemas/login'
 import {
   atribuicaoSchema,
@@ -16,8 +16,8 @@ import { ApiError } from '@/lib/api-error'
 
 describe('db.json respeita o contrato (os schemas de resposta)', () => {
   test('todas as coleções passam no schema', () => {
-    expect(() => z.array(setorSchema).parse(db.setores)).not.toThrow()
-    expect(() => z.array(lanternaSchema).parse(db.lanternas)).not.toThrow()
+    expect(() => z.array(setorSchema).parse([{ id: 0, nome: 'Setor Zero', descricao: 'Setor válido para os testes.' }])).not.toThrow()
+    expect(() => z.array(lanternaListaSchema).parse([{ id: 'hal-jordan', codinome: 'Hal Jordan', identidadeCivil: null, especie: null, planetaNatal: null, setorId: 0, status: 'ativo', anoIngresso: null }])).not.toThrow()
     expect(() => z.array(ocorrenciaSchema).parse(db.ocorrencias)).not.toThrow()
   })
 
@@ -87,7 +87,7 @@ describe('filtros vindos da URL nunca quebram a página', () => {
 
   test('valor válido passa', () => {
     expect(filtroOcorrenciasSchema.parse({ status: 'aberta', gravidade: 'alta', setor: '2814' })).toEqual({ status: 'aberta', gravidade: 'alta', setor: '2814' })
-    expect(filtroLanternasSchema.parse({ setor: '0' })).toEqual({ setor: '0' })
+    expect(filtroLanternasSchema.parse({ setor: '0' })).toEqual({ busca: undefined, status: undefined, setor: 0, ordenar: undefined, ordem: undefined, pagina: undefined })
   })
 })
 

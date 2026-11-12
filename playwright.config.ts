@@ -4,7 +4,8 @@ const baseURL = 'http://127.0.0.1:32123'
 
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  // Os specs dividem a porta do servidor falso de contrato (32124): um worker por vez.
+  workers: 1,
   reporter: 'list',
   use: { baseURL, browserName: 'chromium', headless: true },
   webServer: {

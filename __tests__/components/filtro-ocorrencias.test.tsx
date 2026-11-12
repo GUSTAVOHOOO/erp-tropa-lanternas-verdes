@@ -36,7 +36,7 @@ test('limpa gravidade da URL e preserva status e setor', () => {
 
 test('parâmetros repetidos e chaves herdadas não aparecem como filtros ativos', () => {
   navegador.query = 'status=aberta&status=resolvida&gravidade=toString&setor=__proto__'
-  render(<FiltroOcorrencias setores={[{ id: '2814', numero: 2814, nome: 'Setor 2814', descricao: '' }]} />)
+  render(<FiltroOcorrencias setores={[{ id: 2814, nome: 'Setor 2814', descricao: 'Setor de teste para filtro.' }]} />)
   expect(screen.getByTestId('filtro-status').getAttribute('data-valor')).toBe('todos')
   expect(screen.getByTestId('filtro-gravidade').getAttribute('data-valor')).toBe('todos')
   expect(screen.getByTestId('filtro-setor').getAttribute('data-valor')).toBe('todos')
@@ -44,6 +44,6 @@ test('parâmetros repetidos e chaves herdadas não aparecem como filtros ativos'
 
 test('setor numérico desconhecido não aparece como filtro ativo', () => {
   navegador.query = 'setor=9999'
-  render(<FiltroOcorrencias setores={[{ id: '2814', numero: 2814, nome: 'Setor 2814', descricao: '' }]} />)
+  render(<FiltroOcorrencias setores={[{ id: 2814, nome: 'Setor 2814', descricao: 'Setor de teste para filtro.' }]} />)
   expect(screen.getByTestId('filtro-setor').getAttribute('data-valor')).toBe('todos')
 })

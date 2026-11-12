@@ -11,7 +11,8 @@ import { MensagemErro } from '@/components/MensagemErro'
 import { BotaoOa } from '@/components/oanet/PainelOa'
 import { IconeOa } from '@/components/oanet/IconeOa'
 import { aplicarErrosDoServidor } from '@/lib/erros-formulario'
-import { cadastroSchema, type CadastroData, type Setor } from '@/lib/schemas/cadastro'
+import { cadastroSchema, type CadastroData } from '@/lib/schemas/cadastro'
+import type { Setor } from '@/lib/schemas/setor'
 import { cadastrar } from '@/app/(site)/cadastro/actions'
 
 type FormCadastroProps = {

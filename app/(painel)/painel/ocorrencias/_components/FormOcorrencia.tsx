@@ -43,7 +43,7 @@ export function FormOcorrencia({ setores, setorFixo }: FormOcorrenciaProps) {
             <CampoSelect
               id="setorId"
               rotulo="Setor"
-              itens={Object.fromEntries(setores.map((s) => [s.id, s.nome]))}
+              itens={Object.fromEntries(setores.map((s) => [String(s.id), s.nome]))}
               valor={field.value}
               aoMudar={field.onChange}
               aoSair={field.onBlur}

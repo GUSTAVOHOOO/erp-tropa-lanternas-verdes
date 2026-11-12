@@ -23,10 +23,10 @@ export function FiltroOcorrencias({ setores }: FiltroOcorrenciasProps) {
     router.push(`${pathname}?${novos}`) // [ROTA-14]
   }
 
-  const filtro = normalizarFiltroOcorrencias(parametrosDoFiltro(params), setores.map((s) => s.id))
+  const filtro = normalizarFiltroOcorrencias(parametrosDoFiltro(params), setores.map((s) => String(s.id)))
   const itensStatus = { [TODOS]: 'Todos os status', ...rotuloStatus }
   const itensGravidade = { [TODOS]: 'Todas as gravidades', ...rotuloGravidade }
-  const itensSetor = { [TODOS]: 'Todos os setores', ...Object.fromEntries(setores.map((s) => [s.id, s.nome])) }
+  const itensSetor = { [TODOS]: 'Todos os setores', ...Object.fromEntries(setores.map((s) => [String(s.id), s.nome])) }
 
   return (
     <div className="flex flex-wrap gap-3">

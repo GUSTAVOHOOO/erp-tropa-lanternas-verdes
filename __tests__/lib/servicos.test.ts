@@ -66,13 +66,13 @@ describe('leituras', () => {
   })
 
   test('setores e lanternas usam revalidate de 60 segundos', async () => {
-    fetchSimulado.mockResolvedValue(resposta(db.setores))
+    fetchSimulado.mockResolvedValue(resposta({ sucesso: true, dados: [{ id: 2814, nome: 'Setor 2814', descricao: 'Setor espacial para testes.' }] }))
     await listarSetores()
     expect(opcoesChamada().next?.revalidate).toBe(60)
     fetchSimulado.mockReset()
-    fetchSimulado.mockResolvedValue(resposta(db.lanternas))
-    await listarLanternas({ setorId: '2814' })
-    expect(urlChamada().searchParams.get('setorId')).toBe('2814')
+    fetchSimulado.mockResolvedValue(resposta({ sucesso: true, dados: { itens: [], meta: { total: 0, pagina: 1, limite: 20, paginas: 0 } } }))
+    await listarLanternas({ setor: 2814 })
+    expect(urlChamada().searchParams.get('setor')).toBe('2814')
     expect(opcoesChamada().next?.revalidate).toBe(60)
   })
 
@@ -85,10 +85,9 @@ describe('leituras', () => {
     await expect(listarSetores()).rejects.toBeInstanceOf(ApiError)
   })
 
-  test('id com caracteres especiais é codificado na URL', async () => {
-    fetchSimulado.mockResolvedValue(resposta({}, 404))
-    await buscarLanterna('a/b')
-    expect(urlChamada().pathname).toBe('/lanternas/a%2Fb')
+  test('slug inválido não chama a API', async () => {
+    await expect(buscarLanterna('a/b')).resolves.toBeNull()
+    expect(fetchSimulado).not.toHaveBeenCalled()
   })
 
   test('resposta fora do formato é recusada pelo Zod', async () => {
@@ -98,7 +97,7 @@ describe('leituras', () => {
 
   test('falha de rede chega como erro (a tela mostra error.tsx)', async () => {
     fetchSimulado.mockRejectedValue(new TypeError('fetch failed'))
-    await expect(listarLanternas()).rejects.toThrow('fetch failed')
+    await expect(listarLanternas()).rejects.toMatchObject({ status: 0, codigo: 'FALHA_REDE' })
   })
 })
 

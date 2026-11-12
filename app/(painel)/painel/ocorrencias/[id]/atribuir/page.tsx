@@ -6,7 +6,7 @@ import { LinkVoltar } from '@/components/LinkVoltar'
 import { MolduraOa } from '@/components/oanet/PainelOa'
 import { exigirPapel } from '@/lib/dal'
 import { tratarErroDetalhe } from '@/lib/erro-detalhe'
-import { listarLanternas } from '@/lib/lanternas'
+import { listarTodosLanternas } from '@/lib/lanternas'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
 import { FormAtribuir } from '@/app/(painel)/painel/ocorrencias/_components/FormAtribuir'
 
@@ -27,7 +27,7 @@ export default async function AtribuirPage({ params }: AtribuirPageProps) {
   if (!ocorrencia) notFound() // [ROTA-12]
   let lanternas
   try {
-    lanternas = await listarLanternas({ setorId: ocorrencia.setorId })
+    lanternas = await listarTodosLanternas({ setor: Number(ocorrencia.setorId) })
   } catch (erro) {
     tratarErroDetalhe(erro) // [API-12]
   }

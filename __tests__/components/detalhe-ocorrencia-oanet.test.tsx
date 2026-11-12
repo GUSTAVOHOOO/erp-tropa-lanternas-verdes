@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 vi.mock('@/lib/dal', () => ({ verificarSessao: vi.fn() }))
 vi.mock('@/lib/ocorrencias', () => ({ buscarOcorrencia: vi.fn() }))
 vi.mock('@/lib/setores', () => ({ listarSetores: vi.fn() }))
-vi.mock('@/lib/lanternas', () => ({ listarLanternas: vi.fn() }))
+vi.mock('@/lib/lanternas', () => ({ listarTodosLanternas: vi.fn() }))
 vi.mock('@/app/(painel)/painel/ocorrencias/_components/FormStatus', () => ({
   FormStatus: () => <div data-testid="mock-form-status">FormStatus</div>,
 }))
@@ -12,7 +12,7 @@ vi.mock('@/app/(painel)/painel/ocorrencias/_components/FormStatus', () => ({
 import { verificarSessao } from '@/lib/dal'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
 import { listarSetores } from '@/lib/setores'
-import { listarLanternas } from '@/lib/lanternas'
+import { listarTodosLanternas } from '@/lib/lanternas'
 import OcorrenciaPage from '@/app/(painel)/painel/ocorrencias/[id]/page'
 
 const sessaoGuardiao = { id: '00000000-0000-4000-8000-000000000001', nome: 'Ganthet', email: 'ganthet@oa.tropa', papel: 'guardiao' as const, setorId: null, lanternaId: null, criadoEm: '2026-01-01T00:00:00.000Z' }
@@ -36,8 +36,8 @@ const ocorrenciaMock = {
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(buscarOcorrencia).mockResolvedValue(ocorrenciaMock)
-  vi.mocked(listarSetores).mockResolvedValue([{ id: '2814', numero: 2814, nome: 'Setor 2814', descricao: 'Terra' }])
-  vi.mocked(listarLanternas).mockResolvedValue([])
+  vi.mocked(listarSetores).mockResolvedValue([{ id: 2814, nome: 'Setor 2814', descricao: 'Setor espacial 2814, Terra' }])
+  vi.mocked(listarTodosLanternas).mockResolvedValue([])
 })
 
 test('página de detalhe renderiza dados em molduras OANET com botão de atribuir para guardião', async () => {

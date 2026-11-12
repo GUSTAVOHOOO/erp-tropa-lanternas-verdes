@@ -137,5 +137,11 @@ test('links por papel do painel: linksDoPainel("lanterna") tem Minha fila e guar
 
   // Códigos sequenciais 01..N
   expect(lanterna.map((l) => l.codigo)).toEqual(['01', '02', '03', '04'])
-  expect(guardiao.map((l) => l.codigo)).toEqual(['01', '02', '03'])
+  expect(guardiao.map((l) => l.codigo)).toEqual(['01', '02', '03', '04', '05', '06'])
+})
+
+test('links por papel do painel: só o Guardião vê a gestão', () => {
+  const gestao = ['/painel/lanternas', '/painel/setores', '/painel/usuarios']
+  expect(linksDoPainel('guardiao').map((l) => l.href)).toEqual(expect.arrayContaining(gestao))
+  expect(linksDoPainel('lanterna').some((l) => gestao.includes(l.href))).toBe(false)
 })

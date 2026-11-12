@@ -26,7 +26,8 @@ test('métricas vêm do dashboard da API, com texto e tabela equivalentes ao gr�
   await expect(page.getByRole('img', { name: /série|últimos/i }).first()).toBeVisible()
   await page.getByText('Ver dados da série').click()
   await expect(page.getByRole('table').filter({ hasText: /Abertas/ }).getByRole('row')).toHaveCount(8) // cabeçalho + 7 dias
-  await expect(page.getByText(/7\.200|3\.600|98,7/)).toHaveCount(0) // nada da vitrine do laboratório
+  // Nada da vitrine do laboratório no conteúdo; a dica do globo na casca (REF-05) cita os 3.600 setores de propósito.
+  await expect(page.locator('#oa-conteudo').getByText(/7\.200|3\.600|98,7/)).toHaveCount(0)
 })
 
 test('sem resoluções a média aparece por texto, não como zero', async ({ page }) => {

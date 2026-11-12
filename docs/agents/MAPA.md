@@ -58,6 +58,9 @@ oferecida pelo json-server.
 | Detalhe e atribuição | `app/(painel)/painel/ocorrencias/[id]/` | `tratarErroDetalhe`, `lib/permissoes-ocorrencia.ts`, autorização e formulários |
 | Eventos e comentários | `app/(painel)/painel/ocorrencias/comentarios-actions.ts` | `lib/eventos.ts`, `lib/comentarios.ts`, `lib/schemas/evento.ts`, `lib/schemas/comentario.ts` |
 | Minha fila | `app/(painel)/painel/minha-fila/` | `listarMinhaFila` em `lib/ocorrencias.ts`; link só para o Lanterna em `components/oanet/navegacao.ts` |
+| Gestão de setores | `app/(painel)/painel/setores/` | `lib/setores.ts` (`criarSetor`, `editarSetor`, `excluirSetor`), `lib/schemas/setor.ts` (`setorFormularioSchema`, `edicaoSetorSchema`), `actions.ts`, `FormSetor`, `ExcluirSetor`, `exigirPapel('guardiao')` |
+| Gestão de lanternas | `app/(painel)/painel/lanternas/` | `lib/lanternas.ts` (`criarLanterna`, `editarLanterna`, `alterarStatusLanterna`), `lib/schemas/gestao-lanterna.ts`, `actions.ts`, `FormLanterna`, `StatusLanterna`, `exigirPapel('guardiao')` |
+| Gestão de usuários | `app/(painel)/painel/usuarios/` | `lib/gestao-usuarios.ts` (`listarUsuarios`, `alterarPapel`, `vincularLanterna`), `lib/schemas/gestao-usuario.ts` (`filtroUsuariosSchema`, `papelFormularioSchema`, `vinculoFormularioSchema`), `actions.ts`, `FormPapel`, `FormVinculo`, `exigirPapel('guardiao')` |
 | Permissões de ocorrência | `lib/permissoes-ocorrencia.ts` | `acoesPermitidas` e `transicoesPermitidas` pela matriz de [TELAS.md](../frontend/TELAS.md); só visibilidade, a API decide ([matriz](../backend/API.md#matriz-de-permissões)) |
 | UI oficial e assets | `components/oanet/`, `app/globals.css`, `app/laboratorio/` | `docs/UI.md` (D28), `docs/agents/HANDOFF-OANET.md`; `/design-system` antigo é histórico |
 | Dados de demonstração | `db.json` | Schemas e testes que importam os dados (saem na migração) |
@@ -170,12 +173,22 @@ e em AUTH-11; a migração do back-end depende de autenticação real na API.
 ## Leitura, cache e erros
 
 - [Lanternas](../../lib/lanternas.ts) e [setores](../../lib/setores.ts):
-  revalidação de 60 segundos nas leituras.
+  revalidação de 60 segundos nas leituras públicas (`listarLanternas`, `buscarLanterna`,
+  `listarTodosLanternas`, `listarSetores`, `buscarSetor`). As mutações restritas ao Guardião
+  em [lanternas.ts](../../lib/lanternas.ts) (`criarLanterna`, `editarLanterna` com `camposAlterados`,
+  `alterarStatusLanterna`) e em [setores.ts](../../lib/setores.ts) (`criarSetor`, `editarSetor`,
+  `excluirSetor`) usam `no-store` e Bearer obrigatório.
+- [Gestão de usuários](../../lib/gestao-usuarios.ts): chamadas restritas ao Guardião
+  (`listarUsuarios` com paginação, busca e ordenação, `alterarPapel` e `vincularLanterna`)
+  sem cache (`no-store`) e com Bearer.
 - [Ocorrências](../../lib/ocorrencias.ts): leituras sem cache e com Bearer; criação
   por POST, edição por PATCH só com os campos alterados, status e responsável em
   `/status` e `/responsavel`. Parâmetro fora do contrato falha antes do envio.
 - Filtros privados são validados pelo schema de [ocorrências](../../lib/schemas/ocorrencia.ts)
-  tanto no servidor quanto nos controles para manter a interpretação consistente.
+  tanto no servidor quanto nos controles para manter a interpretação consistente;
+  os schemas de gestão [gestao-lanterna.ts](../../lib/schemas/gestao-lanterna.ts),
+  [gestao-usuario.ts](../../lib/schemas/gestao-usuario.ts) e [setor.ts](../../lib/schemas/setor.ts)
+  validam formulários e comparam alterações antes do envio à API.
 - Componentes como `EstadoVazio`, `EsqueletoLista` e `TelaDeErro`, além dos
   `loading.tsx`, `error.tsx` e `not-found.tsx`, representam os estados das rotas.
 - Os serviços usam filtros e ordenação próprios do json-server 0.17.4. Uma nova

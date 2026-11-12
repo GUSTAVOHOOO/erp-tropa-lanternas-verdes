@@ -45,3 +45,5 @@ next-env.d.ts
 
 # o modelo de variáveis vai para o repositório; os valores reais (.env.local) não
 !.env.example
+# E2E do Corte 1: manifesto da fixture e capturas (fora de test-results, que o Playwright limpa)
+/.corte1/

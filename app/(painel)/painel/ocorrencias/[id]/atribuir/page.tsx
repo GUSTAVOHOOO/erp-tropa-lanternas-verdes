@@ -30,7 +30,7 @@ export default async function AtribuirPage({ params }: AtribuirPageProps) {
 
   let lanternas: LanternaLista[] = []
   try {
-    lanternas = await listarTodosLanternas({ setor: ocorrencia.setorId })
+    lanternas = await listarTodosLanternas({ setor: ocorrencia.setorId }, { cache: 'no-store' })
   } catch (erro) {
     tratarErroDetalhe(erro) // [API-12]
   }
@@ -42,16 +42,18 @@ export default async function AtribuirPage({ params }: AtribuirPageProps) {
       <LinkVoltar href={`/painel/ocorrencias/${ocorrencia.id}`}>Voltar à ocorrência</LinkVoltar>
       <CabecalhoPagina titulo="Atribuir responsável" descricao={ocorrencia.titulo} />
       <MolduraOa titulo="Designação de Lanterna" icone="pessoal">
-        {lanternas.length === 0 && !acoes.liberar ? (
-          <EstadoVazio titulo="Nenhum lanterna neste setor" descricao="Não há lanternas designados no setor desta ocorrência." />
-        ) : (
-          <FormAtribuir
-            ocorrenciaId={ocorrencia.id}
-            lanternas={lanternas}
-            responsavelAtual={ocorrencia.responsavelId}
-            podeLiberar={acoes.liberar}
-          />
-        )}
+        <div className="oa-panel-body">
+          {lanternas.length === 0 && !acoes.liberar ? (
+            <EstadoVazio titulo="Nenhum lanterna neste setor" descricao="Não há lanternas designados no setor desta ocorrência." />
+          ) : (
+            <FormAtribuir
+              ocorrenciaId={ocorrencia.id}
+              lanternas={lanternas}
+              responsavelAtual={ocorrencia.responsavelId}
+              podeLiberar={acoes.liberar}
+            />
+          )}
+        </div>
       </MolduraOa>
     </article>
   )

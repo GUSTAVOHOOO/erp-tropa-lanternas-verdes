@@ -21,7 +21,9 @@ export default async function NovaOcorrenciaPage() {
         descricao={ehGuardiao ? undefined : `A ocorrência será registrada no Setor ${sessao.setorId}.`}
       />
       <MolduraOa titulo="Dados da ocorrência" icone="ocorrencias">
-        <FormOcorrencia setores={setores} exigeSetor={ehGuardiao} />
+        <div className="oa-panel-body">
+          <FormOcorrencia setores={setores} exigeSetor={ehGuardiao} />
+        </div>
       </MolduraOa>
     </article>
   )

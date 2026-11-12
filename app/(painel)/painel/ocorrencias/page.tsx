@@ -75,12 +75,14 @@ export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageP
         </Link>
       </CabecalhoPagina>
       <MolduraOa titulo="Filtros operacionais" icone="painel">
-        <Suspense fallback={null}> {/* [ROTA-15] */}
-          <FiltroOcorrencias
-            setores={sessao.papel === 'guardiao' ? setores : []}
-            lanternas={lanternas}
-          />
-        </Suspense>
+        <div className="oa-panel-body">
+          <Suspense fallback={null}> {/* [ROTA-15] */}
+            <FiltroOcorrencias
+              setores={sessao.papel === 'guardiao' ? setores : []}
+              lanternas={lanternas}
+            />
+          </Suspense>
+        </div>
       </MolduraOa>
       <MolduraOa titulo="Registros operacionais" icone="ocorrencias">
         {resultado.itens.length === 0 ? ( // [API-09]

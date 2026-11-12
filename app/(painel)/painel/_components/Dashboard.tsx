@@ -66,7 +66,9 @@ export function Dashboard({ dados, dias = DIAS_PADRAO, setores = [] }: Dashboard
   return (
     <div className="grid gap-6">
       <MolduraOa titulo="Filtros operacionais" icone="painel">
-        <FiltroDashboard setores={setores} />
+        <div className="oa-panel-body">
+          <FiltroDashboard setores={setores} />
+        </div>
       </MolduraOa>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">

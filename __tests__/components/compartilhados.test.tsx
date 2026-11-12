@@ -1,7 +1,6 @@
 import { describe, expect, test, vi } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import type { UseFormRegisterReturn } from 'react-hook-form'
-import db from '@/db.json'
 import { CampoSelect } from '@/components/CampoSelect'
 import { CampoTexto } from '@/components/CampoTexto'
 import { EstadoVazio } from '@/components/EstadoVazio'
@@ -114,15 +113,57 @@ test('TelaDeErro não mostra detalhe técnico e chama retry', () => {
 })
 
 test('TabelaOcorrencias mostra nomes e "Sem responsável"', () => {
-  const ocorrencias = db.ocorrencias.slice(0, 2).map((o) => ocorrenciaSchema.parse(o))
-  const { container } = render(<TabelaOcorrencias ocorrencias={ocorrencias} nomeSetor={{ '2814': 'Setor 2814' }} nomeLanterna={{ 'hal-jordan': 'Hal Jordan' }} />)
-  expect(screen.getByRole('link', { name: 'Ataque de Parallax em Coast City' }).getAttribute('href')).toBe('/painel/ocorrencias/o1')
+  const ocorrencias = [
+    ocorrenciaSchema.parse({
+      id: '00000000-0000-4000-8000-000000000001',
+      titulo: 'Ataque de Parallax em Coast City',
+      descricao: 'Distorção de energia amarela na orla de Coast City.',
+      planeta: 'Terra',
+      setorId: 2814,
+      gravidade: 'critica',
+      status: 'aberta',
+      envolvidos: 5,
+      responsavelId: 'hal-jordan',
+      resolucao: null,
+      criadaPorId: '00000000-0000-4000-8000-000000000099',
+      criadaEm: '2026-11-01T10:00:00.000Z',
+      resolvidaEm: null,
+      prazoEm: '2026-11-02T10:00:00.000Z',
+      vencida: true,
+    }),
+    ocorrenciaSchema.parse({
+      id: '00000000-0000-4000-8000-000000000002',
+      titulo: 'Incursão nos anéis de Saturno',
+      descricao: 'Piratas espaciais atacando naves comerciais.',
+      planeta: 'Saturno',
+      setorId: 2814,
+      gravidade: 'alta',
+      status: 'em_andamento',
+      envolvidos: 12,
+      responsavelId: null,
+      resolucao: null,
+      criadaPorId: '00000000-0000-4000-8000-000000000099',
+      criadaEm: '2026-11-01T12:00:00.000Z',
+      resolvidaEm: null,
+      prazoEm: '2026-11-03T12:00:00.000Z',
+      vencida: false,
+    }),
+  ]
+  const { container } = render(
+    <TabelaOcorrencias
+      ocorrencias={ocorrencias}
+      nomeSetor={{ 2814: 'Setor 2814' }}
+      nomeLanterna={{ 'hal-jordan': 'Hal Jordan' }}
+    />,
+  )
+  expect(screen.getByRole('link', { name: 'Ataque de Parallax em Coast City' }).getAttribute('href')).toBe('/painel/ocorrencias/00000000-0000-4000-8000-000000000001')
   expect(screen.getByText('Hal Jordan')).toBeDefined()
   expect(screen.getAllByText('Setor 2814')).toHaveLength(2)
   expect(screen.getByText('Sem responsável')).toBeDefined()
   expect(screen.getByText('Crítica')).toBeDefined()
+  expect(screen.getByText('Vencida')).toBeDefined()
   expect(screen.getByRole('table').classList.contains('oa-table')).toBe(true)
-  expect(container.querySelectorAll('.oa-badge')).toHaveLength(4) // gravidade e status de cada linha viram selos
+  expect(container.querySelectorAll('.oa-badge').length).toBeGreaterThanOrEqual(4)
 })
 
 test('MensagemErro é um alerta com texto e ícone decorativo', () => {

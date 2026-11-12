@@ -14,11 +14,12 @@ type FormAtribuirProps = {
   ocorrenciaId: string
   lanternas: LanternaLista[]
   responsavelAtual: string | null
+  podeLiberar: boolean
 }
 
-/** Guardião escolhe o lanterna responsável. Em caso de sucesso a action volta para o detalhe. */
-export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual }: FormAtribuirProps) {
-  const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm({
+/** Guardião escolhe o lanterna responsável ou libera a ocorrência aberta. [FORM-01][FORM-06][FORM-19] */
+export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual, podeLiberar }: FormAtribuirProps) {
+  const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<AtribuicaoData>({
     resolver: zodResolver(atribuicaoSchema), // [FORM-01]
     mode: 'onBlur', // [FORM-05]
     reValidateMode: 'onChange',
@@ -30,6 +31,11 @@ export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual }: Form
     aplicarErrosDoServidor(resultado, setError) // [FORM-19]
   }
 
+  const itens = {
+    ...(podeLiberar ? { '': 'Sem responsável (liberar)' } : {}),
+    ...Object.fromEntries(lanternas.map((l) => [l.id, l.codinome])),
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5"> {/* [FORM-06][FORM-07] */}
       <Controller
@@ -39,9 +45,9 @@ export function FormAtribuir({ ocorrenciaId, lanternas, responsavelAtual }: Form
           <CampoSelect
             id="responsavelId"
             rotulo="Lanterna responsável"
-            itens={Object.fromEntries(lanternas.map((l) => [l.id, l.codinome]))}
+            itens={itens}
             valor={field.value}
-            aoMudar={field.onChange}
+            aoMudar={(v) => field.onChange(v ?? '')}
             aoSair={field.onBlur}
             refCampo={field.ref}
             erro={fieldState.error?.message}

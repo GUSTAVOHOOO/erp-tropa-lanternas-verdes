@@ -1,6 +1,5 @@
 import { beforeEach, expect, test, vi } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import db from '@/db.json'
 
 vi.mock('@/app/(painel)/painel/ocorrencias/actions', () => ({ registrarOcorrencia: vi.fn() }))
 
@@ -10,7 +9,7 @@ import { FormOcorrencia } from '@/app/(painel)/painel/ocorrencias/_components/Fo
 beforeEach(() => vi.clearAllMocks())
 
 test('valida no cliente e não chama a action com campos inválidos', async () => {
-  render(<FormOcorrencia setores={[]} setorFixo="2814" />)
+  render(<FormOcorrencia setores={[]} exigeSetor={false} />)
   fireEvent.click(screen.getByRole('button', { name: 'Registrar ocorrência' }))
   expect(await screen.findByText('O título precisa ter pelo menos 5 caracteres.')).toBeDefined()
   expect(screen.getByText('Descreva a ocorrência em pelo menos 10 caracteres.')).toBeDefined()
@@ -18,9 +17,9 @@ test('valida no cliente e não chama a action com campos inválidos', async () =
   expect(registrarOcorrencia).not.toHaveBeenCalled()
 })
 
-test('Lanterna não vê o campo setor e envia o setor da sessão', async () => {
+test('Lanterna não vê o campo setor e não envia setorId', async () => {
   vi.mocked(registrarOcorrencia).mockResolvedValue({ ok: false, erro: 'Não foi possível falar com a Central de Oa.' })
-  render(<FormOcorrencia setores={[]} setorFixo="2814" />)
+  render(<FormOcorrencia setores={[]} exigeSetor={false} />)
   expect(screen.queryByLabelText('Setor')).toBeNull()
   fireEvent.change(screen.getByLabelText('Título'), { target: { value: 'Invasão em Oa' } })
   fireEvent.change(screen.getByLabelText('Descrição'), { target: { value: 'Muitos invasores na Bateria Central.' } })
@@ -30,19 +29,38 @@ test('Lanterna não vê o campo setor e envia o setor da sessão', async () => {
   expect(await screen.findByText('Não foi possível falar com a Central de Oa.')).toBeDefined()
   await waitFor(() => expect(screen.getByRole('button', { name: 'Registrar ocorrência' }).hasAttribute('disabled')).toBe(false))
   expect(registrarOcorrencia).toHaveBeenCalledWith({
-    titulo: 'Invasão em Oa', descricao: 'Muitos invasores na Bateria Central.', planeta: 'Oa', setorId: '2814', gravidade: 'media', envolvidos: 3,
+    titulo: 'Invasão em Oa',
+    descricao: 'Muitos invasores na Bateria Central.',
+    planeta: 'Oa',
+    gravidade: 'media',
+    envolvidos: 3,
   })
+  // Dados permanecem após erro do servidor
+  expect((screen.getByLabelText('Título') as HTMLInputElement).value).toBe('Invasão em Oa')
+  expect((screen.getByLabelText('Planeta') as HTMLInputElement).value).toBe('Oa')
 })
 
-test('Guardião vê o campo setor', () => {
-  render(<FormOcorrencia setores={db.setores.map((s) => ({ id: Number(s.numero), nome: s.nome, descricao: 'Setor válido para o teste.' }))} setorFixo={null} />)
+test('Guardião vê o campo setor e exige setorId', async () => {
+  render(
+    <FormOcorrencia
+      setores={[{ id: 2814, nome: 'Setor 2814', descricao: 'Setor de teste.' }]}
+      exigeSetor={true}
+    />,
+  )
   expect(screen.getByText('Setor')).toBeDefined()
   expect(screen.getByText('Escolha o setor')).toBeDefined()
+
+  fireEvent.change(screen.getByLabelText('Título'), { target: { value: 'Invasão em Oa' } })
+  fireEvent.change(screen.getByLabelText('Descrição'), { target: { value: 'Muitos invasores na Bateria Central.' } })
+  fireEvent.change(screen.getByLabelText('Planeta'), { target: { value: 'Oa' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Registrar ocorrência' }))
+
+  expect(await screen.findByText('Escolha o setor da ocorrência.')).toBeDefined()
+  expect(registrarOcorrencia).not.toHaveBeenCalled()
 })
 
-// UI-02.08: botão OANET e layout
 test('botão de envio usa BotaoOa', () => {
-  render(<FormOcorrencia setores={[]} setorFixo="2814" />)
+  render(<FormOcorrencia setores={[]} exigeSetor={false} />)
   const botao = screen.getByRole('button', { name: 'Registrar ocorrência' })
   expect(botao.classList.contains('oa-button')).toBe(true)
 })

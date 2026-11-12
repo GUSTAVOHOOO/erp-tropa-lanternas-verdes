@@ -3,89 +3,169 @@
 import * as z from 'zod'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { ApiError, destinoDoErro, resultadoDeErroApi } from '@/lib/api-error'
 import { exigirPapel, verificarSessao } from '@/lib/dal'
-import { buscarLanterna } from '@/lib/lanternas'
-import { atualizarOcorrencia, buscarOcorrencia, criarOcorrencia } from '@/lib/ocorrencias'
-import { MENSAGEM_ERRO_API, type ResultadoAcao } from '@/lib/resultado-acao'
-import { atribuicaoSchema, atualizarStatusSchema, novaOcorrenciaSchema, type Ocorrencia } from '@/lib/schemas/ocorrencia'
-import { podeAcessarSetor } from '@/lib/escopo'
-import { listarSetores } from '@/lib/setores'
+import {
+  alterarStatusOcorrencia,
+  buscarOcorrencia,
+  criarOcorrencia,
+  definirResponsavel,
+  editarOcorrencia as persistirEdicao,
+  excluirOcorrencia as persistirExclusao,
+  type CamposEdicaoOcorrencia,
+} from '@/lib/ocorrencias'
+import { acoesPermitidas, transicoesPermitidas } from '@/lib/permissoes-ocorrencia'
+import type { ResultadoAcao } from '@/lib/resultado-acao'
+import {
+  atribuicaoSchema,
+  atualizarStatusSchema,
+  edicaoOcorrenciaSchema,
+  novaOcorrenciaSchema,
+  type Ocorrencia,
+} from '@/lib/schemas/ocorrencia'
 
-/** Registra uma ocorrência. O Lanterna sempre registra no próprio setor. */
+const OCORRENCIA_INEXISTENTE: ResultadoAcao = { ok: false, erro: 'Esta ocorrência não existe mais.' }
+const SEM_PERMISSAO: ResultadoAcao = { ok: false, erro: 'Você não tem permissão para esta alteração.' }
+
+/** Código de domínio que pertence a um campo do formulário. [API-18][FORM-19] */
+const CAMPO_DO_CODIGO: Record<string, string> = {
+  RESOLUCAO_OBRIGATORIA: 'resolucao',
+  MOTIVO_OBRIGATORIO: 'motivo',
+  RESPONSAVEL_DE_OUTRO_SETOR: 'responsavelId',
+  LANTERNA_AFASTADO: 'responsavelId',
+  SEM_RESPONSAVEL: 'responsavelId',
+}
+
+/**
+ * Leva o erro da API ao destino certo: 401/403 navegam, 404 vira mensagem, códigos de campo vão
+ * ao campo e o resto é erro geral. Nunca anuncia sucesso em conflito.
+ */
+function tratarErroApi(erro: unknown): ResultadoAcao {
+  const destino = destinoDoErro(erro)
+  if (destino === 'sessao-expirada') redirect('/sessao-expirada') // [AUTH-13]
+  if (destino === 'acesso-negado') redirect('/acesso-negado') // [AUTH-06]
+  if (destino === 'nao-encontrado') return OCORRENCIA_INEXISTENTE
+  const resultado = resultadoDeErroApi(erro)
+  const campo = erro instanceof ApiError && erro.codigo ? CAMPO_DO_CODIGO[erro.codigo] : undefined
+  if (campo && resultado.erro) return { ok: false, errors: { [campo]: [resultado.erro] } }
+  return resultado
+}
+
+function errosDeValidacao(erro: z.ZodError): ResultadoAcao {
+  return { ok: false, errors: z.flattenError(erro).fieldErrors } // [FORM-18]
+}
+
+/** Busca a ocorrência para conferir permissão antes de escrever; a API confere de novo. */
+async function carregar(id: unknown): Promise<Ocorrencia | ResultadoAcao> {
+  if (typeof id !== 'string') return OCORRENCIA_INEXISTENTE
+  try {
+    return (await buscarOcorrencia(id)) ?? OCORRENCIA_INEXISTENTE
+  } catch (erro) {
+    return tratarErroApi(erro)
+  }
+}
+
+function ehResultado(valor: Ocorrencia | ResultadoAcao): valor is ResultadoAcao {
+  return 'ok' in valor
+}
+
+/** Registrar: o Lanterna nunca envia setorId (a API usa o setor da conta); o Guardião sempre escolhe. */
 export async function registrarOcorrencia(dados: unknown): Promise<ResultadoAcao> {
   const sessao = await verificarSessao() // [AUTH-05]
   const parsed = novaOcorrenciaSchema.safeParse(dados) // [FORM-17]
-  if (!parsed.success) return { ok: false, errors: z.flattenError(parsed.error).fieldErrors } // [FORM-18]
+  if (!parsed.success) return errosDeValidacao(parsed.error)
 
-  const setorId = sessao.papel === 'lanterna' ? sessao.setorId : Number(parsed.data.setorId) // [AUTH-07]
+  const { setorId, ...campos } = parsed.data
+  if (sessao.papel === 'guardiao' && setorId === undefined) {
+    return { ok: false, errors: { setorId: ['Escolha o setor da ocorrência.'] } }
+  }
+  const corpo = sessao.papel === 'guardiao' && setorId !== undefined ? { ...campos, setorId } : campos // [AUTH-07]
+
   let criada: Ocorrencia
   try {
-    const setores = await listarSetores()
-    if (setorId === null || !Number.isInteger(setorId) || !setores.some((s) => s.id === setorId)) {
-      return { ok: false, errors: { setorId: ['Escolha um setor válido.'] } }
-    }
-    criada = await criarOcorrencia({
-      ...parsed.data,
-      setorId: String(setorId), // FE-04: setor inteiro do contrato
-      status: 'aberta',
-      responsavelId: null,
-      resolucao: null,
-      criadaPor: sessao.id,
-      criadaEm: new Date().toISOString(),
-    })
+    criada = await criarOcorrencia(corpo)
   } catch (erro) {
-    console.error(erro)
-    return { ok: false, erro: MENSAGEM_ERRO_API } // [API-13]
+    return tratarErroApi(erro)
   }
-
   revalidatePath('/painel', 'layout') // [API-14]
   redirect(`/painel/ocorrencias/${criada.id}`) // [ROTA-20]
 }
 
-/** Muda o status. "Resolvida" guarda a explicação; os outros status limpam a resolução. */
+/** Mudar status pelo sub-recurso /status; reabrir exige Guardião e motivo. */
 export async function atualizarStatus(id: unknown, dados: unknown): Promise<ResultadoAcao> {
   const sessao = await verificarSessao() // [AUTH-05]
-  if (typeof id !== 'string' || !id) return { ok: false, erro: 'Ocorrência inválida.' }
-  const parsed = atualizarStatusSchema.safeParse(dados) // [FORM-17]
-  if (!parsed.success) return { ok: false, errors: z.flattenError(parsed.error).fieldErrors } // [FORM-18]
+  const parsed = atualizarStatusSchema.safeParse(dados)
+  if (!parsed.success) return errosDeValidacao(parsed.error)
 
+  const atual = await carregar(id)
+  if (ehResultado(atual)) return atual
+  if (!transicoesPermitidas(acoesPermitidas(sessao, atual)).includes(parsed.data.status)) return SEM_PERMISSAO
+
+  const { status, resolucao, motivo } = parsed.data
   try {
-    const ocorrencia = await buscarOcorrencia(id)
-    if (!ocorrencia) return { ok: false, erro: 'Ocorrência não encontrada.' }
-    if (!podeAcessarSetor(sessao, Number(ocorrencia.setorId))) { // [AUTH-07] // FE-04: setor inteiro do contrato
-      return { ok: false, erro: 'Você não pode alterar ocorrências de outro setor.' }
-    }
-    const { status, resolucao } = parsed.data
-    await atualizarOcorrencia(id, { status, resolucao: status === 'resolvida' ? resolucao : null })
+    await alterarStatusOcorrencia(atual.id, {
+      status,
+      ...(status === 'resolvida' ? { resolucao } : {}),
+      ...(status === 'aberta' ? { motivo } : {}),
+    })
   } catch (erro) {
-    console.error(erro)
-    return { ok: false, erro: MENSAGEM_ERRO_API } // [API-13]
+    return tratarErroApi(erro)
   }
-
   revalidatePath('/painel', 'layout') // [API-14]
   return { ok: true }
 }
 
-/** Só Guardião: escolhe o lanterna responsável, que precisa ser do setor da ocorrência. */
+/** Atribuir, reatribuir ou liberar ('' → null). Só o Guardião. */
 export async function atribuirResponsavel(id: unknown, dados: unknown): Promise<ResultadoAcao> {
   await exigirPapel('guardiao') // [AUTH-05][AUTH-06]
-  if (typeof id !== 'string' || !id) return { ok: false, erro: 'Ocorrência inválida.' }
-  const parsed = atribuicaoSchema.safeParse(dados) // [FORM-17]
-  if (!parsed.success) return { ok: false, errors: z.flattenError(parsed.error).fieldErrors } // [FORM-18]
+  const parsed = atribuicaoSchema.safeParse(dados)
+  if (!parsed.success) return errosDeValidacao(parsed.error)
+  if (typeof id !== 'string') return OCORRENCIA_INEXISTENTE
 
   try {
-    const ocorrencia = await buscarOcorrencia(id)
-    if (!ocorrencia) return { ok: false, erro: 'Ocorrência não encontrada.' }
-    const lanterna = await buscarLanterna(parsed.data.responsavelId)
-    if (!lanterna || lanterna.setorId !== Number(ocorrencia.setorId)) {
-      return { ok: false, errors: { responsavelId: ['Escolha um lanterna do setor desta ocorrência.'] } }
-    }
-    await atualizarOcorrencia(id, { responsavelId: lanterna.id })
+    await definirResponsavel(id, parsed.data.responsavelId || null)
   } catch (erro) {
-    console.error(erro)
-    return { ok: false, erro: MENSAGEM_ERRO_API } // [API-13]
+    return tratarErroApi(erro)
   }
-
   revalidatePath('/painel', 'layout') // [API-14]
   redirect(`/painel/ocorrencias/${id}`) // [ROTA-20]
+}
+
+/** Editar dados (Guardião ou Lanterna criador, não resolvida): envia só o que mudou. */
+export async function editarOcorrencia(id: unknown, dados: unknown): Promise<ResultadoAcao> {
+  const sessao = await verificarSessao() // [AUTH-05]
+  const atual = await carregar(id)
+  if (ehResultado(atual)) return atual
+  if (!acoesPermitidas(sessao, atual).editar) return SEM_PERMISSAO
+
+  const parsed = edicaoOcorrenciaSchema.safeParse(dados) // [FORM-17]
+  if (!parsed.success) return errosDeValidacao(parsed.error)
+
+  const campos: CamposEdicaoOcorrencia = {}
+  for (const chave of ['titulo', 'descricao', 'planeta', 'gravidade', 'envolvidos'] as const) {
+    if (parsed.data[chave] !== atual[chave]) Object.assign(campos, { [chave]: parsed.data[chave] })
+  }
+  if (Object.keys(campos).length === 0) return { ok: false, erro: 'Nada foi alterado.' }
+
+  try {
+    await persistirEdicao(atual.id, campos)
+  } catch (erro) {
+    return tratarErroApi(erro)
+  }
+  revalidatePath('/painel', 'layout') // [API-14]
+  redirect(`/painel/ocorrencias/${atual.id}`) // [ROTA-20]
+}
+
+/** Exclusão lógica pelo Guardião; o detalhe passa a ser 404. */
+export async function excluirOcorrencia(id: unknown): Promise<ResultadoAcao> {
+  await exigirPapel('guardiao') // [AUTH-05][AUTH-06]
+  if (typeof id !== 'string') return OCORRENCIA_INEXISTENTE
+
+  try {
+    await persistirExclusao(id)
+  } catch (erro) {
+    return tratarErroApi(erro)
+  }
+  revalidatePath('/painel', 'layout') // [API-14]
+  redirect('/painel/ocorrencias') // [ROTA-20]
 }

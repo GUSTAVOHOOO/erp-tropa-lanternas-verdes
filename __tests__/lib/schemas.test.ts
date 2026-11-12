@@ -14,11 +14,29 @@ import {
 } from '@/lib/schemas/ocorrencia'
 import { ApiError } from '@/lib/api-error'
 
+const ocorrenciaContrato = {
+  id: '00000000-0000-4000-8000-000000000201',
+  titulo: 'Ocorrência de contrato O1',
+  descricao: 'Descrição fictícia com extensão válida.',
+  planeta: 'Terra',
+  setorId: 2814,
+  gravidade: 'critica' as const,
+  status: 'em_andamento' as const,
+  envolvidos: 2,
+  responsavelId: 'hal-jordan',
+  resolucao: null,
+  criadaPorId: '00000000-0000-4000-8000-000000000102',
+  criadaEm: '2026-11-08T14:00:00Z',
+  resolvidaEm: null,
+  prazoEm: '2026-11-09T14:00:00Z',
+  vencida: false,
+}
+
 describe('db.json respeita o contrato (os schemas de resposta)', () => {
   test('todas as coleções passam no schema', () => {
     expect(() => z.array(setorSchema).parse([{ id: 0, nome: 'Setor Zero', descricao: 'Setor válido para os testes.' }])).not.toThrow()
     expect(() => z.array(lanternaListaSchema).parse([{ id: 'hal-jordan', codinome: 'Hal Jordan', identidadeCivil: null, especie: null, planetaNatal: null, setorId: 0, status: 'ativo', anoIngresso: null }])).not.toThrow()
-    expect(() => z.array(ocorrenciaSchema).parse(db.ocorrencias)).not.toThrow()
+    expect(() => z.array(ocorrenciaSchema).parse([ocorrenciaContrato])).not.toThrow()
   })
 
   test('referências apontam para registros que existem', () => {
@@ -50,7 +68,7 @@ describe('novaOcorrenciaSchema', () => {
   })
 
   test('mensagens em português para cada campo inválido', () => {
-    const r = novaOcorrenciaSchema.safeParse({ titulo: 'abc', descricao: 'curta', planeta: 'x', setorId: '', gravidade: 'xyz', envolvidos: '0' })
+    const r = novaOcorrenciaSchema.safeParse({ titulo: 'abc', descricao: 'curta', planeta: 'x', setorId: 'invalido', gravidade: 'xyz', envolvidos: '0' })
     expect(r.success).toBe(false)
     const erros = z.flattenError(r.error!).fieldErrors
     expect(erros.titulo?.[0]).toBe('O título precisa ter pelo menos 5 caracteres.')
@@ -59,6 +77,13 @@ describe('novaOcorrenciaSchema', () => {
     expect(erros.setorId?.[0]).toBe('Escolha o setor da ocorrência.')
     expect(erros.gravidade?.[0]).toBe('Escolha a gravidade.')
     expect(erros.envolvidos?.[0]).toBe('Informe quantos seres estão envolvidos (mínimo 1).')
+  })
+
+  test('setorId é opcional: setor 0 é aceito e vazio vira ausente', () => {
+    const comZero = novaOcorrenciaSchema.parse(valida)
+    expect(comZero.setorId).toBe(0)
+    const semSetor = novaOcorrenciaSchema.parse({ ...valida, setorId: '' })
+    expect(semSetor.setorId).toBeUndefined()
   })
 
   test('texto no lugar de número tem mensagem própria', () => {
@@ -86,7 +111,7 @@ describe('filtros vindos da URL nunca quebram a página', () => {
   })
 
   test('valor válido passa', () => {
-    expect(filtroOcorrenciasSchema.parse({ status: 'aberta', gravidade: 'alta', setor: '2814' })).toEqual({ status: 'aberta', gravidade: 'alta', setor: '2814' })
+    expect(filtroOcorrenciasSchema.parse({ status: 'aberta', gravidade: 'alta', setor: '2814' })).toEqual({ status: 'aberta', gravidade: 'alta', setor: 2814 })
     expect(filtroLanternasSchema.parse({ setor: '0' })).toEqual({ busca: undefined, status: undefined, setor: 0, ordenar: undefined, ordem: undefined, pagina: undefined })
   })
 })
@@ -96,8 +121,10 @@ test('login e atribuição têm mensagens de correção', () => {
   const erros = z.flattenError(login.error!).fieldErrors
   expect(erros.email?.[0]).toBe('Informe um e-mail válido, como hal@oa.tropa.')
   expect(erros.senha?.[0]).toBe('Informe sua senha.')
-  const atribuicao = atribuicaoSchema.safeParse({ responsavelId: '' })
-  expect(z.flattenError(atribuicao.error!).fieldErrors.responsavelId?.[0]).toBe('Escolha o lanterna responsável.')
+
+  expect(atribuicaoSchema.safeParse({ responsavelId: '' }).success).toBe(true)
+  expect(atribuicaoSchema.safeParse({ responsavelId: 'hal-jordan' }).success).toBe(true)
+  expect(atribuicaoSchema.safeParse({ responsavelId: 'Slug Inválido!' }).success).toBe(false)
 })
 
 test('ApiError guarda o status HTTP', () => {

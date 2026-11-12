@@ -53,9 +53,10 @@ oferecida pelo json-server.
 | Cadastro | `app/(site)/cadastro/` | `lib/cadastro.ts`, `lib/schemas/cadastro.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Logout | `app/(painel)/actions.ts` e layout privado | `lib/dal.ts` |
 | Resumo | `app/(painel)/painel/page.tsx` | Serviços de ocorrências, setores, lanternas e `setorParaFiltro` |
-| Listagem e filtros privados | `app/(painel)/painel/ocorrencias/page.tsx`, `_components/FiltroOcorrencias.tsx` | `lib/filtro-ocorrencias.ts`, schema e serviço de ocorrências |
-| Criar, alterar status ou atribuir | `app/(painel)/painel/ocorrencias/actions.ts` | Formulário correspondente, schemas, DAL e serviços |
-| Detalhe e atribuição | `app/(painel)/painel/ocorrencias/[id]/` | `tratarErroDetalhe`, autorização e formulários |
+| Listagem e filtros privados | `app/(painel)/painel/ocorrencias/page.tsx`, `_components/FiltroOcorrencias.tsx` | `lib/schemas/ocorrencia.ts` (filtro da URL), `lib/ocorrencias.ts` |
+| Criar, editar, alterar status, atribuir ou excluir | `app/(painel)/painel/ocorrencias/actions.ts` | `FormOcorrencia`, `FormEditarOcorrencia`, `FormStatus`, `FormAtribuir`, `ConfirmarExclusao`, schemas, DAL e `lib/ocorrencias.ts` |
+| Detalhe e atribuição | `app/(painel)/painel/ocorrencias/[id]/` | `tratarErroDetalhe`, `lib/permissoes-ocorrencia.ts`, autorização e formulários |
+| Permissões de ocorrência | `lib/permissoes-ocorrencia.ts` | `acoesPermitidas` e `transicoesPermitidas` pela matriz de [TELAS.md](../frontend/TELAS.md); só visibilidade, a API decide ([matriz](../backend/API.md#matriz-de-permissões)) |
 | UI oficial e assets | `components/oanet/`, `app/globals.css`, `app/laboratorio/` | `docs/UI.md` (D28), `docs/agents/HANDOFF-OANET.md`; `/design-system` antigo é histórico |
 | Dados de demonstração | `db.json` | Schemas e testes que importam os dados (saem na migração) |
 | Adoção nas rotas reais | Layouts `(site)`/`(painel)`, páginas e componentes OANET | UI-01/UI-02 em `docs/PLANO.md`; propriedade transferida pelo handoff, conferir alterações locais |
@@ -168,9 +169,10 @@ e em AUTH-11; a migração do back-end depende de autenticação real na API.
 
 - [Lanternas](../../lib/lanternas.ts) e [setores](../../lib/setores.ts):
   revalidação de 60 segundos nas leituras.
-- [Ocorrências](../../lib/ocorrencias.ts): leituras sem cache; ocorrência usa
-  POST para criar e PATCH para alterar.
-- Filtros privados usam [normalizarFiltroOcorrencias](../../lib/filtro-ocorrencias.ts)
+- [Ocorrências](../../lib/ocorrencias.ts): leituras sem cache e com Bearer; criação
+  por POST, edição por PATCH só com os campos alterados, status e responsável em
+  `/status` e `/responsavel`. Parâmetro fora do contrato falha antes do envio.
+- Filtros privados são validados pelo schema de [ocorrências](../../lib/schemas/ocorrencia.ts)
   tanto no servidor quanto nos controles para manter a interpretação consistente.
 - Componentes como `EstadoVazio`, `EsqueletoLista` e `TelaDeErro`, além dos
   `loading.tsx`, `error.tsx` e `not-found.tsx`, representam os estados das rotas.

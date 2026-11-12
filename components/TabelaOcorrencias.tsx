@@ -3,16 +3,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { BadgeGravidade } from '@/components/BadgeGravidade'
 import { BadgeStatus } from '@/components/BadgeStatus'
 import { IconeOa } from '@/components/oanet/IconeOa'
+import { SeloOa } from '@/components/oanet/PainelOa'
+import { formatarData } from '@/lib/formatar'
 import type { Ocorrencia } from '@/lib/schemas/ocorrencia'
 
 type TabelaOcorrenciasProps = {
   ocorrencias: Ocorrencia[]
-  nomeSetor: Record<string, string>
+  nomeSetor: Record<number | string, string>
   nomeLanterna: Record<string, string>
 }
 
-/** Tabela de ocorrências usada no resumo e na lista do painel. */
-export function TabelaOcorrencias({ ocorrencias, nomeSetor, nomeLanterna }: TabelaOcorrenciasProps) { // [COMP-03]
+/** Tabela de ocorrências usada no resumo e na lista do painel. [COMP-03] */
+export function TabelaOcorrencias({ ocorrencias, nomeSetor, nomeLanterna }: TabelaOcorrenciasProps) {
   return (
     <Table>
       <TableHeader>
@@ -21,6 +23,7 @@ export function TabelaOcorrencias({ ocorrencias, nomeSetor, nomeLanterna }: Tabe
           <TableHead>Setor</TableHead>
           <TableHead>Gravidade</TableHead>
           <TableHead>Status</TableHead>
+          <TableHead>Prazo</TableHead>
           <TableHead>Responsável</TableHead>
         </TableRow>
       </TableHeader>
@@ -41,6 +44,12 @@ export function TabelaOcorrencias({ ocorrencias, nomeSetor, nomeLanterna }: Tabe
             </TableCell>
             <TableCell><BadgeGravidade gravidade={o.gravidade} /></TableCell>
             <TableCell><BadgeStatus status={o.status} /></TableCell>
+            <TableCell>
+              <div className="flex flex-col items-start gap-1">
+                <span>{formatarData(o.prazoEm)}</span>
+                {o.vencida && <SeloOa tom="vermelho">Vencida</SeloOa>}
+              </div>
+            </TableCell>
             <TableCell>
               {(o.responsavelId && nomeLanterna[o.responsavelId]) || <span className="text-(--oa-muted)">Sem responsável</span>}
             </TableCell>

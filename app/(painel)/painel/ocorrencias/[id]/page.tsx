@@ -6,21 +6,24 @@ import { BadgeStatus } from '@/components/BadgeStatus'
 import { CabecalhoPagina } from '@/components/CabecalhoPagina'
 import { LinkVoltar } from '@/components/LinkVoltar'
 import { IconeOa } from '@/components/oanet/IconeOa'
-import { MolduraOa } from '@/components/oanet/PainelOa'
+import { MolduraOa, SeloOa } from '@/components/oanet/PainelOa'
 import { verificarSessao } from '@/lib/dal'
 import { tratarErroDetalhe } from '@/lib/erro-detalhe'
+import { podeAcessarSetor } from '@/lib/escopo'
 import { formatarData } from '@/lib/formatar'
 import { listarTodosLanternas } from '@/lib/lanternas'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
-import { podeAcessarSetor } from '@/lib/escopo'
+import { acoesPermitidas, transicoesPermitidas } from '@/lib/permissoes-ocorrencia'
 import { listarSetores } from '@/lib/setores'
+import { ConfirmarExclusao } from '@/app/(painel)/painel/ocorrencias/_components/ConfirmarExclusao'
+import { FormEditarOcorrencia } from '@/app/(painel)/painel/ocorrencias/_components/FormEditarOcorrencia'
 import { FormStatus } from '@/app/(painel)/painel/ocorrencias/_components/FormStatus'
 
 export const metadata: Metadata = { title: 'Ocorrência | Central de Comando' }
 
 type OcorrenciaPageProps = { params: Promise<{ id: string }> }
 
-/** Detalhe da ocorrência com o formulário de status. */
+/** Detalhe da ocorrência com ciclo de vida, edição e exclusão. [ROTA-10][API-07][API-12] */
 export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
   const sessao = await verificarSessao() // [AUTH-04]
   const { id } = await params // [ROTA-10]
@@ -31,17 +34,19 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
     tratarErroDetalhe(erro) // [API-12]
   }
   if (!ocorrencia) notFound() // [ROTA-12]
-  if (!podeAcessarSetor(sessao, Number(ocorrencia.setorId))) redirect('/acesso-negado') // [AUTH-07] // FE-04: setor inteiro do contrato
+  if (!podeAcessarSetor(sessao, ocorrencia.setorId)) redirect('/acesso-negado') // [AUTH-07]
 
-  const setor = setores.find((s) => s.id === Number(ocorrencia.setorId))
+  const setor = setores.find((s) => s.id === ocorrencia.setorId)
   const responsavel = lanternas.find((l) => l.id === ocorrencia.responsavelId)
+  const acoes = acoesPermitidas(sessao, ocorrencia)
+  const transicoes = transicoesPermitidas(acoes)
 
   return (
     <article className="oa-screen mx-auto grid max-w-3xl gap-8">
       <div className="grid gap-4">
         <LinkVoltar href="/painel/ocorrencias">Voltar à lista</LinkVoltar>
         <CabecalhoPagina titulo={ocorrencia.titulo}>
-          {sessao.papel === 'guardiao' && ( // [COMP-14]
+          {acoes.atribuir && ( // [COMP-14]
             <Link href={`/painel/ocorrencias/${ocorrencia.id}/atribuir`} className="oa-button oa-button--linha">
               <span className="oa-button-content">
                 <IconeOa nome="pessoal" />
@@ -76,9 +81,22 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
             <dd className="text-sm font-medium text-(--oa-text)">{responsavel?.codinome ?? <span className="text-(--oa-muted)">Sem responsável</span>}</dd>
           </div>
           <div className="grid gap-1">
+            <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Prazo</dt>
+            <dd className="text-sm font-medium text-(--oa-text) flex items-center gap-2">
+              <span>{formatarData(ocorrencia.prazoEm)}</span>
+              {ocorrencia.vencida && <SeloOa tom="vermelho">Vencida</SeloOa>}
+            </dd>
+          </div>
+          <div className="grid gap-1">
             <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Registrada em</dt>
             <dd className="text-sm font-medium text-(--oa-text)">{formatarData(ocorrencia.criadaEm)}</dd>
           </div>
+          {ocorrencia.resolvidaEm && (
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Resolvida em</dt>
+              <dd className="text-sm font-medium text-(--oa-text)">{formatarData(ocorrencia.resolvidaEm)}</dd>
+            </div>
+          )}
           {ocorrencia.resolucao && ( // [COMP-14]
             <div className="grid gap-1 sm:col-span-2">
               <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Resolução</dt>
@@ -88,14 +106,28 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
         </dl>
       </MolduraOa>
 
-      <MolduraOa titulo="Atualizar status" icone="painel">
-        <FormStatus
-          key={`${ocorrencia.status}-${ocorrencia.resolucao ?? ''}`}
-          ocorrenciaId={ocorrencia.id}
-          statusAtual={ocorrencia.status}
-          resolucaoAtual={ocorrencia.resolucao ?? ''}
-        />
-      </MolduraOa>
+      {transicoes.length > 0 && (
+        <MolduraOa titulo="Atualizar status" icone="painel">
+          <FormStatus
+            key={`${ocorrencia.status}-${ocorrencia.resolucao ?? ''}`}
+            ocorrenciaId={ocorrencia.id}
+            statusAtual={ocorrencia.status}
+            transicoes={transicoes}
+          />
+        </MolduraOa>
+      )}
+
+      {acoes.editar && (
+        <MolduraOa titulo="Editar dados" icone="ocorrencias">
+          <FormEditarOcorrencia ocorrencia={ocorrencia} />
+        </MolduraOa>
+      )}
+
+      {acoes.excluir && (
+        <div className="oa-button-row justify-end">
+          <ConfirmarExclusao ocorrenciaId={ocorrencia.id} />
+        </div>
+      )}
     </article>
   )
 }

@@ -7,7 +7,7 @@ import { constructosHumanos } from '@/components/oanet/ConstructosHumanos'
 import { IconeOa, type IconeOaNome } from '@/components/oanet/IconeOa'
 import { SeloOa } from '@/components/oanet/PainelOa'
 import {
-  CamadasBack, Capitulo, Cartoes, Codigo, Contador, DiagramaArquitetura, Etapas, Lista,
+  Celular, CamadasBack, Capitulo, Cartoes, Codigo, Contador, DiagramaArquitetura, Etapas, Lista,
   OrbitaAgentes, Painel, Rotulo, Subtitulo, TabelaProva, TabelaRegras, Titulo,
 } from './blocos'
 
@@ -80,7 +80,7 @@ export const SLIDES: Slide[] = [
   {
     id: 'parte-1', parte: 1, titulo: 'Parte I: Abertura e processo', minutos: 0.5, capitulo: true,
     notas: 'Abrir com o fio condutor: cada requisito pedido virou uma regra escrita numa skill, e cada regra aparece no código, num teste ou num documento.',
-    Conteudo: () => <Capitulo numero="I" parte="PARTE I" minutos={15} titulo="Como construímos" texto="O produto, o contrato, a documentação e os agentes que trabalharam com a gente." apresentador={APRESENTADORES[1]} Arte={arte('Abin Sur')} legenda="Abin Sur · Travessia interestelar: onde tudo começa" />,
+    Conteudo: () => <Capitulo numero="I" parte="PARTE I" minutos={15} titulo="Como foi construído" texto="O produto, o contrato, a documentação e os agentes do projeto." apresentador={APRESENTADORES[1]} Arte={arte('Abin Sur')} legenda="Abin Sur · Travessia interestelar: onde tudo começa" />,
   },
   {
     id: 'produto', parte: 1, titulo: 'O produto em 1 minuto', minutos: 1.5,
@@ -125,7 +125,7 @@ export const SLIDES: Slide[] = [
     Conteudo: () => (
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
-          <Rotulo codigo="03">Como trabalhamos</Rotulo>
+          <Rotulo codigo="03">Processo</Rotulo>
           <Titulo texto="Contrato primeiro, código depois" />
         </div>
         <Etapas className="dk-t3" etapas={[
@@ -169,7 +169,6 @@ export const SLIDES: Slide[] = [
             '  30 operações · 310 cenários',
             '  SHA-256 do pacote ....... ok',
           ]} />
-          <p className="dk-citacao dk-entra dk-t9">A documentação não foi escrita no fim. Ela veio antes do código.</p>
         </div>
       </div>
     ),
@@ -180,7 +179,7 @@ export const SLIDES: Slide[] = [
     Conteudo: () => (
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
-          <Rotulo codigo="05">O coração da apresentação</Rotulo>
+          <Rotulo codigo="05">Regras com ID</Rotulo>
           <Titulo texto="Requisitos do professor viraram regras com ID" />
         </div>
         <div className="dk-grade dk-grade--2">
@@ -258,7 +257,6 @@ export const SLIDES: Slide[] = [
           { icone: 'setores', titulo: 'Jest + Supertest', texto: 'Back: cada suíte sobe a API numa porta livre com SQLite próprio.' },
           { icone: 'codigo', titulo: 'ESLint + TS', texto: 'TypeScript estrito, lint e next build antes de todo commit.' },
         ]} />
-        <p className="dk-passagem dk-entra dk-t7"><IconeOa nome="seta" />A seguir: o front, regra por regra.</p>
       </div>
     ),
   },
@@ -419,15 +417,7 @@ export const SLIDES: Slide[] = [
             <><span className="dk-id">PROD-04</span> metadata, robots, sitemap</>,
           ]} />
         </div>
-        <div className="dk-celular dk-surge dk-t4" aria-hidden="true">
-          <div className="dk-celular-tela">
-            <span className="dk-celular-topo"><EmblemaOa className="dk-celular-emblema" />OANET</span>
-            <span className="dk-celular-bloco" /><span className="dk-celular-bloco dk-celular-bloco--curto" />
-            <SeloOa tom="vermelho">crítica · texto + cor</SeloOa>
-            <span className="dk-celular-foco">Registrar ocorrência</span>
-          </div>
-          <small>375 px</small>
-        </div>
+        <Celular />
         <Codigo className="dk-t5" arquivo="next.config.ts · PROD-02/03" linhas={[
           "X-Content-Type-Options: 'nosniff'",
           "X-Frame-Options: 'DENY'",
@@ -469,7 +459,7 @@ export const SLIDES: Slide[] = [
   },
   {
     id: 'demo', parte: 2, titulo: 'Demonstração ao vivo', minutos: 0.5,
-    notas: 'Se der tempo: login, dashboard, nova ocorrência, atribuir como Guardião, comentar, linha do tempo. Plano B: o vídeo gravado. Passagem para o back.',
+    notas: 'Se der tempo: login, dashboard, nova ocorrência, atribuir como Guardião, comentar, linha do tempo. Passagem para o back.',
     Conteudo: () => (
       <div className="dk-layout dk-layout--empilhada dk-layout--centro">
         <div className="dk-cabecalho dk-cabecalho--centro">
@@ -483,7 +473,7 @@ export const SLIDES: Slide[] = [
           { icone: 'hierarquia', titulo: 'Atribuir', texto: 'como Guardião' },
           { icone: 'comunicacoes', titulo: 'Comentar', texto: 'linha do tempo' },
         ]} />
-        <p className="dk-passagem dk-entra dk-t8"><span className="dk-ao-vivo" />localhost:3000 · plano B: vídeo gravado</p>
+        <p className="dk-passagem dk-entra dk-t8"><span className="dk-ao-vivo" />localhost:3000</p>
       </div>
     ),
   },
@@ -684,31 +674,13 @@ export const SLIDES: Slide[] = [
     ),
   },
   {
-    id: 'aberto', parte: 3, titulo: 'O que fica em aberto', minutos: 1,
-    notas: 'Preferimos mostrar o que falta a fingir que está perfeito. O aceite G9 depende da execução registrada. A CSP ainda está em modo relatório, como a PROD-03 manda. Pontos aceitos conscientemente estão registrados com o motivo na auditoria.',
-    Conteudo: () => (
-      <div className="dk-layout dk-layout--empilhada">
-        <div className="dk-cabecalho">
-          <Rotulo codigo="24">Transparência</Rotulo>
-          <Titulo texto="O que ainda falta, dito por nós" />
-        </div>
-        <Cartoes className="dk-cartoes--3 dk-cartoes--alerta dk-t3" itens={[
-          { icone: 'relatorios', titulo: 'Aceite G9', texto: 'Depende da execução final registrada em INTEGRACAO.md.', selo: 'pendente' },
-          { icone: 'escudo', titulo: 'CSP em relatório', texto: 'A PROD-03 manda observar antes de impor. Próximo passo: impor.', selo: 'por regra' },
-          { icone: 'busca', titulo: 'Riscos aceitos', texto: 'Ex.: login inválido consome a cota do throttler. Registrados com o motivo.', selo: 'documentado' },
-        ]} />
-        <p className="dk-citacao dk-entra dk-t7">Preferimos mostrar o que falta a fingir que está perfeito.</p>
-      </div>
-    ),
-  },
-  {
     id: 'conclusao', parte: 3, titulo: 'Conclusão', minutos: 1.5, capitulo: true,
-    notas: 'Os requisitos viraram duas skills com regras identificadas; as regras viraram código com marcadores, testes e documentos verificados por script; front e back sobre um contrato com hash; agentes aceleraram, sempre com revisão humana e teste antes do merge. Agradecer e abrir para perguntas.',
+    notas: 'Os requisitos viraram duas skills com regras identificadas; as regras viraram código com marcadores, testes e documentos verificados por script; front e back sobre um contrato com hash; agentes aceleraram, sempre com revisão humana e teste antes do merge. Se perguntarem o que falta: o aceite G9 depende da execução registrada em INTEGRACAO.md; a CSP segue em modo relatório, como a PROD-03 manda; os riscos aceitos estão na auditoria, com o motivo. Agradecer e abrir para perguntas.',
     Conteudo: () => (
       <div className="dk-final">
         <div className="dk-final-bateria dk-surge"><BateriaOa className="dk-final-svg" /></div>
         <div className="dk-final-texto">
-          <Rotulo codigo="25">Conclusão</Rotulo>
+          <Rotulo codigo="24">Conclusão</Rotulo>
           <Titulo texto="Requisito, regra, código, prova" nivel="capitulo" />
           <Lista className="dk-t4" itens={[
             <>Os requisitos da disciplina viraram <b>duas skills</b> com regras identificadas</>,

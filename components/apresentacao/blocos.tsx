@@ -1,8 +1,9 @@
 'use client'
 
 import { useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react'
+import { EmblemaOa } from '@/components/oanet/EmblemaOa'
 import { IconeOa, type IconeOaNome } from '@/components/oanet/IconeOa'
-import { MolduraOa, SeloOa } from '@/components/oanet/PainelOa'
+import { BotaoOa, MolduraOa, SeloOa } from '@/components/oanet/PainelOa'
 import { MOLAS, duracaoMola, posicaoMola } from './mola'
 
 /*
@@ -297,6 +298,63 @@ export function Capitulo({ numero, parte, titulo, texto, minutos, apresentador, 
         <Arte className="oa-lantern-construct" />
         <figcaption className="dk-entra dk-t7">{legenda}</figcaption>
       </figure>
+    </div>
+  )
+}
+
+/*
+ * Tela real do sistema em 375 × 812 (9:19,5), dentro de um aparelho com a moldura.
+ * Os estados são: aparelho surge → tela liga com varredura → linhas em cascata →
+ * selo de gravidade carimbado → botão com anel de foco pulsando.
+ * Conteúdo ilustrativo; o conjunto é escalado por --dk-cel (apresentacao.css).
+ */
+export function Celular() {
+  return (
+    <div className="dk-celular dk-surge dk-t4" aria-hidden="true">
+      <div className="dk-celular-escala">
+        <div className="dk-aparelho">
+          <span className="dk-botao-lateral dk-botao-lateral--acao" />
+          <span className="dk-botao-lateral dk-botao-lateral--volume" />
+          <span className="dk-botao-lateral dk-botao-lateral--energia" />
+          <div className="dk-celular-tela">
+            <span className="dk-celular-varredura" />
+            <div className="dk-celular-status">
+              <span>09:41</span>
+              <span className="dk-celular-ilha" />
+              <span className="dk-celular-sinal"><i /><i /><i /><i /></span>
+            </div>
+            <header className="dk-celular-topo">
+              <EmblemaOa className="dk-celular-emblema" />
+              <strong>OANET</strong>
+              <IconeOa nome="sino" />
+            </header>
+            <div className="dk-celular-corpo">
+              <h3 className="dk-celular-pagina">Ocorrências</h3>
+              <p className="dk-celular-meta">Setor 2814 · 3 abertas</p>
+              <div className="dk-celular-campo"><IconeOa nome="busca" /><span>Buscar por título</span></div>
+              <ul className="dk-celular-lista dk-cascata">
+                <li className="dk-celular-item">
+                  <span><strong>Fenda em Korugar</strong><small>aberta · há 2 h</small></span>
+                  <span className="dk-celular-carimbo"><SeloOa tom="vermelho">crítica</SeloOa></span>
+                </li>
+                <li className="dk-celular-item">
+                  <span><strong>Sinal em Thanagar</strong><small>em análise · há 5 h</small></span>
+                  <SeloOa tom="ambar">média</SeloOa>
+                </li>
+                <li className="dk-celular-item">
+                  <span><strong>Eco em Oa</strong><small>resolvida · ontem</small></span>
+                  <SeloOa tom="neutro">baixa</SeloOa>
+                </li>
+              </ul>
+            </div>
+            <div className="dk-celular-rodape">
+              <span className="dk-celular-anel"><BotaoOa tabIndex={-1} className="dk-celular-botao">Registrar ocorrência</BotaoOa></span>
+              <span className="dk-celular-barra" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <small className="dk-celular-legenda">375 px</small>
     </div>
   )
 }

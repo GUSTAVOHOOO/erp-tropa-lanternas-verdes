@@ -22,8 +22,12 @@ const envelopeErroSchema = z.object({
   caminho: z.string(), timestamp: z.string(),
 }).strict()
 
+/** Registra só método, caminho, status e código: nunca token, consulta ou corpo. [SEG-08] */
 function registrarErro(metodo: string, caminho: string, status: number, codigo?: string, issues?: readonly { path: PropertyKey[] }[]) {
-  console.error({ metodo, caminho: new URL(caminho, env.API_URL).pathname, status, codigo, ...(issues ? { issues: issues.map((issue) => issue.path) } : {}) })
+  const registro = { metodo, caminho: new URL(caminho, env.API_URL).pathname, status, codigo, ...(issues ? { issues: issues.map((issue) => issue.path) } : {}) }
+  // 4xx é resposta prevista do contrato (sessão, permissão, regra de negócio) e a tela já a trata; erro fica para 5xx e formato inválido.
+  if (status >= 400 && status < 500 && !issues) console.warn(registro)
+  else console.error(registro)
 }
 
 function montarPedido(caminho: string, opcoes: OpcoesApi) {

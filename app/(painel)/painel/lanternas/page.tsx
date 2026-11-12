@@ -19,6 +19,9 @@ import { listarSetores } from '@/lib/setores'
 import { FormLanterna } from '@/app/(painel)/painel/lanternas/_components/FormLanterna'
 import { StatusLanterna } from '@/app/(painel)/painel/lanternas/_components/StatusLanterna'
 
+// Tela de gestão: Fichas e Setores recém-criados ou alterados precisam aparecer na hora. [API-14]
+const SEM_CACHE = { cache: 'no-store' } as const
+
 export const metadata: Metadata = { title: 'Gestão de Lanternas | Central de Comando' }
 
 type PainelLanternasPageProps = {
@@ -34,9 +37,9 @@ export default async function PainelLanternasPage({ searchParams }: PainelLanter
   const editarSlug = typeof parametros.editar === 'string' ? parametros.editar : undefined
 
   const [paginaLanternas, setores, todosLanternas, fichaParaEditar] = await Promise.all([
-    listarLanternas({ ...filtro, limite: 20 }),
-    listarSetores(),
-    listarTodosLanternas(),
+    listarLanternas({ ...filtro, limite: 20 }, SEM_CACHE),
+    listarSetores(SEM_CACHE),
+    listarTodosLanternas({}, SEM_CACHE),
     editarSlug ? buscarLanterna(editarSlug) : Promise.resolve(null),
   ])
 

@@ -195,8 +195,8 @@ export function Dashboard({ dados, dias = DIAS_PADRAO, setores = [] }: Dashboard
                 </>
               )}
             </svg>
-            <details className="mt-4 px-4 pb-5">
-              <summary className="cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground">
+            <details className="oa-disclosure mt-4 px-4 pb-5">
+              <summary>
                 Ver dados da série
               </summary>
               <div className="mt-2 max-h-56 overflow-auto">

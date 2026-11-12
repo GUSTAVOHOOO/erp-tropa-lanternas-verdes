@@ -25,7 +25,7 @@ function caminho(id: string, sufixo = ''): string {
   return `/ocorrencias/${encodeURIComponent(uuidSchema.parse(id))}${sufixo}`
 }
 
-/** Parâmetros de GET /ocorrencias no contrato; um nome antigo (ex.: setorId do json-server) falha antes do envio. */
+/** Parâmetros de GET /ocorrencias no contrato; um nome fora do contrato (ex.: setorId) falha antes do envio. */
 const PARAMETROS_LISTA = new Set(['status', 'gravidade', 'setor', 'responsavel', 'vencida', 'busca', 'pagina', 'limite', 'ordenar', 'ordem'])
 
 /** Página de ocorrências no escopo da sessão (a API aplica o setor do Lanterna). [API-19] */

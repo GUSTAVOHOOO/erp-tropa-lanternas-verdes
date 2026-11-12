@@ -3,17 +3,6 @@ import * as z from 'zod'
 import { env } from '@/lib/env'
 import { ApiError, FALHA_REDE, RESPOSTA_INVALIDA } from '@/lib/api-error'
 
-/** Monta a URL completa usada pelos serviços json-server; sai quando o último serviço migrar. */
-export function urlDaApi(caminho: string, filtros: Record<string, string | undefined> = {}): URL {
-  const base = process.env.API_URL
-  if (!base) throw new Error('API_URL não definido no .env.local')
-  const url = new URL(caminho, base) // [API-16]
-  for (const [chave, valor] of Object.entries(filtros)) {
-    if (valor) url.searchParams.set(chave, valor)
-  }
-  return url
-}
-
 export type CacheApi = { cache: 'no-store' } | { revalidate: number; tags?: string[] }
 export type OpcoesApi = {
   metodo?: 'GET' | 'POST' | 'PATCH' | 'DELETE'

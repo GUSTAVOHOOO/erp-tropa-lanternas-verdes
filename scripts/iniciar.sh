@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Prepara e inicia o sistema completo: API NestJS (backend/, porta 3001) e front Next.js (porta 3000).
+# Uso: npm run iniciar (Bash, Git Bash, WSL, macOS ou Linux). Ctrl+C encerra os dois.
 set -Eeuo pipefail
 
 PROJECT_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -15,10 +17,13 @@ if ! node -e "process.exit(Number(process.versions.node.split('.')[0]) >= 26 ? 0
 fi
 
 if [ ! -d node_modules ]; then
-  echo "Instalando dependências..."
+  echo "Instalando dependências do front..."
   npm install
-else
-  echo "Dependências já instaladas."
+fi
+
+if [ ! -d backend/node_modules ]; then
+  echo "Instalando dependências da API..."
+  (cd backend && npm install)
 fi
 
 if [ ! -f .env.local ]; then
@@ -26,20 +31,20 @@ if [ ! -f .env.local ]; then
   echo ".env.local criado a partir de .env.example."
 fi
 
-node <<'NODE'
+if [ ! -f backend/.env ]; then
+  # Segredo JWT aleatório e banco SQLite em caminho absoluto dentro de backend/data.
+  node <<'NODE'
 const crypto = require('node:crypto')
 const fs = require('node:fs')
+const path = require('node:path')
 
-const file = '.env.local'
-let content = fs.readFileSync(file, 'utf8')
-const secret = /^SESSION_SECRET=(?:troque-por-um-segredo-aleatorio|\s*)$/m
-
-if (secret.test(content)) {
-  content = content.replace(secret, `SESSION_SECRET=${crypto.randomBytes(32).toString('base64')}`)
-  fs.writeFileSync(file, content)
-  console.log('SESSION_SECRET gerado automaticamente.')
-}
+let content = fs.readFileSync('backend/.env.example', 'utf8')
+content = content.replace(/^JWT_SECRET=.*$/m, `JWT_SECRET=${crypto.randomBytes(32).toString('hex')}`)
+content = content.replace(/^DATABASE_PATH=.*$/m, `DATABASE_PATH=${path.resolve('backend/data/dev.sqlite')}`)
+fs.writeFileSync('backend/.env', content)
+console.log('backend/.env criado com JWT_SECRET aleatório.')
 NODE
+fi
 
 port_is_busy() {
   node -e "const net = require('node:net'); const socket = net.createConnection({ host: 'localhost', port: Number(process.argv[1]) }); socket.once('connect', () => { socket.destroy(); process.exit(0) }); socket.once('error', () => process.exit(1))" "$1" >/dev/null 2>&1
@@ -51,6 +56,14 @@ for port in 3000 3001; do
     exit 1
   fi
 done
+
+if [ ! -d backend/dist ]; then
+  echo "Compilando a API..."
+  (cd backend && npm run build)
+fi
+
+echo "Aplicando migrations e o seed de demonstração (idempotente)..."
+(cd backend && npm run migration:run && npm run seed -- --etapa completa)
 
 api_pid=''
 next_pid=''
@@ -65,15 +78,21 @@ cleanup() {
 
 trap cleanup EXIT INT TERM
 
-echo "Iniciando API em http://localhost:3001..."
-node node_modules/json-server/lib/cli/bin.js --watch db.json --port 3001 &
+echo "Iniciando a API em http://localhost:3001..."
+(cd backend && exec node dist/src/main.js) &
 api_pid=$!
 
-echo "Iniciando aplicação em http://localhost:3000..."
+for _ in $(seq 1 60); do
+  if port_is_busy 3001; then break; fi
+  sleep 1
+done
+
+echo "Iniciando a aplicação em http://localhost:3000..."
 node node_modules/next/dist/bin/next dev &
 next_pid=$!
 
 echo "Sistema disponível em http://localhost:3000"
+echo "Contas de demonstração: ganthet@oa.tropa (Guardião), hal@oa.tropa e kilowog@oa.tropa (Lanternas); senhas em backend/README.md."
 echo "Pressione Ctrl+C para encerrar a aplicação e a API."
 
 wait "$next_pid"

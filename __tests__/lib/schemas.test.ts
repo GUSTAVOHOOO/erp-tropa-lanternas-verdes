@@ -1,7 +1,6 @@
 // @vitest-environment node
 import * as z from 'zod'
 import { describe, expect, test } from 'vitest'
-import db from '@/db.json'
 import { setorSchema } from '@/lib/schemas/setor'
 import { lanternaListaSchema, filtroLanternasSchema } from '@/lib/schemas/lanterna'
 import { loginSchema } from '@/lib/schemas/login'
@@ -32,29 +31,11 @@ const ocorrenciaContrato = {
   vencida: false,
 }
 
-describe('db.json respeita o contrato (os schemas de resposta)', () => {
+describe('exemplos do contrato passam nos schemas de resposta', () => {
   test('todas as coleções passam no schema', () => {
     expect(() => z.array(setorSchema).parse([{ id: 0, nome: 'Setor Zero', descricao: 'Setor válido para os testes.' }])).not.toThrow()
     expect(() => z.array(lanternaListaSchema).parse([{ id: 'hal-jordan', codinome: 'Hal Jordan', identidadeCivil: null, especie: null, planetaNatal: null, setorId: 0, status: 'ativo', anoIngresso: null }])).not.toThrow()
     expect(() => z.array(ocorrenciaSchema).parse([ocorrenciaContrato])).not.toThrow()
-  })
-
-  test('referências apontam para registros que existem', () => {
-    const setores = new Set(db.setores.map((s) => s.id))
-    const lanternas = new Set(db.lanternas.map((l) => l.id))
-    const usuarios = new Set(db.usuarios.map((u) => u.id))
-    for (const l of db.lanternas) expect(setores.has(l.setorId)).toBe(true)
-    for (const o of db.ocorrencias) {
-      expect(setores.has(o.setorId)).toBe(true)
-      expect(usuarios.has(o.criadaPor)).toBe(true)
-      if (o.responsavelId) expect(lanternas.has(o.responsavelId)).toBe(true)
-    }
-  })
-
-  test('tem o que o roteiro de demonstração precisa', () => {
-    expect(db.usuarios.map((u) => u.email)).toEqual(['ganthet@oa.tropa', 'hal@oa.tropa', 'kilowog@oa.tropa'])
-    expect(db.lanternas.some((l) => l.setorId === '3601')).toBe(false) // estado vazio na área pública
-    expect(db.ocorrencias.some((o) => o.setorId === '1417')).toBe(false) // estado vazio no painel
   })
 })
 

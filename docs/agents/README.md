@@ -70,8 +70,7 @@ Cada arquivo tem um responsável por tarefa. Se dois agentes precisarem editar
 ou atribua o arquivo completo a um deles. Quem encontrar uma dependência fora
 do escopo registra o motivo e combina a mudança com o responsável.
 
-`package.json`, `package-lock.json`, configurações, `app/globals.css`, `db.json`
-(até ser removido) e o contrato da API ([API.md](../backend/API.md)) afetam várias
+`package.json`, `package-lock.json`, configurações, `app/globals.css` e o contrato da API ([API.md](../backend/API.md)) afetam várias
 frentes. A tarefa deve indicar quem os edita e quais consumidores serão conferidos.
 Reutilize as decisões STACK/DEC da skill de front-end e as decisões vigentes de
 [ESCOPO.md](../backend/ESCOPO.md); uma proposta desta documentação não cria uma
@@ -104,12 +103,11 @@ com parênteses ou colchetes deve ser passado como literal, por exemplo:
 Get-Content -LiteralPath 'app/(painel)/painel/ocorrencias/[id]/page.tsx'
 ```
 
-Enquanto a migração ([frontend/MIGRACAO.md](../frontend/MIGRACAO.md)) não termina,
-`db.json` é persistência do json-server e fixture importada por testes. POST/PATCH
-de uma demonstração altera esse arquivo. Antes de testar escrita, use uma cópia
-dos dados na pasta isolada da tarefa e uma API que aponte para ela. Depois da
-migração, o banco SQLite da API assume esse papel e o teste de escrita usa um
-arquivo de banco próprio da tarefa (`DATABASE_PATH`).
+A persistência é o SQLite da API NestJS (`backend/`), configurado por `DATABASE_PATH`.
+O json-server e o `db.json` foram removidos na FE-09. Testes de escrita usam um
+arquivo de banco próprio da tarefa (`DATABASE_PATH` isolado) e a fixture de
+integração (`npm run fixture:integracao`, somente de teste), nunca o banco de
+demonstração.
 Atribua portas diferentes quando houver várias aplicações/APIs simultâneas e
 defina `API_URL`, `DATABASE_PATH` e portas **no ambiente do processo** que a tarefa inicia, sem editar `.env.local` (arquivo único da checkout). `scripts/iniciar.sh` usa as portas
 fixas 3000/3001; instâncias paralelas precisam de inicialização própria.

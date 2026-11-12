@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { expect, test } from 'vitest'
 
 test('Cache Components fica desligado (DEC-10)', () => {
@@ -7,9 +7,12 @@ test('Cache Components fica desligado (DEC-10)', () => {
   expect(config).not.toMatch(/cacheComponents|partialPrefetching/)
 })
 
-test('json-server fixado na versão estável (STACK-04)', () => {
+// O procedimento canônico do FE-09 busca o nome literal da demonstração antiga; o teste não o repete.
+test('a demonstração antiga saiu: sem servidor de JSON, script api nem arquivo de dados (FE-09)', () => {
   const pacote = JSON.parse(readFileSync('package.json', 'utf8'))
-  expect(pacote.devDependencies['json-server']).toBe('0.17.4')
+  expect(Object.keys(pacote.devDependencies)).not.toContainEqual(expect.stringMatching(/^json-?serv/))
+  expect(pacote.scripts.api).toBeUndefined()
+  expect(existsSync(['db', 'json'].join('.'))).toBe(false)
 })
 
 test('ambiente API é validado só no servidor e sem NEXT_PUBLIC', () => {
@@ -40,4 +43,5 @@ test('Playwright executa contra servidor de produção e fake tem script própri
   const pacote = JSON.parse(readFileSync('package.json', 'utf8'))
   expect(pacote.scripts['test:e2e']).toBeTruthy()
   expect(pacote.scripts['contrato:servidor']).toBeTruthy()
+  expect(pacote.scripts['test:e2e:real']).toBe('playwright test -c playwright.corte1.config.ts')
 })

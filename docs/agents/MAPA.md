@@ -7,17 +7,16 @@ de alterá-los. As regras de código estão nas skills
 [`frontend-web`](../../.claude/skills/frontend-web/SKILL.md) e
 [`backend-api`](../../.claude/skills/backend-api/SKILL.md).
 
-> **Em migração.** Este mapa descreve o **código de hoje**: front-end Next.js
-> consumindo o json-server. O back-end NestJS já está implementado em `backend/`
-> (ver a seção abaixo); a ligação do front a ele (JWT em cookie `httpOnly`,
-> features novas) é o Corte 1 e está em [docs/README.md](../README.md), e o caminho entre os dois
-> em [frontend/MIGRACAO.md](../frontend/MIGRACAO.md). A seção "Leitura, cache e
-> erros" será reescrita quando a migração chegar ao passo correspondente.
+> **Estado atual (2026-11-11).** Este mapa descreve o **código de hoje**: front-end
+> Next.js ligado à API NestJS real em `backend/` (Corte 1 ativado, registro em
+> [INTEGRACAO §3](../INTEGRACAO.md#registro-de-ativação-a--corte-1-e-aditivos)).
+> O json-server e o `db.json` foram removidos na FE-09. O histórico da migração está em
+> [frontend/MIGRACAO.md](../frontend/MIGRACAO.md).
 
 ## Arquitetura atual
 
-Aplicação Next.js com App Router, TypeScript e React. O json-server continua como
-API de demonstração do front. `backend/` agora contém bootstrap HTTP, persistência
+Aplicação Next.js com App Router, TypeScript e React. Toda chamada HTTP passa por
+`lib/api.ts` para a API NestJS. `backend/` contém bootstrap HTTP, persistência
 SQLite/TypeORM, autenticação, seeds mínimo/completo, rotas de Usuários, Setores,
 Lanternas, Ocorrências, linha do tempo de Eventos e Comentários e Dashboard
 (BE-01/02/03/04/05/06/07a/07b/08/09/10/07c/11). A entrega de contrato completa
@@ -30,7 +29,7 @@ flowchart TD
   N[Navegador] --> P[Proxy: pré-checagem da sessão]
   P --> R[Página no servidor: sessão e permissão]
   R --> S[Serviços em lib: fetch e validação da resposta]
-  S --> J[json-server: db.json]
+  S --> J[API NestJS: backend/ com SQLite]
   R --> C[Componentes e formulários: props e RHF]
   C --> A[Server Action: autorização e validação]
   A --> S
@@ -40,8 +39,8 @@ flowchart TD
 
 O proxy só cobre as rotas configuradas em [proxy.ts](../../proxy.ts).
 Leituras públicas não exigem sessão; cada página privada faz a própria checagem.
-O diagrama representa fluxos de aplicação, não uma barreira de autenticação
-oferecida pelo json-server.
+O diagrama representa fluxos de aplicação. A autorização real fica na API
+(JWT validado a cada requisição); o proxy só confere a presença do cookie.
 
 ## Onde trabalhar
 
@@ -63,12 +62,12 @@ oferecida pelo json-server.
 | Gestão de usuários | `app/(painel)/painel/usuarios/` | `lib/gestao-usuarios.ts` (`listarUsuarios`, `alterarPapel`, `vincularLanterna`), `lib/schemas/gestao-usuario.ts` (`filtroUsuariosSchema`, `papelFormularioSchema`, `vinculoFormularioSchema`), `actions.ts`, `FormPapel`, `FormVinculo`, `exigirPapel('guardiao')` |
 | Permissões de ocorrência | `lib/permissoes-ocorrencia.ts` | `acoesPermitidas` e `transicoesPermitidas` pela matriz de [TELAS.md](../frontend/TELAS.md); só visibilidade, a API decide ([matriz](../backend/API.md#matriz-de-permissões)) |
 | UI oficial e assets | `components/oanet/`, `app/globals.css`, `app/laboratorio/` | `docs/UI.md` (D28), `docs/agents/HANDOFF-OANET.md`; `/design-system` antigo é histórico |
-| Dados de demonstração | `db.json` | Schemas e testes que importam os dados (saem na migração) |
+| Dados de demonstração | `backend/` (`npm run seed -- --etapa completa`) | [SEED.md](../backend/SEED.md); o front não lê arquivos de dados locais |
 | Adoção nas rotas reais | Layouts `(site)`/`(painel)`, páginas e componentes OANET | UI-01/UI-02 em `docs/PLANO.md`; propriedade transferida pelo handoff, conferir alterações locais |
 | Regras, rotas e dados da API | `docs/backend/` (`ESCOPO`, `REGRAS-DE-NEGOCIO`, `API`, `MODELO-DE-DADOS`, `ARQUITETURA`) | Skill `backend-api`; o código está em `backend/` (NestJS) |
 | Telas atuais e planejadas | `docs/frontend/TELAS.md` | `docs/frontend/ARQUITETURA.md` |
 | Trabalho independente FE/BE | `docs/frontend/PLANO-IMPLEMENTACAO.md`, `docs/backend/PLANO-IMPLEMENTACAO.md` | `docs/PLANO.md`, `docs/INTEGRACAO.md` |
-| Contrato verificável e exemplos | `docs/contratos/` | `docs/backend/API.md`, `DTOS.md`; a API real existe em `backend/`; o mock HTTP do front (FE-00) ainda não |
+| Contrato verificável e exemplos | `docs/contratos/` | `docs/backend/API.md`, `DTOS.md`; a API real está em `backend/`; o servidor falso de contrato (FE-00, `scripts/contrato/`) serve só a testes de consumidor |
 | Componentes compartilhados (cabeçalho, tabela, badges, campos, estados) | `components/*.tsx`, `components/ui/*` | Inventário e destino em UI-02.00 do plano FE; consumidores em `app/` |
 | Ordem de ativação real (Corte 1 e aditivos) e fixture de integração | `docs/INTEGRACAO.md` §3 e §4 | Planos FE/BE; BE-01/02/03/04/05/06/07a/07b/08/09/10 e fixture etapas a–e existem |
 
@@ -84,7 +83,7 @@ O alias `@/` aponta para a raiz, conforme [tsconfig.json](../../tsconfig.json).
 | Action → formulário | [ResultadoAcao](../../lib/resultado-acao.ts): `ok`, `erro` geral e `errors` por campo; [aplicarErrosDoServidor](../../lib/erros-formulario.ts) aplica os erros no RHF |
 | Página/action → autorização | [DAL](../../lib/dal.ts): `verificarSessao`, `exigirPapel`, criação/leitura/remoção de cookie |
 | Sessão → setor | [escopo.ts](../../lib/escopo.ts): `podeAcessarSetor`, `setorParaFiltro`; o setor vem do `Usuario` devolvido por `/auth/me` |
-| Servidor → HTTP | [api.ts](../../lib/api.ts) tem o cliente único `requisitarApi` e `requisitarApiSemConteudo`: valida o envelope `{ sucesso, dados }` com o schema do serviço, exige cache explícito e envia Bearer quando há token; `urlDaApi` fica só para os serviços json-server ainda não migrados |
+| Servidor → HTTP | [api.ts](../../lib/api.ts) tem o cliente único `requisitarApi` e `requisitarApiSemConteudo`: valida o envelope `{ sucesso, dados }` com o schema do serviço, exige cache explícito e envia Bearer quando há token; todos os serviços passam por ele |
 | HTTP → erro de detalhe | [ApiError](../../lib/api-error.ts) carrega status, código e detalhes; [tratarErroDetalhe](../../lib/erro-detalhe.ts) navega em 401/403, chama `notFound` em 404 e converte 400 de leitura de detalhe em `notFound` |
 | HTTP → erro de Action | [resultadoDeErroApi](../../lib/api-error.ts) e [destinoDoErro](../../lib/api-error.ts) tratam `ApiError` em Actions |
 | Persistência → tela | Actions de escrita revalidam `/painel` no escopo `layout`; cadastro/atribuição redirecionam e status retorna `{ ok: true }` |
@@ -123,9 +122,8 @@ dez caracteres para resolver; a action limpa resolução nos outros status.
 
 ## Sessão e dados privados
 
-> Estado **preparado contra contrato** (FE-02, modo P), na branch
-> `front/fe-02-sessao`, sem ativação real. O contrato é o v1.0.0 da API; a
-> decisão de manter o JWT no servidor do Next está na
+> Estado **ativo** desde o Corte 1 (2026-11-11), com a API NestJS real. O contrato é
+> o v1.0.0 da API; a decisão de manter o JWT no servidor do Next está na
 > [ADR 0001](../adr/0001-token-jwt-fica-no-servidor-do-next.md).
 
 O login chama `POST /auth/login` e grava o JWT devolvido só no cookie `sessao`:
@@ -158,17 +156,11 @@ vai para `/login`, e `/login` ou `/cadastro` com cookie vão para `/painel`. A
 validade do token é decidida pela API, na DAL.
 
 [escopo.ts](../../lib/escopo.ts) concentra `podeAcessarSetor` e `setorParaFiltro`.
-Lanterna sem setor recebe `-1`, que não casa com nenhum setor. As páginas do
-painel ainda usam serviços do json-server, que comparam setores convertendo com
-`Number` e `String`; essa conversão sai na migração (FE-04).
+Lanterna sem setor recebe `-1`, que não casa com nenhum setor.
 
 `lib/sessao.ts` (HMAC) e `lib/usuarios.ts` (busca de usuário com senha) foram
-removidos. O código desta branch não lê mais `SESSION_SECRET`; a remoção de
-`.env.example` fica para FE-09.
-
-O json-server mantém usuários e senhas de demonstração em texto puro e não
-autentica suas próprias rotas. Isso está declarado no [README](../../README.md)
-e em AUTH-11; a migração do back-end depende de autenticação real na API.
+removidos, e `SESSION_SECRET` não existe mais. A senha é verificada só pela API
+(bcrypt), e a sessão é o JWT dela; o [README](../../README.md) descreve a execução.
 
 ## Leitura, cache e erros
 
@@ -191,8 +183,8 @@ e em AUTH-11; a migração do back-end depende de autenticação real na API.
   validam formulários e comparam alterações antes do envio à API.
 - Componentes como `EstadoVazio`, `EsqueletoLista` e `TelaDeErro`, além dos
   `loading.tsx`, `error.tsx` e `not-found.tsx`, representam os estados das rotas.
-- Os serviços usam filtros e ordenação próprios do json-server 0.17.4. Uma nova
-  API precisa preservar esse contrato ou ser adaptada nos serviços/schemas.
+- Filtros, ordenação e paginação seguem o contrato da API (parâmetros da URL validados
+  pelos schemas de cada serviço). Parâmetro fora do contrato falha antes do envio.
 
 ## Interface e referências
 

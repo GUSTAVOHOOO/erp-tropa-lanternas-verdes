@@ -255,6 +255,8 @@ UI-02.11 usa nomes abreviados `{loading,error}` apenas para os dois arquivos exi
 
 ## FE-09 — remoção da demonstração de dados e fechamento
 
+> **Status em 2026-11-11:** **Concluído** na branch `front/fe-09-10-entrega`, sobre o Corte 1 ativado. Remoções: json-server (script `api` e dependência), `db.json` e `SESSION_SECRET` (`.env.example` fica com `API_URL=http://localhost:3001` e `SITE_URL=http://localhost:3000`). `scripts/iniciar.sh` foi reescrito para checar Node 26, instalar raiz e `backend/`, criar `.env.local` e `backend/.env` se faltarem, compilar o back, migrar, semear (`--etapa completa`) e subir API e Next juntos. O procedimento canônico de remoção é a conferência de encerramento deste item; o resultado da execução aparece no registro de entrega da branch.
+
 **Depende:** Corte 1 (FE-01 a FE-05 e FE-07a) mais os aditivos FE-06, FE-07b e FE-08, UI-02 inteira (UI-02.00 a UI-02.12) e os gates G1–G8. **Dono único de `package.json`, `package-lock.json`, `scripts/iniciar.sh` e `db.json`:** dev front (o integrador revisa). `.env.example`, `AGENTS.md`, README e mapa seguem o [INTEGRACAO §1](../INTEGRACAO.md#1-fontes-e-papéis): o integrador os atualiza com a lista de mudanças que o dev front entrega. **Front:** `__tests__/configuracao.test.ts`, testes que importam db, marcadores removidos em `lib/` e rotas.
 
 - [ ] Migrar todas as fixtures de teste para respostas do contrato/banco isolado; confirmar que nenhum consumidor exige json-server, sessão HMAC ou senha retornada pelo serviço.
@@ -283,6 +285,8 @@ Conferência da árvore de dependências: `npm ls json-server --all`. Resultado 
 **Aceite:** o procedimento acima sai vazio; `npm run test:run`, `npm run lint` e `npm run build` passam ou as falhas baseline estão relatadas separadamente, sem declarar aprovação. Nenhum fake é inicializado no start da demonstração; indisponibilidade real gera erro visível.
 
 ## FE-10 — E2E real e entrega independente concluída
+
+> **Status em 2026-11-11:** **Concluído como ferramenta** na branch `front/fe-09-10-entrega`: o E2E contra a API NestJS real é `npm run test:e2e:real` (`playwright test -c playwright.corte1.config.ts`), e exige o build do back (`backend/`) e do front, com a API no ar, banco migrado e semeado. O aceite final e o registro de evidências (roteiro visual e gate G9) seguem pendentes até a execução registrada em [INTEGRACAO](../INTEGRACAO.md). `npm run test:e2e` continua no servidor falso de contrato.
 
 **Depende:** FE-09, BE-12 e BE-FX completo, gate G9. **Novos/ajustar:** `e2e/*.spec.ts` dos incrementos, `playwright.config.ts`; documentação final atribuída à integração.
 

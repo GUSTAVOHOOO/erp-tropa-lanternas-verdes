@@ -1,7 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import { ApiError } from '@/lib/api-error'
-import { urlDaApi } from '@/lib/api'
 import { listarSetores } from '@/lib/setores'
 import { buscarLanterna, listarLanternas } from '@/lib/lanternas'
 
@@ -25,18 +24,6 @@ beforeEach(() => {
 afterEach(() => {
   vi.unstubAllEnvs()
   vi.unstubAllGlobals()
-})
-
-describe('urlDaApi', () => {
-  test('monta a URL a partir do API_URL e ignora filtros vazios', () => {
-    const url = urlDaApi('/setores', { setor: '2814', status: undefined, vazio: '' })
-    expect(url.toString()).toBe('http://localhost:3001/setores?setor=2814')
-  })
-
-  test('sem API_URL explica o que falta', () => {
-    vi.stubEnv('API_URL', '')
-    expect(() => urlDaApi('/setores')).toThrow('API_URL não definido no .env.local')
-  })
 })
 
 describe('leituras', () => {

@@ -35,9 +35,8 @@ siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md), com a UI-01 e toda a su
   [docs/agents/TAREFA.md](docs/agents/TAREFA.md). Cada arquivo tem um responsável
   por tarefa; testes acompanham o código do respectivo responsável.
 - Preserve alterações locais de outras tarefas. Confira `git status --short`
-  antes de editar. Até a migração para a API real, `db.json` é persistência da
-  demonstração e fixture de testes; testes manuais de escrita precisam de dados
-  isolados.
+  antes de editar. A persistência é o SQLite da API (`backend/`); testes de
+  escrita usam banco próprio (`DATABASE_PATH` isolado) e a fixture de integração.
 - Mudanças em dependências, configuração, dados compartilhados e decisões do
   projeto (`docs/backend/ESCOPO.md`) precisam constar explicitamente no escopo
   da tarefa. O contrato da API (`docs/backend/API.md`) muda junto com o código.

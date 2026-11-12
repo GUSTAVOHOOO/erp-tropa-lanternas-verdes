@@ -38,7 +38,9 @@ export default async function PainelPage() {
       </CabecalhoPagina>
 
       <MolduraOa titulo="Status operacional" icone="painel">
-        <BarraStatus ocorrencias={ocorrencias} />
+        <div className="oa-panel-body">
+          <BarraStatus ocorrencias={ocorrencias} />
+        </div>
       </MolduraOa>
 
       <MolduraOa titulo="Mais recentes" icone="ocorrencias">

@@ -1,10 +1,10 @@
 # Telas do front-end
 
-De 2026-11-06. A coluna **Estado** diz se a tela existe hoje ou é planejada. As rotas planejadas foram aceitas em D23. Regras de acesso em [backend/API.md](../backend/API.md#matriz-de-permissões); regras de negócio em [REGRAS-DE-NEGOCIO.md](../backend/REGRAS-DE-NEGOCIO.md). A **forma visual** de cada tela é do redesign OANET ([UI.md](../UI.md)); aqui só a função.
+De 2026-11-06 (atualizado em 2026-11-11 após conclusão da UI-02). A coluna **Estado** diz se a tela existe hoje ou é planejada. As rotas planejadas foram aceitas em D23. Regras de acesso em [backend/API.md](../backend/API.md#matriz-de-permissões); regras de negócio em [REGRAS-DE-NEGOCIO.md](../backend/REGRAS-DE-NEGOCIO.md). A **forma visual** de cada tela é do redesign OANET ([UI.md](../UI.md)); aqui só a função.
 
 Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 
-**Situação visual em 2026-11-10:** laboratório OANET aprovado; casca UI-01 concluída e integrada à `main` (PR #1); componentes compartilhados da UI-02.00 adaptados à OANET e integrados à `main` (PR #3: campos, select, tabela, selos, cabeçalho, estados e avisos; verificação em navegador registrada na PR); cidade de Oa (`CidadeOa`) redesenhada (PR #2). A composição de cada página segue a anterior até a sua linha UI-02.01 a UI-02.12; o 404 global fica fora da casca, só com o escopo de cores OANET, até a UI-02.11. “Existe” abaixo descreve o fluxo atual com json-server, não comprova migração visual OANET. A ordem e a propriedade de cada rota/estado estão no [plano FE/UI](PLANO-IMPLEMENTACAO.md); integração de dados segue [INTEGRACAO.md](../INTEGRACAO.md).
+**Situação visual em 2026-11-11:** laboratório OANET aprovado; casca UI-01 concluída e integrada à `main` (PR #1); componentes compartilhados da UI-02.00 integrados à `main` (PR #3); cidade de Oa (`CidadeOa`) redesenhada (PR #2). Toda a suíte UI-02 (UI-02.01 a UI-02.12) foi concluída e integrada à `main` (PRs #6, #7 e #8), migrando todas as 12 rotas existentes para a identidade visual OANET. O handoff de entrega e o backlog de refinamentos visuais estão documentados em [docs/agents/HANDOFF-UI-02.md](../agents/HANDOFF-UI-02.md). Integração de dados segue [INTEGRACAO.md](../INTEGRACAO.md).
 
 ## Públicas
 

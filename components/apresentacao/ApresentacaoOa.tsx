@@ -8,6 +8,7 @@ import { IconeOa } from '@/components/oanet/IconeOa'
 import { useMovimentoOa } from '@/components/oanet/useMovimentoOa'
 import { desenharDobra, gerarEstrelasDobra } from './dobra'
 import { variaveisMolas } from './mola'
+import { CamadaLanternas } from './lanternas'
 import { PARTES, SLIDES, type Parte } from './slides'
 
 const LARGURA = 1920
@@ -218,6 +219,7 @@ export function ApresentacaoOa() {
     >
       <FundoCosmico />
       <div className="dk-grade-fundo" aria-hidden="true" />
+      <CamadaLanternas slideId={slide.id} chave={transicao?.chave ?? 0} />
       <p className="dk-sr" aria-live="polite">{`Slide ${indice + 1} de ${SLIDES.length}: ${slide.titulo}`}</p>
 
       <main className="dk-palco" aria-roledescription="apresentação" aria-label="Apresentação final da Central de Oa">

@@ -4,6 +4,8 @@ const baseURL = 'http://127.0.0.1:32123'
 
 export default defineConfig({
   testDir: './e2e',
+  // e2e/corte1 roda contra a API real, com a própria configuração (playwright.corte1.config.ts).
+  testIgnore: ['corte1/**'],
   // Os specs dividem a porta do servidor falso de contrato (32124): um worker por vez.
   workers: 1,
   reporter: 'list',

@@ -1,4 +1,4 @@
-import { requisitarApi, type OpcoesApi } from '@/lib/api'
+import { requisitarApi, type CacheApi, type OpcoesApi } from '@/lib/api'
 import { ApiError } from '@/lib/api-error'
 import { lerTokenObrigatorio } from '@/lib/dal'
 import { paginaDe, type Pagina } from '@/lib/schemas/paginacao'
@@ -8,8 +8,8 @@ import type { LanternaCriacaoEntrada, LanternaEdicaoEntrada } from '@/lib/schema
 export type FiltroListaLanternas = Partial<Pick<FiltroLanternas, 'busca' | 'status' | 'setor' | 'ordenar' | 'ordem' | 'pagina'>> & { limite?: number }
 
 /** Lista uma página de Lanternas conforme os filtros aceitos pela API. [API-19] */
-export async function listarLanternas(filtro: FiltroListaLanternas = {}): Promise<Pagina<LanternaLista>> {
-  return requisitarApi('/lanternas', paginaDe(lanternaListaSchema), { consulta: filtro, cache: { revalidate: 60 } })
+export async function listarLanternas(filtro: FiltroListaLanternas = {}, cache: CacheApi = { revalidate: 60 }): Promise<Pagina<LanternaLista>> {
+  return requisitarApi('/lanternas', paginaDe(lanternaListaSchema), { consulta: filtro, cache })
 }
 
 /** Busca uma Ficha pública; slug inválido ou recurso inexistente retorna null. */
@@ -23,12 +23,15 @@ export async function buscarLanterna(slug: string): Promise<LanternaFicha | null
   }
 }
 
-/** Reúne as páginas para mapas de nomes e seletores; não serve para calcular métricas. */
-export async function listarTodosLanternas(filtro: { setor?: number } = {}): Promise<LanternaLista[]> {
-  const primeira = await listarLanternas({ ...filtro, pagina: 1, limite: 50 })
+/**
+ * Reúne as páginas para mapas de nomes e seletores; não serve para calcular métricas.
+ * Telas operacionais (atribuição) pedem `{ cache: 'no-store' }`: status e Setor precisam estar atuais. [API-14]
+ */
+export async function listarTodosLanternas(filtro: { setor?: number } = {}, cache: CacheApi = { revalidate: 60 }): Promise<LanternaLista[]> {
+  const primeira = await listarLanternas({ ...filtro, pagina: 1, limite: 50 }, cache)
   const lanternas = [...primeira.itens]
   for (let pagina = 2; pagina <= primeira.meta.paginas; pagina += 1) {
-    const resposta = await listarLanternas({ ...filtro, pagina, limite: 50 })
+    const resposta = await listarLanternas({ ...filtro, pagina, limite: 50 }, cache)
     lanternas.push(...resposta.itens)
   }
   return lanternas

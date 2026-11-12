@@ -1,6 +1,6 @@
 # Integração entre front-end e back-end
 
-**Estado (2026-11-11):** procedimento para duas pessoas. A pausa da DOC-03 terminou. O **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12, com a fixture de integração BE-FX e o comando `fixture:integracao`) e foi auditado contra o contrato em 2026-11-11 ([relatórios](relatorios/README.md)). O **front ainda usa Next + json-server**: o Corte 1 (cliente HTTP único, sessão JWT, todos os consumidores e dashboard) não foi feito, e o fake HTTP de contrato do front (FE-00) e os demais gates do front abaixo seguem pendentes. Aprovação visual do laboratório não prova integração de rotas. O hash G-1 foi reconferido em 2026-11-11 (revisão 2, em §2): o gate G-9 do back deixa de aguardar o registro.
+**Estado (2026-11-11):** procedimento para duas pessoas. A pausa da DOC-03 terminou. O **back-end NestJS está implementado** em `backend/` (BE-01 a BE-12, com a fixture de integração BE-FX e o comando `fixture:integracao`) e foi auditado contra o contrato em 2026-11-11 ([relatórios](relatorios/README.md)). O **Corte 1 e os aditivos G6, G7b e G8 foram ativados (A) em 2026-11-11**: o front usa a API real pelo cliente HTTP único e pela sessão JWT, com o registro em §3 ([Registro de ativação A](#registro-de-ativação-a--corte-1-e-aditivos)). Restam FE-09 (remoção do json-server e do `db.json`) e FE-10/G9. Aprovação visual do laboratório não prova integração de rotas. O hash G-1 foi reconferido em 2026-11-11 (revisão 2, em §2): o gate G-9 do back deixa de aguardar o registro.
 
 **Resultado:** front e back trabalham em branches separadas, sobre a mesma revisão contratual, e combinam os recursos reais em **um primeiro corte integrado único** (Corte 1, §3), seguido de recursos aditivos. Os detalhes executáveis de cada lado estão no [plano front](frontend/PLANO-IMPLEMENTACAO.md) e [plano back](backend/PLANO-IMPLEMENTACAO.md); a visão de sequência fica em [PLANO](PLANO.md).
 
@@ -141,6 +141,23 @@ Exigências do Corte 1:
 | G7b — Minha fila | Aditivo | BE-08/09 | FE-07b | `/minha-fila` L vinculado, só atribuídas não resolvidas/não excluídas; G403, sem ficha409 `CONTA_SEM_LANTERNA`. Resolver/excluir retira da fila e reabrir atribuída repõe. |
 | G8 — gestão | Aditivo | BE-04 | FE-08 | Usuários/papel/vínculo, CRUD Setor e criar/editar/status Lanterna. Último G, Setor em uso, mentor cíclico, conta sem Setor e vínculo duplicado têm mensagem/código acordados. `SETOR_EM_USO` e `LANTERNA_EM_USO` por Ocorrência histórica ou excluída são provados em A com os casos da fixture (§4), pois o Corte 1 já fornece Ocorrências. Se alguém antecipar G8 em B (fixtures por repository), esses dois casos ficam registrados como B e só ganham A no conjunto real. L bloqueado por URL e Action. |
 | G9 — remoção/entrega | Fecho | BE-07c/12 e todos os anteriores | FE-09/10 e UI-02 inteira | Instalação limpa, migration/seed, build e E2E reais, remoção de json-server/db/session HMAC pelo procedimento de FE-09, fake fora de produção. Fluxos de ponta a ponta e persistência após reinício. |
+
+### Registro de ativação A — Corte 1 e aditivos
+
+| Campo | Valor |
+|---|---|
+| Data | 2026-11-11 (noite) |
+| Responsável pelo aceite | Caio Macedo (dev front), por decisão registrada na tarefa; comandos executados por Claude Code (Opus 5.5) com workers Orca |
+| Estado combinado | `main` `7ee3357` (back-end corrigido, UI-02/UI-03, G-1 revisão 2) + cadeia FE-00 a FE-08 rebaseada (PRs #11 a #18) |
+| Contrato | `openapi` v1.0.0; pacote G-1 **revisão 2** `4e5dfad54d593521612c52eb29572a042114e146ee3be077403709b7a5e228f3` (OpenAPI e cenários idênticos aos da revisão 1 usada na preparação P) |
+| Ambiente | API `backend/dist` em `127.0.0.1:32134`, SQLite novo em pasta temporária, migrations, `fixture:integracao --etapa e`; Next `next start` em `127.0.0.1:32133` com `API_URL` no processo; cache de dados do Next apagado antes do start. Script: `scripts/corte1/api.mjs`; configuração: `playwright.corte1.config.ts` |
+| Gates cobertos | G1, G2, G3, G4, G5, G7a (Corte 1) e G6, G7b, G8 (aditivos), com login real de G, L2814, L674 e L-sem-ficha |
+| Comandos e resultados | `SITE_URL=http://127.0.0.1:32133 npx playwright test -c playwright.corte1.config.ts`: **40 passed** (`e2e/corte1/01` a `04`); `npm run test:run`: 529 passed (71 arquivos); `npm run lint`: 0; `npx tsc --noEmit -p .`: 0; `npm run build`: ok; `npx playwright test` (fake): 24 passed; `node --test scripts/contrato/servidor.test.mjs`: 8/8; `node docs/agents/validar-documentacao.mjs`: 0 falhas |
+| Roteiro visual | `e2e/corte1/04-roteiro-visual.spec.ts`: 14 rotas em 375, 768 e 1440 px, sem rolagem horizontal, Tab até o conteúdo com foco visível, `prefers-reduced-motion`; capturas em `.corte1/capturas/` (local, fora do Git) |
+| Persistência | Ocorrência criada por L2814 lida de novo após parar e subir a API sobre o mesmo SQLite |
+| Defeitos achados e corrigidos | Seletor de responsável da atribuição lia Lanternas com cache de 60 s (agora `no-store`); Actions de gestão de Lanternas passam a revalidar `/painel`; layout dos painéis de gestão (`.oa-panel-body`, `.oa-table-scroll`, link "Gerenciar") |
+| Rollback | Combinação anterior aceita: `main` `7ee3357` com json-server (`npm run api` sobre cópia do `db.json`). Não existia SQLite de demonstração anterior a restaurar; nenhuma migration destrutiva |
+| Limites | O 429 do throttle de login e os conflitos impedidos pela UI (responsável de outro setor, liberar em andamento) são provados nos testes do provedor e de Action, não no E2E. FE-09 e FE-10/G9 seguem abertos |
 
 **Ordem:** Corte 1 → (G6, G7b, G8 em qualquer ordem entre si) → G9. Dentro do corte, a ordem de preparação é G1→G2→G3→G4→G5→G7a, sem publicar nada no meio. Contas L, G e vínculos usados por G8 e G7b vêm da fixture; nenhum gate exige bootstrap público.
 

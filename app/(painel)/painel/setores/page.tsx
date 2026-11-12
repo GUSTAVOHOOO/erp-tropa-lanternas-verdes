@@ -42,15 +42,19 @@ export default async function SetoresPage({ searchParams }: SetoresPageProps) {
               href="/painel/setores"
               className="oa-button oa-button--linha text-xs inline-flex"
             >
-              Cancelar edição
+              <span className="oa-button-content">Cancelar edição</span>
             </Link>
           }
         >
-          <FormSetor setor={setorEmEdicao} />
+          <div className="oa-panel-body">
+            <FormSetor setor={setorEmEdicao} />
+          </div>
         </MolduraOa>
       ) : (
         <MolduraOa titulo="Novo setor" icone="painel">
-          <FormSetor />
+          <div className="oa-panel-body">
+            <FormSetor />
+          </div>
         </MolduraOa>
       )}
 
@@ -61,7 +65,7 @@ export default async function SetoresPage({ searchParams }: SetoresPageProps) {
             descricao="Cadastre o primeiro setor no formulário acima."
           />
         ) : (
-          <div className="overflow-x-auto">
+          <div className="oa-table-scroll">
             <table className="oa-table w-full">
               <thead>
                 <tr>
@@ -83,7 +87,7 @@ export default async function SetoresPage({ searchParams }: SetoresPageProps) {
                           href={`/painel/setores?editar=${setor.id}`}
                           className="oa-button oa-button--linha text-xs inline-flex"
                         >
-                          Editar
+                          <span className="oa-button-content">Editar</span>
                         </Link>
                         <ExcluirSetor setorId={setor.id} />
                       </div>

@@ -244,6 +244,7 @@ describe('Server Actions de gestão de Lanternas (FE-08)', () => {
 
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas')
+      expect(revalidatePathMock).toHaveBeenCalledWith('/painel', 'layout')
     })
 
     it('editarLanternaAcao revalida e redireciona', async () => {
@@ -258,6 +259,7 @@ describe('Server Actions de gestão de Lanternas (FE-08)', () => {
 
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas')
+      expect(revalidatePathMock).toHaveBeenCalledWith('/painel', 'layout')
     })
 
     it('criarLanternaAcao aceita Setor 0 válido e repassa para a API', async () => {
@@ -297,6 +299,7 @@ describe('Server Actions de gestão de Lanternas (FE-08)', () => {
       expect(resultado).toEqual({ ok: true })
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas')
+      expect(revalidatePathMock).toHaveBeenCalledWith('/painel', 'layout')
       expect(redirectMock).not.toHaveBeenCalled()
     })
   })

@@ -154,12 +154,14 @@ export default async function PainelLanternasPage({ searchParams }: PainelLanter
             titulo={fichaParaEditar ? `Editar Ficha: ${fichaParaEditar.codinome}` : 'Nova Ficha'}
             icone="mais"
           >
-            <FormLanterna
-              modo={fichaParaEditar ? 'edicao' : 'criacao'}
-              ficha={fichaParaEditar}
-              setores={setores}
-              lanternas={todosLanternas}
-            />
+            <div className="oa-panel-body">
+              <FormLanterna
+                modo={fichaParaEditar ? 'edicao' : 'criacao'}
+                ficha={fichaParaEditar}
+                setores={setores}
+                lanternas={todosLanternas}
+              />
+            </div>
           </MolduraOa>
         </div>
       </div>

@@ -88,6 +88,8 @@ export async function criarLanternaAcao(dados: unknown): Promise<ResultadoAcao> 
 
   revalidatePath('/painel/lanternas') // [API-14]
   revalidatePath('/lanternas')
+  // A atribuição de Ocorrências lista Lanternas pelo mesmo GET com revalidate: 60; a mudança vale já no painel. [API-14]
+  revalidatePath('/painel', 'layout')
   redirect('/painel/lanternas') // [ROTA-20]
 }
 
@@ -123,6 +125,8 @@ export async function editarLanternaAcao(slug: unknown, dados: unknown): Promise
 
   revalidatePath('/painel/lanternas') // [API-14]
   revalidatePath('/lanternas')
+  // A atribuição de Ocorrências lista Lanternas pelo mesmo GET com revalidate: 60; a mudança vale já no painel. [API-14]
+  revalidatePath('/painel', 'layout')
   redirect('/painel/lanternas') // [ROTA-20]
 }
 
@@ -144,5 +148,7 @@ export async function alterarStatusLanternaAcao(slug: unknown, status: unknown):
 
   revalidatePath('/painel/lanternas') // [API-14]
   revalidatePath('/lanternas')
+  // A atribuição de Ocorrências lista Lanternas pelo mesmo GET com revalidate: 60; a mudança vale já no painel. [API-14]
+  revalidatePath('/painel', 'layout')
   return { ok: true }
 }

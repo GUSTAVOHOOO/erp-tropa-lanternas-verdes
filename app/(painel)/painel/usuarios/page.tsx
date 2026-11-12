@@ -58,14 +58,16 @@ export default async function UsuariosPage({ searchParams }: UsuariosPageProps) 
         <section aria-label="Gerenciamento da conta">
           {contaSelecionada ? (
             <MolduraOa titulo={`Gerenciar conta: ${contaSelecionada.nome}`} icone="hierarquia">
-              <div className="grid gap-6 md:grid-cols-2">
-                <div>
-                  <h3 className="mb-4 text-base font-semibold">Papel da conta</h3>
-                  <FormPapel usuario={contaSelecionada} setores={setores} />
-                </div>
-                <div>
-                  <h3 className="mb-4 text-base font-semibold">Vínculo com Ficha de Lanterna</h3>
-                  <FormVinculo usuario={contaSelecionada} lanternas={lanternas} />
+              <div className="oa-panel-body">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <h3 className="mb-4 text-base font-semibold">Papel da conta</h3>
+                    <FormPapel usuario={contaSelecionada} setores={setores} />
+                  </div>
+                  <div>
+                    <h3 className="mb-4 text-base font-semibold">Vínculo com Ficha de Lanterna</h3>
+                    <FormVinculo usuario={contaSelecionada} lanternas={lanternas} />
+                  </div>
                 </div>
               </div>
             </MolduraOa>
@@ -164,17 +166,17 @@ export default async function UsuariosPage({ searchParams }: UsuariosPageProps) 
 
                     return (
                       <tr key={usuario.id}>
-                        <td>
+                        <td className="align-middle">
                           <strong>{usuario.nome}</strong>
                         </td>
-                        <td>{usuario.email}</td>
-                        <td>{papelTexto}</td>
-                        <td>{setorTexto}</td>
-                        <td>{fichaTexto}</td>
-                        <td>
+                        <td className="align-middle">{usuario.email}</td>
+                        <td className="align-middle">{papelTexto}</td>
+                        <td className="align-middle">{setorTexto}</td>
+                        <td className="align-middle">{fichaTexto}</td>
+                        <td className="align-middle">
                           <Link
                             href={`/painel/usuarios?${queryGerenciar.toString()}`}
-                            className="oa-button oa-button--linha"
+                            className="oa-button oa-button--linha inline-flex text-xs"
                           >
                             <span className="oa-button-content">Gerenciar</span>
                           </Link>

@@ -110,4 +110,6 @@ test('AtribuirPage renderiza casca OANET com link de volta e moldura', async () 
   expect(screen.getByText('Incursão Sinestro')).toBeDefined()
   expect(screen.getByRole('link', { name: /Voltar à ocorrência/ }).getAttribute('href')).toBe('/painel/ocorrencias/00000000-0000-4000-8000-000000000001')
   expect(container.querySelector('.oa-panel')).not.toBeNull()
+  // Seletor operacional: status e Setor das Fichas vêm sem cache. [API-14]
+  expect(listarTodosLanternas).toHaveBeenCalledWith({ setor: 2814 }, { cache: 'no-store' })
 })

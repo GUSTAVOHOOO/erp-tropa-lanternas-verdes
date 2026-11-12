@@ -195,6 +195,21 @@ o Apêndice A não especificou; fica para o Corte 1 (o contrato da lista não tr
 7. Liberar os workers restantes: `orca orchestration worker-list --terminal-state reclaimable`
    e liberar cada um (os dois do FE-08 se liberam sozinhos às 23:40Z).
 
+## 4b. Rebase e Corte 1 (2026-11-11, noite)
+
+- Depois do merge de #10 e do back-end corrigido na `main` (`7ee3357`, G-1 revisão 2 `4e5dfad5…33b0`),
+  a cadeia #11…#18 foi rebaseada com `git rebase --update-refs origin/main` e publicada com
+  `--force-with-lease`. As páginas de ocorrência ficaram com a versão da cadeia e o REF-02
+  voltou num commit próprio (`fix(ui-03): reaplica .oa-panel-body`).
+- Corte 1 e aditivos ativados (A), com o dev front como responsável pelo aceite. Registro completo em
+  [INTEGRACAO §3](../INTEGRACAO.md#registro-de-ativação-a--corte-1-e-aditivos). E2E real:
+  `SITE_URL=http://127.0.0.1:32133 npx playwright test -c playwright.corte1.config.ts` (40 passed);
+  exige `npm ci` e `npm run build` em `backend/`.
+- O manifesto da fixture e as capturas ficam em `.corte1/` (o Playwright limpa `test-results/`).
+  O cache de dados do Next sobrevive ao reinício: a configuração do Corte 1 o apaga antes do start.
+- Relatórios para a apresentação (fora do repositório): `C:\Projetoselatorios-apresentacao\`.
+- Próximo: merge de #11 a #18 em ordem e FE-09/FE-10.
+
 ## 5. Depois do FE-08
 
 - FE-09 e FE-10 fecham **depois** dos aditivos e dependem da API real e dos gates G1–G8

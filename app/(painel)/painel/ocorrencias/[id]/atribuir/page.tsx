@@ -30,7 +30,7 @@ export default async function AtribuirPage({ params }: AtribuirPageProps) {
 
   let lanternas: LanternaLista[] = []
   try {
-    lanternas = await listarTodosLanternas({ setor: ocorrencia.setorId })
+    lanternas = await listarTodosLanternas({ setor: ocorrencia.setorId }, { cache: 'no-store' })
   } catch (erro) {
     tratarErroDetalhe(erro) // [API-12]
   }

@@ -1,6 +1,6 @@
 # Roteiro da apresentação final: Central de Oa
 
-Esqueleto para leitura e ensaio. Depois vira slides. Duração alvo: **45 min de fala + até 5 min de perguntas**, em três partes de ~15 min.
+Roteiro para leitura e ensaio. Os slides estão no próprio app, na rota `/apresentacao` (código em `components/apresentacao/`; teclas: ← → navega, N notas do apresentador, O visão geral, F tela cheia, T cronômetro). Duração alvo: **45 min de fala + até 5 min de perguntas**, em três partes de ~15 min.
 
 Números conferidos no repositório em 2026-11-11 (fontes ao lado de cada um). Antes de apresentar, rode os testes de novo e atualize os números que mudarem.
 

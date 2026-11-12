@@ -4,6 +4,7 @@
 @import "../components/oanet/movimento-vetores.css";
 @import "../components/oanet/movimento-componentes.css";
 @import "../components/oanet/movimento-construtos.css";
+@import "../components/apresentacao/apresentacao.css";
 
 /* Design system da Tropa, tema único "Noite". Spec: docs/superpowers/specs/2026-10-07-design-system-tropa-design.md */
 /* [CSS-09][DEC-13] todas as cores do projeto ficam neste arquivo */

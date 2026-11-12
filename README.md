@@ -125,6 +125,7 @@ A sessão é o JWT emitido por `POST /auth/login` da API, guardado em cookie `ht
 | `/painel/ocorrencias/[id]` | autenticado | Detalhe e mudança de status |
 | `/painel/ocorrencias/[id]/atribuir` | Guardião | Atribuir responsável |
 | `/laboratorio` | público | Laboratório do redesign (dados ilustrativos) |
+| `/apresentacao` | público (fora do índice) | Slides da apresentação final: ← → navega, N notas, O visão geral, F tela cheia, T cronômetro |
 
 O mapa completo das telas atuais e planejadas está em [docs/frontend/TELAS.md](docs/frontend/TELAS.md).
 

@@ -30,9 +30,9 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Nova ocorrência | `/painel/ocorrencias/nova` | Guardião, Lanterna | Preparado contra contrato (FE-04/05, P) | Formulário de registro em MolduraOa com BotaoOa, CampoTexto, CampoSelect e validação zóide cliente/servidor |
 | Detalhe | `/painel/ocorrencias/[id]` | Guardião, Lanterna | Preparado contra contrato (FE-04/05/06, P) | Detalhe operacional em MolduraOa com badges de gravidade/status, dados formatados, formulário FormStatus com BotaoOa, ação de atribuição, linha do tempo e comentários |
 | Atribuir | `/painel/ocorrencias/[id]/atribuir` | Guardião | Preparado contra contrato (FE-04/05, P) | Atribuição de responsável em MolduraOa com BotaoOa, CampoSelect e validação de permissão exclusiva para Guardião |
-| Lanternas (gestão) | `/painel/lanternas` | Guardião | **Nova** | Lista, criar, editar, afastar e reativar. Mostra a carga de cada um |
-| Setores (gestão) | `/painel/setores` | Guardião | **Nova** | Criar, editar e remover; remoção bloqueada se o Setor estiver em uso |
-| Usuários | `/painel/usuarios` | Guardião | **Nova** | Lista, promoção de papel e vínculo da conta a uma Ficha de Lanterna; impede rebaixar o último Guardião |
+| Lanternas (gestão) | `/painel/lanternas` | Guardião | Preparado contra contrato (FE-08, P) | Lista, criar, editar, afastar e reativar. Mostra a carga de cada um |
+| Setores (gestão) | `/painel/setores` | Guardião | Preparado contra contrato (FE-08, P) | Criar, editar e remover; remoção bloqueada se o Setor estiver em uso |
+| Usuários | `/painel/usuarios` | Guardião | Preparado contra contrato (FE-08, P) | Lista, promoção de papel e vínculo da conta a uma Ficha de Lanterna; impede rebaixar o último Guardião |
 
 ## Ações por Status e papel (tela de Detalhe)
 

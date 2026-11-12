@@ -64,7 +64,12 @@ export async function createContractServer({ port, latencyMs = 0 } = {}) {
       for (const parametro of rota.op.parameters ?? []) {
         if (parametro.in === 'query' && query[parametro.name] !== undefined && !validar(parametro.schema, query[parametro.name])) return erro(res, 400, 'DADOS_INVALIDOS', 'Parâmetro incompatível com o contrato.', url.pathname, rota);
         if (parametro.in === 'query' && parametro.required && query[parametro.name] === undefined) return erro(res, 400, 'DADOS_INVALIDOS', `Parâmetro obrigatório ausente: ${parametro.name}.`, url.pathname, rota);
-        if (parametro.in === 'path' && !validar(parametro.schema, url.pathname.split('/')[rota.pathname.split('/').findIndex((part) => part === `{${parametro.name}}`)])) return erro(res, 400, 'DADOS_INVALIDOS', `Parâmetro de rota incompatível: ${parametro.name}.`, url.pathname, rota);
+        if (parametro.in === 'path') {
+          const bruto = url.pathname.split('/')[rota.pathname.split('/').findIndex((part) => part === `{${parametro.name}}`)];
+          // Parâmetro de rota chega como texto; inteiro/número é convertido antes de validar (ex.: /setores/{id}).
+          const valor = (parametro.schema?.type === 'integer' || parametro.schema?.type === 'number') && /^-?\d+(\.\d+)?$/.test(bruto) ? Number(bruto) : bruto;
+          if (!validar(parametro.schema, valor)) return erro(res, 400, 'DADOS_INVALIDOS', `Parâmetro de rota incompatível: ${parametro.name}.`, url.pathname, rota);
+        }
       }
 
       let body;

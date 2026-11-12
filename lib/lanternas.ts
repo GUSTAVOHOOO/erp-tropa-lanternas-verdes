@@ -1,7 +1,9 @@
-import { requisitarApi } from '@/lib/api'
+import { requisitarApi, type OpcoesApi } from '@/lib/api'
 import { ApiError } from '@/lib/api-error'
+import { lerTokenObrigatorio } from '@/lib/dal'
 import { paginaDe, type Pagina } from '@/lib/schemas/paginacao'
 import { lanternaFichaSchema, lanternaListaSchema, slugLanternaSchema, type FiltroLanternas, type LanternaFicha, type LanternaLista } from '@/lib/schemas/lanterna'
+import type { LanternaCriacaoEntrada, LanternaEdicaoEntrada } from '@/lib/schemas/gestao-lanterna'
 
 export type FiltroListaLanternas = Partial<Pick<FiltroLanternas, 'busca' | 'status' | 'setor' | 'ordenar' | 'ordem' | 'pagina'>> & { limite?: number }
 
@@ -30,4 +32,25 @@ export async function listarTodosLanternas(filtro: { setor?: number } = {}): Pro
     lanternas.push(...resposta.itens)
   }
   return lanternas
+}
+
+async function opcoesPrivadas(extra: Omit<OpcoesApi, 'cache' | 'token'> = {}): Promise<OpcoesApi> {
+  return { ...extra, token: await lerTokenObrigatorio(), cache: { cache: 'no-store' } }
+}
+
+/** Cria uma nova Ficha de Lanterna no sistema. Restrito ao Guardião. [API-06] */
+export async function criarLanterna(dados: LanternaCriacaoEntrada): Promise<LanternaFicha> {
+  return requisitarApi('/lanternas', lanternaFichaSchema, await opcoesPrivadas({ metodo: 'POST', corpo: dados }))
+}
+
+/** Edita os dados de uma Ficha de Lanterna; envia apenas os campos alterados. Restrito ao Guardião. [API-06] */
+export async function editarLanterna(slug: string, campos: LanternaEdicaoEntrada): Promise<LanternaFicha> {
+  const slugValido = slugLanternaSchema.parse(slug)
+  return requisitarApi(`/lanternas/${encodeURIComponent(slugValido)}`, lanternaFichaSchema, await opcoesPrivadas({ metodo: 'PATCH', corpo: campos }))
+}
+
+/** Altera o status operacional da Ficha (ativo ou afastado). Restrito ao Guardião. [API-06] */
+export async function alterarStatusLanterna(slug: string, status: 'ativo' | 'afastado'): Promise<LanternaFicha> {
+  const slugValido = slugLanternaSchema.parse(slug)
+  return requisitarApi(`/lanternas/${encodeURIComponent(slugValido)}/status`, lanternaFichaSchema, await opcoesPrivadas({ metodo: 'PATCH', corpo: { status } }))
 }

@@ -84,3 +84,13 @@ test('o cenário escolhido vale só para a sua operação; reset volta ao sucess
   assert.equal(deNovo.status, 200);
   await deNovo.body?.cancel();
 });
+
+test('parâmetro de rota inteiro é aceito como número e texto inválido é recusado', async () => {
+  fake.reset();
+  const valido = await fetch(`${fake.url}/setores/2814`);
+  assert.equal(valido.status, 200);
+  await valido.body?.cancel();
+  const invalido = await fetch(`${fake.url}/setores/abc`);
+  assert.equal(invalido.status, 400);
+  await invalido.body?.cancel();
+});

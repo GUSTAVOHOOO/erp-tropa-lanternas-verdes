@@ -150,7 +150,6 @@
 .dk-subtitulo { margin: 0; font-size: 30px; line-height: 1.38; color: var(--oa-muted); max-width: 920px; text-wrap: pretty; }
 .dk-texto { margin: 0; font-size: 23px; line-height: 1.45; color: var(--oa-muted); }
 .dk-texto b { color: var(--oa-text); font-weight: 600; }
-.dk-citacao { margin: 0; padding-left: 26px; border-left: 3px solid var(--oa-energy); font-size: 30px; font-style: italic; color: var(--oa-text); max-width: 900px; }
 .dk-passagem { display: flex; align-items: center; gap: 14px; margin: 0; font-family: var(--font-plex-mono), monospace; font-size: 22px; letter-spacing: .08em; text-transform: uppercase; color: var(--oa-energy); }
 .dk-passagem svg { width: 30px; height: 30px; }
 .dk-id { display: inline-block; margin-right: 12px; padding: 3px 9px; font-family: var(--font-plex-mono), monospace; font-size: 15px; letter-spacing: .06em; color: var(--oa-energy); border: 1px solid color-mix(in oklch, var(--oa-energy) 45%, transparent); background: color-mix(in oklch, var(--oa-energy) 10%, transparent); vertical-align: .15em; white-space: nowrap; }
@@ -248,8 +247,6 @@
 .dk-cartao-icone svg { width: 40px; height: 40px; }
 .dk-cartao h3 { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 10px; font-family: var(--font-barlow-condensed), sans-serif; font-size: 36px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; }
 .dk-cartao p { margin: 0; font-size: 23px; line-height: 1.42; color: var(--oa-muted); }
-.dk-cartoes--alerta .dk-cartao-icone { color: var(--oa-warning); border-color: color-mix(in oklch, var(--oa-warning) 50%, transparent); background: color-mix(in oklch, var(--oa-warning) 9%, transparent); }
-.dk-cartoes--alerta .dk-cartao::before { background: var(--oa-warning); box-shadow: 0 0 12px var(--oa-warning); }
 
 /* chips */
 .dk-chips { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -359,16 +356,76 @@
 .dk-form-origem { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px dashed var(--oa-line); }
 .dk-form-origem svg { width: 22px; height: 22px; color: var(--oa-energy); }
 
-/* celular de 375 px */
-.dk-celular { display: grid; justify-items: center; gap: 12px; }
-.dk-celular-tela { display: flex; flex-direction: column; gap: 16px; width: 260px; height: 520px; padding: 24px 18px; border: 2px solid var(--oa-line); border-radius: 34px; background: var(--dk-vidro-denso); box-shadow: 0 0 60px color-mix(in oklch, var(--oa-energy) 18%, transparent); }
-.dk-celular-topo { display: flex; align-items: center; gap: 10px; font-family: var(--font-barlow-condensed), sans-serif; font-size: 22px; font-weight: 700; color: var(--oa-energy); letter-spacing: .1em; }
-.dk-celular-emblema { width: 38px; height: 38px; }
-.dk-celular-bloco { height: 90px; background: var(--oa-raised); border: 1px solid var(--oa-line); }
-.dk-celular-bloco--curto { height: 54px; }
-.dk-celular-foco { margin-top: auto; padding: 12px; text-align: center; font-size: 16px; font-weight: 600; color: var(--oa-ink); background: var(--oa-energy); outline: 2px solid var(--oa-text); outline-offset: 4px; animation: dk-foco 2s ease-in-out infinite; }
-@keyframes dk-foco { 50% { outline-color: transparent; } }
-.dk-celular small { font-family: var(--font-plex-mono), monospace; font-size: 15px; color: var(--oa-muted); }
+/*
+ * Celular de 375 × 812 (9:19,5). A tela é desenhada em CSS px reais de 375 px e o
+ * conjunto (aparelho de 399 × 836 com moldura) é escalado por --dk-cel: 327 px de largura.
+ * Estados: aparelho surge (dk-surge, no .dk-celular) → tela liga com varredura →
+ * linhas em cascata → selo carimbado com mola elástica → anel do botão pulsando.
+ */
+.dk-celular { --dk-cel: .82; display: grid; justify-items: center; gap: 18px; }
+.dk-celular-escala { position: relative; width: calc(399px * var(--dk-cel)); height: calc(836px * var(--dk-cel)); }
+.dk-aparelho {
+  position: absolute; left: 0; top: 0; box-sizing: border-box; width: 399px; height: 836px; padding: 12px;
+  border-radius: 66px; transform: scale(var(--dk-cel)); transform-origin: 0 0;
+  background: linear-gradient(145deg, oklch(0.44 0.02 160), oklch(0.15 0.02 160) 24%, oklch(0.23 0.02 160) 50%, oklch(0.12 0.02 160) 78%, oklch(0.36 0.02 160));
+  box-shadow: inset 0 0 0 2px oklch(0.6 0.02 160 / .35), inset 0 0 0 5px oklch(0.06 0.01 160), 0 0 0 1px oklch(0.03 0.01 160), 0 36px 90px -24px color-mix(in oklch, var(--oa-energy) 45%, transparent), 0 0 90px color-mix(in oklch, var(--oa-energy) 20%, transparent);
+}
+.dk-aparelho::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(118deg, transparent 36%, oklch(1 0 0 / .13) 44%, transparent 52%); }
+.dk-botao-lateral { position: absolute; width: 5px; border-radius: 3px; background: linear-gradient(90deg, oklch(0.36 0.02 160), oklch(0.2 0.02 160)); }
+.dk-botao-lateral--acao { left: -4px; top: 168px; height: 40px; }
+.dk-botao-lateral--volume { left: -4px; top: 236px; height: 74px; }
+.dk-botao-lateral--energia { right: -4px; top: 252px; height: 104px; }
+
+.dk-celular-tela {
+  position: relative; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; width: 375px; height: 812px;
+  border-radius: 54px; color: var(--oa-text); font-family: var(--font-barlow), sans-serif;
+  background: radial-gradient(120% 60% at 50% -10%, color-mix(in oklch, var(--oa-energy) 16%, transparent), transparent 60%), var(--oa-ink);
+  animation: dk-liga var(--dk-mola-firme-ms) var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 200ms) both;
+}
+@keyframes dk-liga { from { opacity: .35; filter: brightness(.15) saturate(.2); } to { opacity: 1; filter: none; } }
+.dk-celular-varredura {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 2; height: 140px; pointer-events: none;
+  background: linear-gradient(180deg, transparent, color-mix(in oklch, var(--oa-energy) 34%, transparent) 88%, var(--oa-text));
+  transform: translateY(-140px); animation: dk-varre-tela 900ms cubic-bezier(.4, 0, .2, 1) calc(var(--dk-base, 0ms) + 200ms) both;
+}
+@keyframes dk-varre-tela { 0% { transform: translateY(-140px); opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(812px); opacity: 0; } }
+
+.dk-celular-status { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; height: 54px; padding: 4px 34px 0 40px; font-size: 16px; font-weight: 600; }
+.dk-celular-ilha { position: absolute; left: 50%; top: 12px; width: 112px; height: 34px; translate: -50% 0; border-radius: 20px; background: oklch(0.02 0 0); }
+.dk-celular-sinal { display: flex; align-items: flex-end; gap: 3px; height: 14px; }
+.dk-celular-sinal i { width: 4px; border-radius: 1px; background: var(--oa-text); }
+.dk-celular-sinal i:nth-child(1) { height: 5px; }
+.dk-celular-sinal i:nth-child(2) { height: 8px; }
+.dk-celular-sinal i:nth-child(3) { height: 11px; }
+.dk-celular-sinal i:nth-child(4) { height: 14px; }
+
+.dk-celular-topo { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; padding: 8px 22px 14px; border-bottom: 1px solid var(--oa-line); }
+.dk-celular-emblema { width: 36px; height: 36px; }
+.dk-celular-topo strong { font-family: var(--font-barlow-condensed), sans-serif; font-size: 26px; font-weight: 700; letter-spacing: .12em; color: var(--oa-energy); }
+.dk-celular-topo > svg:last-child { width: 24px; height: 24px; margin-left: auto; color: var(--oa-muted); }
+
+/* a lista entra depois da tela acender e da varredura passar pela metade */
+.dk-celular-corpo { --dk-base: calc(var(--dk-atraso-slide, 150ms) + 820ms); position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14px; padding: 20px 22px 0; }
+.dk-celular-pagina { margin: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 40px; font-weight: 700; line-height: 1; text-transform: uppercase; }
+.dk-celular-meta { margin: 0; font-family: var(--font-plex-mono), monospace; font-size: 15px; color: var(--oa-muted); }
+.dk-celular-campo { display: flex; align-items: center; gap: 10px; padding: 13px 14px; font-size: 18px; color: var(--oa-muted); background: var(--oa-surface); border: 1px solid var(--oa-line); }
+.dk-celular-campo svg { flex: none; width: 20px; height: 20px; color: var(--oa-energy); }
+.dk-celular-lista { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.dk-celular-item { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 14px 14px 14px 16px; background: var(--oa-surface); border: 1px solid var(--oa-line); border-left: 3px solid var(--oa-energy-dim); }
+.dk-celular-item > span:first-child { display: grid; min-width: 0; }
+.dk-celular-item strong { font-size: 22px; font-weight: 600; line-height: 1.1; color: var(--oa-text); }
+.dk-celular-item small { margin-top: 6px; font-family: var(--font-plex-mono), monospace; font-size: 14px; color: var(--oa-muted); }
+.dk-celular-item .oa-badge { font-size: 15px; padding: 6px 11px; }
+.dk-celular-carimbo { display: inline-flex; animation: dk-celular-carimba var(--dk-mola-elastica-ms) var(--dk-mola-elastica) calc(var(--dk-atraso-slide, 150ms) + 1500ms) both; }
+@keyframes dk-celular-carimba { from { opacity: 0; transform: scale(1.9) rotate(-8deg); } to { opacity: 1; transform: none; } }
+
+.dk-celular-rodape { position: relative; z-index: 1; display: grid; gap: 16px; margin-top: auto; padding: 0 22px 26px; }
+/* O anel fica num invólucro sem clip-path: o botão OANET recorta o próprio contorno. */
+.dk-celular-anel { display: block; outline: 3px solid var(--oa-text); outline-offset: 5px; animation: dk-celular-foco 2s ease-in-out calc(var(--dk-atraso-slide, 150ms) + 1700ms) infinite; }
+.dk-celular .dk-celular-botao { width: 100%; height: 56px; font-size: 20px; font-weight: 600; }
+@keyframes dk-celular-foco { 0%, 100% { box-shadow: 0 0 0 0 transparent; } 50% { box-shadow: 0 0 30px 6px color-mix(in oklch, var(--oa-energy) 70%, transparent); } }
+.dk-celular-barra { width: 134px; height: 5px; margin: 0 auto; border-radius: 3px; background: var(--oa-text); opacity: .8; }
+.dk-celular-legenda { font-family: var(--font-plex-mono), monospace; font-size: 15px; color: var(--oa-muted); }
 
 /* módulos do back */
 .dk-modulos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -491,5 +548,6 @@
 /* [CSS-15] movimento reduzido: tudo aparece no estado final, sem esperar atrasos. */
 @media (prefers-reduced-motion: reduce) {
   .dk-deck *, .dk-deck *::before, .dk-deck *::after { animation-delay: 0ms !important; }
-  .dk-feixe, .dk-dobra, .dk-grade-fundo::after { display: none; }
+  .dk-feixe, .dk-dobra, .dk-grade-fundo::after, .dk-celular-varredura { display: none; }
+  .dk-celular-anel { animation: none; }
 }

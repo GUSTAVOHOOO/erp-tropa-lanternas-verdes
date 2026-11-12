@@ -57,6 +57,17 @@ test('atalhos não roubam teclas digitadas em campos', () => {
   expect(slideAtual()).toContain('1 de')
 })
 
+// Fala do apresentador vai para as notas, não para a tela. Os títulos são letras
+// em spans sem espaço no texto; as frases de fala ficam em textos comuns, com espaço.
+test('nenhum slide mostra fala do apresentador na tela', () => {
+  const falas = [/preferimos/i, /\ba\s+gente\b/i, /\ba\s+seguir\b/i, /\bplano\s+b\b/i, /v[ií]deo/i]
+  for (const slide of SLIDES) {
+    const { container, unmount } = render(<slide.Conteudo />)
+    for (const fala of falas) expect(container.textContent, `${slide.id}: ${fala}`).not.toMatch(fala)
+    unmount()
+  }
+})
+
 test('todo slide tem título, notas e tempo previsto', () => {
   for (const slide of SLIDES) {
     expect(slide.titulo.length).toBeGreaterThan(3)

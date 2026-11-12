@@ -8,7 +8,7 @@ Números conferidos no repositório em 2026-11-11 (fontes ao lado de cada um). A
 |---|---|---|---|
 | 1. Abertura, processo, documentação e ferramentas | Apresentador 1: _____ | 0:00–15:00 | 1–9 |
 | 2. Front-end, conferido com a skill `frontend-web` | Apresentador 2: _____ | 15:00–30:00 | 10–17 |
-| 3. Back-end, conferido com a skill `backend-api`, e fechamento | Apresentador 3: _____ | 30:00–45:00 | 18–26 |
+| 3. Back-end, conferido com a skill `backend-api`, e fechamento | Apresentador 3: _____ | 30:00–45:00 | 18–25 |
 | Perguntas | todos | 45:00–50:00 | — |
 
 **Fio condutor (repetir na abertura e no fechamento):** cada requisito pedido nos trabalhos da disciplina virou uma regra escrita numa skill, e cada regra aparece no código, num teste ou num documento. O sistema foi construído e auditado contra essa lista.
@@ -221,8 +221,6 @@ Roteiro curto, se der tempo:
 5. Comentar.
 6. Linha do tempo.
 
-Tenha um vídeo gravado como plano B.
-
 ---
 
 ## Parte 3: Back-end conferido com a skill `backend-api` (Apresentador 3, ~15 min)
@@ -314,17 +312,9 @@ Ordem da skill: **quem é você (401) → o que pode (403) → este recurso é s
 
 ---
 
-## Fechamento (Apresentador 3, ou os três juntos, ~3 min)
+## Fechamento (Apresentador 3, ou os três juntos, ~2 min)
 
-### Slide 25: O que fica em aberto, com transparência (1 min)
-
-- Aceite final G9 depende da execução registrada em `docs/INTEGRACAO.md`.
-- A CSP ainda está em modo relatório (a regra PROD-03 manda observar antes de impor).
-- Alguns pontos foram aceitos conscientemente e registrados com o motivo na auditoria. Exemplo: o login com corpo inválido consome a cota do throttler.
-
-**Fala:** "Preferimos mostrar o que falta a fingir que está perfeito. Tudo isso está documentado."
-
-### Slide 26: Conclusão (2 min)
+### Slide 25: Conclusão (2 min)
 
 - Os requisitos da disciplina viraram **duas skills com regras identificadas**.
 - As regras viraram **código com marcadores**, **testes** e **documentos verificados por script**.
@@ -341,7 +331,6 @@ Ordem da skill: **quem é você (401) → o que pode (403) → este recurso é s
   - na raiz: `npm run test:run`, `npm run lint` e `npm run test:e2e:real`;
   - em `backend/`: `npm test` e `npm run test:e2e`.
 - [ ] Banco limpo com o seed completo para a demo (`npm run seed -- --etapa completa`) e contas Ganthet, Hal e Kilowog testadas.
-- [ ] Gravar o vídeo de backup da demo (slide 17).
 - [ ] Prints: home, catálogo, painel, nova ocorrência com erro de campo, acesso negado e a tela em 375 px.
 - [ ] Ensaiar com cronômetro: cada parte com no máximo 15 min.
 
@@ -351,4 +340,5 @@ Ordem da skill: **quem é você (401) → o que pode (403) → este recurso é s
 - **E se o agente errar?** Cada arquivo tem um dono, o coordenador revisa cada diff, os testes vêm antes e o código de segurança não é delegado.
 - **O `proxy.ts` não basta para proteger as rotas?** Não. Ele só olha se o cookie existe. A validação real é `verificarSessao()` mais a API (AUTH-01, AUTH-04).
 - **Por que SQLite?** A atividade permite PostgreSQL ou SQLite. As migrations do TypeORM deixam a troca para Postgres localizada.
+- **O que ainda falta?** O aceite G9 depende da execução final registrada em `docs/INTEGRACAO.md`. A CSP segue em modo relatório, porque a PROD-03 manda observar antes de impor. Alguns riscos foram aceitos conscientemente e estão na auditoria com o motivo; exemplo: o login com corpo inválido consome a cota do throttler.
 - **Como sabem que front e back falam a mesma língua?** Pelo contrato OpenAPI com hash (G-1), pelo `contrato.e2e-spec.ts` no back, pelos schemas Zod no front e pelos 40 cenários E2E contra a API real.

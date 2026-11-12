@@ -1,1 +1,588 @@
 /* Lanternas em cena: escopo .dk-deck. Worker: Lanternas. */
+
+/* Camada fixa no fundo do palco */
+.dk-deck .dk-lanternas-camada {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Cometa de energia verde */
+.dk-deck .dk-lanterna-cometa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Rastro de luz linear afilado */
+.dk-deck .dk-cometa-rastro {
+  width: 190px;
+  height: 5px;
+  background: linear-gradient(90deg, transparent 0%, color-mix(in oklch, var(--oa-energy) 15%, transparent) 35%, var(--oa-energy) 80%, #ffffff 100%);
+  border-radius: 9999px;
+  filter: drop-shadow(0 0 6px var(--oa-energy)) blur(0.5px);
+  margin-right: -8px;
+  transform-origin: right center;
+}
+
+/* Núcleo brilhante com símbolo de Oa */
+.dk-deck .dk-cometa-nucleo {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #ffffff 0%, var(--oa-energy) 65%, color-mix(in oklch, var(--oa-energy) 60%, var(--oa-ink)) 100%);
+  box-shadow: 0 0 10px 2px #ffffff, 0 0 20px 6px var(--oa-energy), 0 0 32px 10px color-mix(in oklch, var(--oa-energy) 40%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dk-deck .dk-cometa-simbolo {
+  width: 14px;
+  height: 14px;
+  fill: var(--oa-ink);
+  stroke: var(--oa-ink);
+}
+
+.dk-deck .dk-cometa-halo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--oa-energy);
+  opacity: 0.6;
+}
+
+/* Construto holográfico etéreo que acompanha alguns cometas líderes */
+.dk-deck .dk-cometa-construto {
+  position: absolute;
+  left: 32px;
+  top: -24px;
+  width: 72px;
+  height: 72px;
+  opacity: 0.24;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 8px var(--oa-energy));
+  transform: scale(0.4);
+  transform-origin: left center;
+}
+
+/* =========================================================================
+   Padrões de Voo (Capítulos: vistosos e cinematográficos)
+   ========================================================================= */
+
+/* Padrão 1: Formação em V (3 Lanternas) */
+.dk-deck .dk-voo-v-lider {
+  animation: dk-voo-v-lider 2.4s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+}
+
+.dk-deck .dk-voo-v-asa-sup {
+  animation: dk-voo-v-asa-sup 2.4s cubic-bezier(0.25, 1, 0.4, 1) 40ms forwards;
+}
+
+.dk-deck .dk-voo-v-asa-inf {
+  animation: dk-voo-v-asa-inf 2.4s cubic-bezier(0.25, 1, 0.4, 1) 40ms forwards;
+}
+
+@keyframes dk-voo-v-lider {
+  0% {
+    transform: translate3d(-180px, 820px, 0) rotate(-18deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.95;
+  }
+  100% {
+    transform: translate3d(2150px, 160px, 0) rotate(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes dk-voo-v-asa-sup {
+  0% {
+    transform: translate3d(-290px, 730px, 0) rotate(-18deg) scale(0.85);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(2030px, 70px, 0) rotate(-18deg) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes dk-voo-v-asa-inf {
+  0% {
+    transform: translate3d(-290px, 910px, 0) rotate(-18deg) scale(0.85);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(2030px, 250px, 0) rotate(-18deg) scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* Padrão 2: Cruzamento Duplo em Diagonais Opostas */
+.dk-deck .dk-voo-cruz-desc {
+  animation: dk-voo-cruz-desc 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dk-deck .dk-voo-cruz-asc {
+  animation: dk-voo-cruz-asc 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes dk-voo-cruz-desc {
+  0% {
+    transform: translate3d(-160px, 140px, 0) rotate(16deg);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.9;
+  }
+  82% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(2120px, 800px, 0) rotate(16deg);
+    opacity: 0;
+  }
+}
+
+@keyframes dk-voo-cruz-asc {
+  0% {
+    transform: translate3d(-160px, 860px, 0) rotate(-16deg);
+    opacity: 0;
+  }
+  14% {
+    opacity: 0.9;
+  }
+  82% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(2120px, 200px, 0) rotate(-16deg);
+    opacity: 0;
+  }
+}
+
+/* Padrão 3: Revoada Ascendente em Arco */
+.dk-deck .dk-voo-asc-1 {
+  animation: dk-voo-asc-1 2.5s cubic-bezier(0.2, 0.85, 0.4, 1) forwards;
+}
+
+.dk-deck .dk-voo-asc-2 {
+  animation: dk-voo-asc-2 2.5s cubic-bezier(0.2, 0.85, 0.4, 1) 120ms forwards;
+}
+
+.dk-deck .dk-voo-asc-3 {
+  animation: dk-voo-asc-3 2.5s cubic-bezier(0.2, 0.85, 0.4, 1) 240ms forwards;
+}
+
+@keyframes dk-voo-asc-1 {
+  0% {
+    transform: translate3d(120px, 1120px, 0) rotate(-42deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  78% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(1800px, -120px, 0) rotate(-28deg);
+    opacity: 0;
+  }
+}
+
+@keyframes dk-voo-asc-2 {
+  0% {
+    transform: translate3d(260px, 1120px, 0) rotate(-42deg) scale(0.85);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.78;
+  }
+  78% {
+    opacity: 0.78;
+  }
+  100% {
+    transform: translate3d(1940px, 40px, 0) rotate(-28deg) scale(0.85);
+    opacity: 0;
+  }
+}
+
+@keyframes dk-voo-asc-3 {
+  0% {
+    transform: translate3d(-30px, 1120px, 0) rotate(-42deg) scale(0.75);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  78% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(1650px, -200px, 0) rotate(-28deg) scale(0.75);
+    opacity: 0;
+  }
+}
+
+/* Padrão 4: Vetor Vanguarda Rápido em Tandem */
+.dk-deck .dk-voo-vanguarda-1 {
+  animation: dk-voo-vanguarda-1 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dk-deck .dk-voo-vanguarda-2 {
+  animation: dk-voo-vanguarda-2 1.8s cubic-bezier(0.16, 1, 0.3, 1) 80ms forwards;
+}
+
+@keyframes dk-voo-vanguarda-1 {
+  0% {
+    transform: translate3d(-200px, 180px, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(2150px, 180px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes dk-voo-vanguarda-2 {
+  0% {
+    transform: translate3d(-280px, 230px, 0) scale(0.85);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.75;
+  }
+  85% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(2070px, 230px, 0) scale(0.85);
+    opacity: 0;
+  }
+}
+
+/* =========================================================================
+   Padrões de Voo Discretos (Não-capítulo: bordas, baixa opacidade)
+   ========================================================================= */
+
+/* Padrão 5: Passagem Longe no Topo */
+.dk-deck .dk-voo-passagem-longe {
+  animation: dk-voo-passagem-longe 2.8s cubic-bezier(0.3, 1, 0.5, 1) forwards;
+}
+
+@keyframes dk-voo-passagem-longe {
+  0% {
+    transform: translate3d(-100px, 60px, 0) scale(0.45);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.28;
+  }
+  82% {
+    opacity: 0.28;
+  }
+  100% {
+    transform: translate3d(2040px, 60px, 0) scale(0.45);
+    opacity: 0;
+  }
+}
+
+/* Padrão 6: Patrulha da Borda Inferior */
+.dk-deck .dk-voo-patrulha-borda {
+  animation: dk-voo-patrulha-borda 2.6s cubic-bezier(0.3, 1, 0.5, 1) forwards;
+}
+
+@keyframes dk-voo-patrulha-borda {
+  0% {
+    transform: translate3d(2040px, 1020px, 0) scale(0.5) rotate(180deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.3;
+  }
+  82% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate3d(-100px, 1020px, 0) scale(0.5) rotate(180deg);
+    opacity: 0;
+  }
+}
+
+/* Padrão 7: Rasante Lateral na Margem Direita */
+.dk-deck .dk-voo-rasante-lateral {
+  animation: dk-voo-rasante-lateral 2.1s cubic-bezier(0.25, 1, 0.4, 1) forwards;
+}
+
+@keyframes dk-voo-rasante-lateral {
+  0% {
+    transform: translate3d(1880px, -100px, 0) scale(0.5) rotate(90deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.25;
+  }
+  82% {
+    opacity: 0.25;
+  }
+  100% {
+    transform: translate3d(1880px, 1180px, 0) scale(0.5) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+/* Padrão 8: Par Distante em Parelha */
+.dk-deck .dk-voo-par-distante-1 {
+  animation: dk-voo-par-distante-1 2.7s cubic-bezier(0.3, 1, 0.5, 1) forwards;
+}
+
+.dk-deck .dk-voo-par-distante-2 {
+  animation: dk-voo-par-distante-2 2.7s cubic-bezier(0.3, 1, 0.5, 1) 60ms forwards;
+}
+
+@keyframes dk-voo-par-distante-1 {
+  0% {
+    transform: translate3d(-100px, 90px, 0) scale(0.38);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.22;
+  }
+  82% {
+    opacity: 0.22;
+  }
+  100% {
+    transform: translate3d(2040px, 90px, 0) scale(0.38);
+    opacity: 0;
+  }
+}
+
+@keyframes dk-voo-par-distante-2 {
+  0% {
+    transform: translate3d(-160px, 125px, 0) scale(0.32);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.18;
+  }
+  82% {
+    opacity: 0.18;
+  }
+  100% {
+    transform: translate3d(1980px, 125px, 0) scale(0.32);
+    opacity: 0;
+  }
+}
+
+/* =========================================================================
+   ChamadaTropa: A Tropa reunida na conclusão (faixa de ~1680 × 220 px)
+   ========================================================================= */
+
+.dk-deck .dk-tropa {
+  width: 100%;
+  max-width: 1680px;
+  height: 220px;
+  max-height: 220px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.dk-deck .dk-tropa-grade {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 10px;
+  width: 100%;
+  max-width: 1680px;
+  box-sizing: border-box;
+}
+
+.dk-deck .dk-tropa-membro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 114px;
+  padding: 2px 2px;
+  border-radius: 6px;
+  transition: transform 0.2s ease, background 0.2s ease;
+  position: relative;
+  /* Ativação em onda com a mola elástica, seguida de respiração contínua */
+  animation: dk-tropa-ativar var(--dk-mola-elastica-ms, 850ms) var(--dk-mola-elastica, cubic-bezier(0.34, 1.56, 0.64, 1)) calc(var(--dk-ordem, 0) * 55ms) both,
+             dk-tropa-respirar 3.6s ease-in-out calc(var(--dk-ordem, 0) * 55ms + 850ms) infinite alternate;
+}
+
+.dk-deck .dk-tropa-membro:hover,
+.dk-deck .dk-tropa-membro:focus-within {
+  transform: translateY(-2px) scale(1.04);
+  background: color-mix(in oklch, var(--oa-energy) 12%, transparent);
+}
+
+.dk-deck .dk-tropa-anel {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: dk-anel-pulso var(--dk-mola-elastica-ms, 850ms) var(--dk-mola-elastica, cubic-bezier(0.34, 1.56, 0.64, 1)) calc(var(--dk-ordem, 0) * 55ms) both,
+             dk-anel-respirar 3.6s ease-in-out calc(var(--dk-ordem, 0) * 55ms + 850ms) infinite alternate;
+}
+
+.dk-deck .dk-tropa-svg {
+  width: 30px;
+  height: 30px;
+}
+
+.dk-deck .dk-tropa-aro-ext {
+  fill: none;
+  stroke: var(--oa-line);
+  stroke-width: 1.5;
+  transition: stroke 0.4s ease;
+}
+
+.dk-deck .dk-tropa-aro-int {
+  fill: color-mix(in oklch, var(--oa-energy) 16%, var(--oa-ink));
+  stroke: var(--oa-energy);
+  stroke-width: 1.2;
+}
+
+.dk-deck .dk-tropa-simbolo-barra {
+  fill: var(--oa-text);
+  opacity: 0.95;
+}
+
+.dk-deck .dk-tropa-simbolo-anel {
+  fill: none;
+  stroke: var(--oa-text);
+  stroke-width: 2;
+}
+
+.dk-deck .dk-tropa-nome {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--oa-text);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 114px;
+  line-height: 1.2;
+}
+
+@keyframes dk-tropa-ativar {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dk-tropa-respirar {
+  0% {
+    opacity: 0.88;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes dk-anel-pulso {
+  0% {
+    filter: drop-shadow(0 0 0px transparent);
+  }
+  50% {
+    filter: drop-shadow(0 0 14px var(--oa-energy)) drop-shadow(0 0 24px var(--oa-energy));
+  }
+  100% {
+    filter: drop-shadow(0 0 6px var(--oa-energy));
+  }
+}
+
+@keyframes dk-anel-respirar {
+  0% {
+    filter: drop-shadow(0 0 5px var(--oa-energy));
+  }
+  100% {
+    filter: drop-shadow(0 0 12px var(--oa-energy)) drop-shadow(0 0 18px color-mix(in oklch, var(--oa-energy) 35%, transparent));
+  }
+}
+
+/* =========================================================================
+   Acessibilidade: Redução de movimento
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .dk-deck .dk-lanternas-camada {
+    display: none !important;
+  }
+
+  .dk-deck .dk-lanterna-cometa {
+    animation: none !important;
+    display: none !important;
+  }
+
+  .dk-deck .dk-tropa-membro,
+  .dk-deck .dk-tropa-anel {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: drop-shadow(0 0 6px var(--oa-energy)) !important;
+  }
+
+  .dk-deck .dk-tropa-nome {
+    opacity: 1 !important;
+    color: var(--oa-text) !important;
+  }
+}

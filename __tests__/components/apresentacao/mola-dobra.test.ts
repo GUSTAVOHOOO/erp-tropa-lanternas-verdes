@@ -12,6 +12,10 @@ describe('molas em forma fechada', () => {
     }
   })
 
+  test('a mola leve assenta em até 400 ms, para as transições leves', () => {
+    expect(duracaoMola(MOLAS.leve)).toBeLessThanOrEqual(0.4)
+  })
+
   test('a elástica passa do alvo e a de contagem nunca passa', () => {
     const amostras = (mola: typeof MOLAS.elastica) => Array.from({ length: 200 }, (_, i) => posicaoMola(i / 100, mola))
     expect(Math.max(...amostras(MOLAS.elastica))).toBeGreaterThan(1.05)

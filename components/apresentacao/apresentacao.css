@@ -171,7 +171,7 @@
 .dk-faixa-numeros { display: flex; justify-content: space-between; gap: 48px; padding-top: 26px; border-top: 1px solid color-mix(in oklch, var(--oa-line) 70%, transparent); }
 .dk-faixa-numeros--esquerda { justify-content: flex-start; gap: 80px; }
 .dk-selos { display: flex; flex-wrap: wrap; gap: 12px; }
-.dk-deck .oa-badge { font-size: 17px; padding: 7px 14px; letter-spacing: .02em; }
+.dk-deck .oa-badge { font-size: 19px; padding: 7px 14px; letter-spacing: .02em; }
 .dk-deck .oa-badge > span { width: 6px; height: 6px; }
 
 /* painéis OANET em escala de palco */
@@ -211,8 +211,8 @@
 /* contador */
 .dk-contador { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .dk-contador strong { font-family: var(--font-barlow-condensed), sans-serif; font-size: 92px; font-weight: 700; line-height: .95; color: var(--oa-energy); font-variant-numeric: tabular-nums; text-shadow: 0 0 34px color-mix(in oklch, var(--oa-energy) 55%, transparent); }
-.dk-contador-rotulo { font-family: var(--font-plex-mono), monospace; font-size: 16px; letter-spacing: .12em; text-transform: uppercase; color: var(--oa-muted); }
-.dk-contador small { font-size: 16px; color: var(--oa-energy-dim); font-family: var(--font-plex-mono), monospace; }
+.dk-contador-rotulo { font-family: var(--font-plex-mono), monospace; font-size: 18px; letter-spacing: .12em; text-transform: uppercase; color: var(--oa-muted); }
+.dk-contador small { font-size: 19px; color: var(--oa-muted); font-family: var(--font-plex-mono), monospace; }
 .dk-mini-numeros { display: flex; gap: 30px; flex-wrap: wrap; }
 .dk-mini-numeros .dk-contador strong { font-size: 60px; }
 .dk-mini-numeros--grande { display: grid; grid-template-columns: 1fr; gap: 26px; }
@@ -301,7 +301,7 @@
 .dk-orbita-giro { transform-box: view-box; transform-origin: 450px 450px; animation: dk-giro 24s linear infinite; }
 .dk-orbita-giro--reverso { animation-duration: 60s; animation-direction: reverse; }
 @keyframes dk-giro { to { transform: rotate(360deg); } }
-.dk-orbita-raio { stroke: var(--oa-line); stroke-width: 1.5; stroke-dasharray: 3 8; }
+.dk-orbita-raio { stroke: color-mix(in oklch, var(--oa-energy) 55%, transparent); stroke-width: 3; stroke-dasharray: 10 9; }
 .dk-orbita-pulso { fill: var(--oa-text); filter: drop-shadow(0 0 8px var(--oa-energy)); animation: 2.4s cubic-bezier(.5, 0, .5, 1) infinite; }
 .dk-orbita-pulso-0 { animation-name: dk-pulso-o0; }
 .dk-orbita-pulso-1 { animation-name: dk-pulso-o1; animation-delay: .6s; }
@@ -317,7 +317,7 @@
 .dk-orbita-no { animation: dk-surge var(--dk-mola-elastica-ms) var(--dk-mola-elastica) calc(var(--dk-base, 0ms) + 400ms + (sibling-index() - 13) * 160ms) both; transform-box: fill-box; transform-origin: center; }
 .dk-orbita-titulo { fill: var(--oa-text); font-family: var(--font-barlow-condensed), sans-serif; font-size: 40px; font-weight: 700; text-transform: uppercase; }
 .dk-orbita-titulo--menor { font-size: 32px; }
-.dk-orbita-papel { fill: var(--oa-muted); font-family: var(--font-plex-mono), monospace; font-size: 15px; }
+.dk-orbita-papel { fill: var(--oa-muted); font-family: var(--font-plex-mono), monospace; font-size: 19px; }
 .dk-orbita-orca { fill: var(--oa-energy); font-family: var(--font-plex-mono), monospace; font-size: 17px; letter-spacing: .2em; }
 
 /* esteira de especificação (Orca) */
@@ -432,7 +432,7 @@
 .dk-modulo { display: grid; grid-template-columns: 34px 1fr; column-gap: 14px; align-items: center; padding: 16px 20px; background: var(--dk-vidro); border: 1px solid color-mix(in oklch, var(--oa-line) 85%, transparent); border-left: 3px solid var(--oa-energy); }
 .dk-modulo svg { width: 32px; height: 32px; color: var(--oa-energy); grid-row: span 2; }
 .dk-modulo strong { font-family: var(--font-plex-mono), monospace; font-size: 21px; font-weight: 500; }
-.dk-modulo span { font-size: 16px; color: var(--oa-muted); }
+.dk-modulo span { font-size: 18px; color: var(--oa-muted); }
 .dk-modulo--comum { border-left-color: var(--oa-info); }
 .dk-modulo--comum svg { color: var(--oa-info); }
 
@@ -450,7 +450,7 @@
 .dk-status { display: grid; grid-template-columns: repeat(10, 1fr); gap: 10px; }
 .dk-status-item { display: flex; flex-direction: column; gap: 4px; padding: 16px 12px; text-align: center; background: var(--dk-vidro); border-top: 3px solid var(--oa-energy); }
 .dk-status-item strong { font-family: var(--font-barlow-condensed), sans-serif; font-size: 48px; font-weight: 700; line-height: 1; color: var(--oa-energy); }
-.dk-status-item span { font-size: 16px; color: var(--oa-muted); }
+.dk-status-item span { font-size: 18px; color: var(--oa-muted); }
 .dk-status-item--4 { border-top-color: var(--oa-warning); }
 .dk-status-item--4 strong { color: var(--oa-warning); }
 
@@ -481,9 +481,18 @@
 
 /* capítulo */
 .dk-capitulo { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 48px; }
-.dk-capitulo-numeral { position: absolute; left: -40px; top: 50%; translate: 0 -54%; z-index: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 640px; font-weight: 700; line-height: 1; color: transparent; -webkit-text-stroke: 2px color-mix(in oklch, var(--oa-energy) 55%, transparent); opacity: .5; animation: dk-numeral var(--dk-mola-pesada-ms) var(--dk-mola-pesada) var(--dk-base, 0ms) both, dk-numeral-brilho 4s ease-in-out infinite; pointer-events: none; }
-@keyframes dk-numeral { from { opacity: 0; transform: scale(1.5) translateX(-80px); filter: blur(24px); } to { opacity: .5; transform: none; filter: none; } }
-@keyframes dk-numeral-brilho { 50% { text-shadow: 0 0 60px color-mix(in oklch, var(--oa-energy) 40%, transparent); } }
+/* Numeral preenchido com gradiente de energia e linhas de scan: lê-se "I", "II", "III". */
+.dk-capitulo-numeral {
+  position: absolute; left: -40px; top: 50%; translate: 0 -54%; z-index: 0; pointer-events: none;
+  font-family: var(--font-barlow-condensed), sans-serif; font-size: 640px; font-weight: 700; line-height: 1; color: transparent;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 9px, color-mix(in oklch, var(--oa-ink) 70%, transparent) 9px 11px),
+    linear-gradient(170deg, var(--oa-text) 0%, var(--oa-energy) 50%, color-mix(in oklch, var(--oa-energy) 20%, var(--oa-ink)) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  animation: dk-numeral var(--dk-mola-pesada-ms) var(--dk-mola-pesada) var(--dk-base, 0ms) both;
+}
+/* O brilho fica no estado final (filter de animação com fill both); não há segunda animação de filter. */
+@keyframes dk-numeral { from { opacity: 0; transform: scale(1.5) translateX(-80px); filter: blur(24px); } to { opacity: .45; transform: none; filter: drop-shadow(0 0 36px color-mix(in oklch, var(--oa-energy) 45%, transparent)); } }
 .dk-capitulo-texto { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 28px; padding-left: 40px; }
 .dk-capitulo-texto .dk-subtitulo { font-size: 32px; }
 .dk-capitulo-apresentador { display: flex; align-items: center; gap: 12px; margin: 0; font-family: var(--font-plex-mono), monospace; font-size: 20px; color: var(--oa-energy); }
@@ -506,14 +515,16 @@
 .dk-capa-rodape { margin: 0; font-family: var(--font-plex-mono), monospace; font-size: 18px; letter-spacing: .14em; text-transform: uppercase; color: var(--oa-muted); }
 
 /* fechamento */
-.dk-final { display: grid; grid-template-columns: 560px 1fr; align-items: center; gap: 60px; }
-.dk-final-bateria { display: grid; place-items: center; }
-.dk-final-svg { width: 100%; height: auto; max-height: 720px; filter: drop-shadow(0 0 40px color-mix(in oklch, var(--oa-energy) 50%, transparent)); }
-.dk-final-texto { display: flex; flex-direction: column; gap: 26px; }
-.dk-final-texto .dk-titulo--capitulo { font-size: 104px; }
-.dk-final-texto .dk-lista li { font-size: 25px; }
+/* Fechamento: visual à esquerda (560 px), texto à direita e faixa da Tropa embaixo (1680 × 220). */
+.dk-final { display: grid; grid-template-columns: 560px 1fr; grid-template-rows: minmax(0, 1fr) 220px; align-items: center; column-gap: 60px; row-gap: 16px; }
+.dk-final-visual { display: grid; place-items: center; width: 560px; height: 100%; min-height: 0; }
+.dk-final-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 40px color-mix(in oklch, var(--oa-energy) 50%, transparent)); }
+.dk-final-texto { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.dk-final-tropa { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; height: 220px; min-height: 220px; overflow: hidden; }
+.dk-final-texto .dk-titulo--capitulo { font-size: 92px; }
+.dk-final-texto .dk-lista li { font-size: 23px; }
 .dk-juramento { display: grid; gap: 4px; margin: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 34px; font-weight: 600; text-transform: uppercase; color: var(--oa-energy); text-shadow: 0 0 26px color-mix(in oklch, var(--oa-energy) 45%, transparent); }
-.dk-perguntas { margin: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 72px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; animation: dk-entra var(--dk-mola-firme-ms) var(--dk-mola-firme) var(--dk-base, 0ms) both, dk-pulsa-texto 2.4s ease-in-out calc(var(--dk-base, 0ms) + 800ms) infinite; }
+.dk-perguntas { margin: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 60px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; animation: dk-entra var(--dk-mola-firme-ms) var(--dk-mola-firme) var(--dk-base, 0ms) both, dk-pulsa-texto 2.4s ease-in-out calc(var(--dk-base, 0ms) + 800ms) infinite; }
 @keyframes dk-pulsa-texto { 50% { text-shadow: 0 0 40px var(--oa-energy); color: var(--oa-energy); } }
 .dk-ao-vivo { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--oa-danger); box-shadow: 0 0 16px var(--oa-danger); animation: dk-pisca-marca 1.2s ease-in-out infinite; }
 
@@ -545,9 +556,151 @@
 .dk-visao-fechar svg { width: 20px; height: 20px; }
 @media (max-width: 800px) { .dk-visao { grid-template-columns: 1fr; } }
 
+/* ---------- biblioteca de entradas: uma forma própria por variante ----------
+ * Cada bloco escolhe uma variante (prop `variante` em blocos.tsx). Todas as formas
+ * são finitas e leves; o estado final fica no último quadro (fill both), e as
+ * variantes vêm depois de dk-cascata, então vencem a entrada padrão. */
+@keyframes dk-foco { from { opacity: 0; filter: blur(16px); } to { opacity: 1; filter: none; } }
+@keyframes dk-deriva { from { opacity: 0; transform: translateX(-26px); } to { opacity: 1; transform: none; } }
+@keyframes dk-holo {
+  0% { opacity: 0; }
+  14% { opacity: .9; filter: brightness(1.6); }
+  22% { opacity: .1; filter: none; }
+  36% { opacity: 1; }
+  48% { opacity: .35; }
+  60% { opacity: 1; }
+  74% { opacity: .75; }
+  100% { opacity: 1; filter: none; }
+}
+
+/* títulos: letra a letra só em poucos slides; estas variantes mudam o gesto */
+.dk-titulo--mascara .dk-letra, .dk-titulo--palavras .dk-letra { animation: none; }
+.dk-titulo--mascara .dk-palavra { animation: dk-mascara 680ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 120ms + (sibling-index() - 1) * 150ms) both; }
+@keyframes dk-mascara { from { clip-path: inset(0 100% 0 0); transform: translateX(-.14em); } to { clip-path: inset(-.2em -.3em); transform: none; } }
+.dk-titulo--palavras { overflow: hidden; margin: -.16em 0 -.12em; padding: .16em 0 .12em; }
+.dk-titulo--palavras .dk-palavra { animation: dk-sobe-palavra 760ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 120ms + (sibling-index() - 1) * 130ms) both; }
+@keyframes dk-sobe-palavra { from { transform: translateY(118%); } to { transform: none; } }
+.dk-titulo--terminal .dk-letra { animation: dk-cintila 460ms linear calc(var(--dk-base, 0ms) + 120ms + var(--dk-palavra) + (sibling-index() - 1) * 42ms) both; }
+@keyframes dk-cintila {
+  0% { opacity: 0; color: var(--oa-energy); }
+  20% { opacity: 1; color: var(--oa-energy); }
+  34% { opacity: .15; }
+  50% { opacity: 1; color: var(--oa-energy); }
+  70% { opacity: .6; }
+  100% { opacity: 1; color: var(--oa-text); }
+}
+
+/* painéis */
+.dk-painel { position: relative; }
+.dk-painel--holograma { animation: dk-holo 980ms linear var(--dk-base, 0ms) both; }
+.dk-painel--foco { animation: dk-foco 760ms var(--dk-mola-firme) var(--dk-base, 0ms) both; }
+.dk-painel--desdobrar { animation: dk-desdobra 820ms var(--dk-mola-firme) var(--dk-base, 0ms) both; }
+@keyframes dk-desdobra {
+  from { clip-path: inset(calc(50% - 3px) -10px calc(50% - 3px) -10px); filter: brightness(2.2); }
+  55% { filter: brightness(1.2); }
+  to { clip-path: inset(-10px); filter: none; }
+}
+
+/* cartões */
+.dk-cartoes--virar > .dk-cartao { animation: dk-vira 840ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 150ms) both; }
+@keyframes dk-vira { from { opacity: 0; transform: perspective(1000px) rotateY(-96deg); } 40% { opacity: 1; } to { opacity: 1; transform: none; } }
+.dk-cartoes--desdobrar > .dk-cartao { animation: dk-desdobra-cartao 760ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 150ms) both; transform-origin: 50% 0; }
+@keyframes dk-desdobra-cartao { from { opacity: 0; transform: scaleY(0); } 40% { opacity: 1; } to { opacity: 1; transform: none; } }
+.dk-cartoes--montar > .dk-cartao { animation: dk-monta-esq 820ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 150ms) both; }
+.dk-cartoes--montar > .dk-cartao:nth-child(even) { animation-name: dk-monta-dir; }
+@keyframes dk-monta-esq { from { opacity: 0; transform: translate(-44px, 46px) scale(.94); filter: brightness(2); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes dk-monta-dir { from { opacity: 0; transform: translate(44px, -46px) scale(.94); filter: brightness(2); } to { opacity: 1; transform: none; filter: none; } }
+
+/* listas: marcador acende antes, texto digitado, ou sublinhado de energia */
+.dk-lista--marcador > li, .dk-lista--digitar > li { animation: none; }
+.dk-lista--marcador > li > i, .dk-lista--digitar > li > i { animation: dk-acende-marcador 520ms ease-out calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 220ms) both; }
+.dk-lista--marcador > li > span { animation: dk-foco 600ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 160ms + (var(--dk-ordem) - 1) * 220ms) both; }
+.dk-lista--digitar > li > span { animation: dk-digita 680ms steps(22, end) calc(var(--dk-base, 0ms) + 220ms + (var(--dk-ordem) - 1) * 300ms) both; }
+.dk-lista--sublinhado > li { animation: dk-deriva 560ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 200ms) both; }
+.dk-lista--sublinhado > li > span { padding-bottom: 4px; background: linear-gradient(var(--oa-energy), var(--oa-energy)) no-repeat 0 100% / 0 3px; animation: dk-sublinha 800ms ease-out calc(var(--dk-base, 0ms) + 260ms + (var(--dk-ordem) - 1) * 200ms) both; }
+@keyframes dk-acende-marcador { from { opacity: 0; transform: rotate(45deg) scale(.1); } 45% { opacity: 1; transform: rotate(45deg) scale(1.7); } to { opacity: 1; transform: rotate(45deg) scale(1); } }
+@keyframes dk-sublinha { to { background-size: 100% 3px; } }
+
+/* código: digitado (padrão), revelado por linha ou com foco */
+.dk-cascata--revelar > * { animation: dk-revela-linha 520ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 220ms + (var(--dk-ordem) - 1) * 120ms) both; }
+@keyframes dk-revela-linha { from { opacity: 0; clip-path: inset(0 100% 0 0); } 35% { opacity: 1; } to { opacity: 1; clip-path: inset(0 -2px 0 0); } }
+.dk-cascata--foco > * { animation: dk-foco 560ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 220ms + (var(--dk-ordem) - 1) * 90ms) both; }
+.dk-codigo--foco { animation: dk-foco 680ms var(--dk-mola-firme) var(--dk-base, 0ms) both; }
+
+/* contadores: odômetro em CSS, ou holograma que cintila antes de contar */
+.dk-contador--holograma strong { animation: dk-holo 900ms linear calc(var(--dk-base, 0ms) + 220ms) both; }
+/* As colunas do odômetro cortam o que sai da caixa: o brilho do text-shadow virava retângulo.
+   O brilho vai para o filter do próprio número, que é composto depois das colunas. */
+.dk-contador--odometro strong { text-shadow: none; filter: drop-shadow(0 0 22px color-mix(in oklch, var(--oa-energy) 55%, transparent)); }
+.dk-odo { display: inline-flex; align-items: flex-start; }
+.dk-odo-coluna { display: inline-block; height: 1em; line-height: 1; overflow: hidden; vertical-align: top; }
+.dk-odo-faixa { display: block; animation: dk-odo 1200ms cubic-bezier(.16, 1, .3, 1) var(--dk-base, 0ms) both; }
+.dk-odo-faixa > span { display: block; height: 1em; line-height: 1; }
+.dk-odo-coluna:nth-child(2) .dk-odo-faixa { animation-delay: calc(var(--dk-base, 0ms) + 90ms); }
+.dk-odo-coluna:nth-child(3) .dk-odo-faixa { animation-delay: calc(var(--dk-base, 0ms) + 180ms); }
+.dk-odo-coluna:nth-child(4) .dk-odo-faixa { animation-delay: calc(var(--dk-base, 0ms) + 270ms); }
+/* o estado final de cada coluna é o próprio dígito; a animação parte do zero */
+.dk-odo-d1 .dk-odo-faixa { transform: translateY(-1em); }
+.dk-odo-d2 .dk-odo-faixa { transform: translateY(-2em); }
+.dk-odo-d3 .dk-odo-faixa { transform: translateY(-3em); }
+.dk-odo-d4 .dk-odo-faixa { transform: translateY(-4em); }
+.dk-odo-d5 .dk-odo-faixa { transform: translateY(-5em); }
+.dk-odo-d6 .dk-odo-faixa { transform: translateY(-6em); }
+.dk-odo-d7 .dk-odo-faixa { transform: translateY(-7em); }
+.dk-odo-d8 .dk-odo-faixa { transform: translateY(-8em); }
+.dk-odo-d9 .dk-odo-faixa { transform: translateY(-9em); }
+@keyframes dk-odo { from { transform: translateY(0); } }
+
+/* selos: carimbo, pisca de LED ou deslize */
+.dk-selos--carimbo > * { animation: dk-selo-carimba 460ms var(--dk-mola-elastica) calc(var(--dk-base, 0ms) + 160ms + (var(--dk-ordem) - 1) * 110ms) both; }
+@keyframes dk-selo-carimba { from { opacity: 0; transform: scale(1.9) rotate(-7deg); } to { opacity: 1; transform: none; } }
+.dk-selos--pisca > * { animation: dk-pisca-led 720ms linear calc(var(--dk-base, 0ms) + 160ms + (var(--dk-ordem) - 1) * 120ms) both; }
+@keyframes dk-pisca-led { 0% { opacity: 0; } 18% { opacity: 1; } 30% { opacity: .1; } 44% { opacity: 1; } 58% { opacity: .35; } 72% { opacity: 1; } 100% { opacity: 1; } }
+.dk-selos--desliza > * { animation: dk-deriva 520ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 120ms + (var(--dk-ordem) - 1) * 110ms) both; }
+
+/* linha do tempo em pulso: cada marco pisca ao acender */
+.dk-etapas--pulso .dk-etapa-no { background: var(--oa-energy); color: var(--oa-ink); animation: dk-pulso-no 640ms ease-out calc(var(--dk-base, 0ms) + 200ms + (var(--dk-ordem) - 1) * 360ms) both; }
+@keyframes dk-pulso-no { 0% { opacity: 0; transform: scale(.3); } 55% { opacity: 1; transform: scale(1.14); } 100% { opacity: 1; transform: none; } }
+
+/* tabelas: colunas abrindo, ou células acendendo */
+.dk-tabela--colunas tbody > tr { animation: none; }
+.dk-tabela--colunas tbody > tr > * { animation: dk-abre-coluna 720ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + 240ms + (sibling-index() - 1) * 170ms) both; }
+@keyframes dk-abre-coluna { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(-6px); } }
+.dk-tabela--celulas tbody > tr { animation: none; }
+.dk-tabela--celulas tbody > tr > * { animation: dk-acende-celula 640ms ease-out calc(var(--dk-base, 0ms) + 240ms + (var(--dk-ordem) - 1) * 150ms + (sibling-index() - 1) * 70ms) both; }
+/* Flash por filter, não por background-color: a cor animada ficava presa em verde no estado final. */
+@keyframes dk-acende-celula { 0% { opacity: 0; filter: brightness(3); } 45% { opacity: 1; filter: brightness(1.7); } 100% { opacity: 1; filter: none; } }
+
+/* provas: deslize curto ou foco */
+.dk-prova--deriva > li { animation: dk-deriva 560ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 130ms) both; }
+.dk-prova--foco > li { animation: dk-foco 620ms var(--dk-mola-firme) calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 130ms) both; }
+
+/* status HTTP revelado em degraus, como pixels */
+.dk-status--pixel > * { animation: dk-pixel 520ms steps(6, end) calc(var(--dk-base, 0ms) + (var(--dk-ordem) - 1) * 80ms) both; }
+@keyframes dk-pixel { from { opacity: .4; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+
+/* subtítulo em foco (sem deslocamento) */
+.dk-entra--foco { animation-name: dk-foco; }
+
 /* [CSS-15] movimento reduzido: tudo aparece no estado final, sem esperar atrasos. */
 @media (prefers-reduced-motion: reduce) {
   .dk-deck *, .dk-deck *::before, .dk-deck *::after { animation-delay: 0ms !important; }
   .dk-feixe, .dk-dobra, .dk-grade-fundo::after, .dk-celular-varredura { display: none; }
   .dk-celular-anel { animation: none; }
+  .dk-odo-faixa { animation: none; }
 }
+
+/* ---------- encerramento: o nascimento da galáxia ocupa o palco inteiro ---------- */
+.dk-encerramento { position: relative; width: 100%; height: 100%; }
+.dk-encerramento-galaxia { position: absolute; inset: -132px -120px -128px; z-index: 0; }
+.dk-encerramento-galaxia > * { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dk-encerramento-galaxia::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, transparent 55%, oklch(0 0 0 / .55)); }
+.dk-encerramento-rotulo { position: absolute; top: 0; left: 0; z-index: 1; }
+.dk-encerramento-juramento { position: absolute; left: 0; bottom: 0; z-index: 1; display: grid; gap: 6px; margin: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 34px; font-weight: 600; text-transform: uppercase; color: var(--oa-energy); text-shadow: 0 0 22px oklch(0 0 0 / .9), 0 0 26px color-mix(in oklch, var(--oa-energy) 40%, transparent); }
+.dk-encerramento-juramento span { animation: dk-foco-encerramento 1600ms var(--dk-mola-firme) both; }
+.dk-encerramento-juramento span:nth-child(1) { animation-delay: calc(var(--dk-atraso-slide) + 2600ms); }
+.dk-encerramento-juramento span:nth-child(2) { animation-delay: calc(var(--dk-atraso-slide) + 5200ms); }
+@keyframes dk-foco-encerramento { from { opacity: 0; filter: blur(12px); letter-spacing: .3em; } to { opacity: 1; filter: none; letter-spacing: normal; } }
+/* "Perguntas?" chega quando a galáxia amadurece (~19,5 s da sequência). */
+.dk-encerramento-perguntas { position: absolute; right: 0; bottom: -10px; z-index: 1; margin: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 132px; font-weight: 700; line-height: 1; text-transform: uppercase; letter-spacing: .04em; color: var(--oa-text); text-shadow: 0 0 50px color-mix(in oklch, var(--oa-energy) 60%, transparent), 0 0 20px oklch(0 0 0 / .9); animation: dk-perguntas-chega 2200ms var(--dk-mola-pesada) calc(var(--dk-atraso-slide) + 19500ms) both, dk-pulsa-texto 3.2s ease-in-out calc(var(--dk-atraso-slide) + 22000ms) infinite; }
+@keyframes dk-perguntas-chega { from { opacity: 0; transform: translateY(40px) scale(.92); filter: blur(16px); } to { opacity: 1; transform: none; filter: none; } }

@@ -1,1 +1,82 @@
-/* Transições extras do deck: escopo .dk-deck. Worker: Transições. */
+/*
+ * Transições médias e leves do deck (escopo .dk-deck). Worker: Transições.
+ * Os atrasos de entrada vêm de CATALOGO (transicoes.ts) pela variável --dk-atraso-slide,
+ * definida no próprio slide. As curvas são as molas de mola.ts (--dk-mola-*).
+ * Pesadas (dobra, anel, constructo) são canvas: ver desenharPesada.
+ */
+
+/* ---------- médias ---------- */
+
+/* fatias: seis faixas de tinta atravessam a tela, uma defasada da outra. */
+.dk-fatias { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.dk-fatias i {
+  position: absolute; left: 0; right: 0; height: 180px;
+  top: calc((sibling-index() - 1) * 180px);
+  /* corpo de tinta com uma borda de luz na frente da faixa (à direita, ou à esquerda ao voltar) */
+  background: linear-gradient(90deg, var(--oa-ink) 0 90%, color-mix(in oklch, var(--oa-energy) 55%, var(--oa-ink)) 96%, var(--oa-text) 100%);
+  border-block: 1px solid color-mix(in oklch, var(--oa-energy) 70%, transparent);
+  box-shadow: 0 0 26px 2px color-mix(in oklch, var(--oa-energy) 30%, transparent);
+  transform: translateX(-101%);
+  animation: dk-fatia-passa var(--dk-mola-firme-ms) var(--dk-mola-firme) calc((sibling-index() - 1) * 70ms) both;
+}
+.dk-fatias[data-direcao='-1'] i {
+  animation-name: dk-fatia-volta;
+  background: linear-gradient(90deg, var(--oa-text) 0%, color-mix(in oklch, var(--oa-energy) 55%, var(--oa-ink)) 4%, var(--oa-ink) 10%, var(--oa-ink) 100%);
+}
+@keyframes dk-fatia-passa { from { transform: translateX(-101%); } to { transform: translateX(101%); } }
+@keyframes dk-fatia-volta { from { transform: translateX(101%); } to { transform: translateX(-101%); } }
+
+/* grade: células holográficas acendem em varredura e somem. */
+.dk-grade-holo {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  display: grid; grid-template-columns: repeat(16, 1fr); grid-template-rows: repeat(9, 1fr);
+}
+.dk-grade-holo i {
+  opacity: 0; mix-blend-mode: screen;
+  border: 1px solid color-mix(in oklch, var(--oa-energy) 45%, transparent);
+  background: color-mix(in oklch, var(--oa-energy) 7%, transparent);
+  animation: dk-grade-acende 520ms ease-out var(--dk-celula, 0ms) both;
+}
+@keyframes dk-grade-acende { 0% { opacity: 0; } 35% { opacity: .75; } 100% { opacity: 0; } }
+
+/* ---------- leves (até 500 ms: entrada + mola leve) ---------- */
+
+.dk-slide--saindo.dk-slide--suave { animation: dk-sai-suave 200ms ease-in both; }
+@keyframes dk-sai-suave { to { opacity: 0; transform: translateY(-14px); } }
+.dk-slide--ativo.dk-slide--suave { animation: dk-chega-suave var(--dk-mola-leve-ms) var(--dk-mola-leve) var(--dk-atraso-slide) both; }
+@keyframes dk-chega-suave { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+.dk-slide--saindo.dk-slide--foco { animation: dk-sai-foco 200ms ease-in both; }
+@keyframes dk-sai-foco { to { opacity: 0; filter: blur(8px); } }
+.dk-slide--ativo.dk-slide--foco { animation: dk-chega-foco var(--dk-mola-leve-ms) var(--dk-mola-leve) var(--dk-atraso-slide) both; }
+@keyframes dk-chega-foco { from { opacity: 0; filter: blur(16px); transform: scale(1.025); } to { opacity: 1; filter: none; transform: none; } }
+
+/* deriva: o slide que sai recua devagar; o que chega vem de mais longe e mais rápido. */
+.dk-slide--saindo.dk-slide--deriva { animation: dk-sai-deriva 240ms ease-in both; }
+@keyframes dk-sai-deriva { to { opacity: 0; transform: translateX(calc(-64px * var(--dk-dir, 1))) scale(.985); } }
+.dk-slide--ativo.dk-slide--deriva { animation: dk-chega-deriva var(--dk-mola-leve-ms) var(--dk-mola-leve) var(--dk-atraso-slide) both; }
+@keyframes dk-chega-deriva { from { opacity: 0; transform: translateX(calc(120px * var(--dk-dir, 1))); } to { opacity: 1; transform: none; } }
+
+/* pulso: troca seca, com um brilho de borda que passa pela tela. */
+.dk-slide--saindo.dk-slide--pulso { animation: dk-some 160ms ease-out both; }
+.dk-slide--ativo.dk-slide--pulso { animation: dk-aparece-pulso 240ms ease-out var(--dk-atraso-slide) both; }
+@keyframes dk-aparece-pulso { from { opacity: 0; transform: scale(1.014); } to { opacity: 1; transform: none; } }
+/* brilho difuso nas bordas, sem moldura: a luz vem de fora para dentro */
+.dk-pulso-borda {
+  position: fixed; inset: 0; z-index: 6; pointer-events: none;
+  box-shadow: inset 0 0 200px 10px color-mix(in oklch, var(--oa-energy) 34%, transparent);
+  animation: dk-pulso-borda 460ms ease-out both;
+}
+@keyframes dk-pulso-borda { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
+
+/* usado pelas saídas que só somem (fatias, grade e pulso) */
+@keyframes dk-some { to { opacity: 0; } }
+.dk-slide--saindo.dk-slide--grade { animation: dk-some 300ms ease-out both; }
+.dk-slide--saindo.dk-slide--fatias { animation: dk-some 300ms ease-out both; }
+/* o slide antigo some antes de a luz sólida atingir o pico */
+.dk-slide--saindo.dk-slide--constructo { animation: dk-some 420ms ease-in both; }
+
+/* [CSS-15] movimento reduzido: as transições não são montadas (ver ApresentacaoOa). */
+@media (prefers-reduced-motion: reduce) {
+  .dk-fatias, .dk-grade-holo, .dk-pulso-borda { display: none; }
+}

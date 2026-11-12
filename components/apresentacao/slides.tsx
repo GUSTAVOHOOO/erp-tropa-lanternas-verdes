@@ -10,6 +10,8 @@ import {
   Celular, CamadasBack, Capitulo, Cartoes, Codigo, Contador, DiagramaArquitetura, Etapas, Lista,
   OrbitaAgentes, Painel, Rotulo, Subtitulo, TabelaProva, TabelaRegras, Titulo,
 } from './blocos'
+import { ChamadaTropa } from './lanternas'
+import { NascimentoGalaxia } from './NascimentoGalaxia'
 
 /*
  * Conteúdo da apresentação final. Fonte: docs/APRESENTACAO.md.
@@ -80,7 +82,7 @@ export const SLIDES: Slide[] = [
   {
     id: 'parte-1', parte: 1, titulo: 'Parte I: Abertura e processo', minutos: 0.5, capitulo: true,
     notas: 'Abrir com o fio condutor: cada requisito pedido virou uma regra escrita numa skill, e cada regra aparece no código, num teste ou num documento.',
-    Conteudo: () => <Capitulo numero="I" parte="PARTE I" minutos={15} titulo="Como foi construído" texto="O produto, o contrato, a documentação e os agentes do projeto." apresentador={APRESENTADORES[1]} Arte={arte('Abin Sur')} legenda="Abin Sur · Travessia interestelar: onde tudo começa" />,
+    Conteudo: () => <Capitulo numero="I" parte="PARTE I" minutos={15} variante="palavras" titulo="Como foi construído" texto="O produto, o contrato, a documentação e os agentes do projeto." apresentador={APRESENTADORES[1]} Arte={arte('Abin Sur')} legenda="Abin Sur · Travessia interestelar: onde tudo começa" />,
   },
   {
     id: 'produto', parte: 1, titulo: 'O produto em 1 minuto', minutos: 1.5,
@@ -89,11 +91,11 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="01">O produto</Rotulo>
-          <Titulo texto="Ocorrências intergalácticas sob controle" />
+          <Titulo texto="Ocorrências intergalácticas sob controle" variante="mascara" />
           <Subtitulo>Registrar, acompanhar e atribuir, com permissões por papel e setor. Visual 100% gerado em código: HTML, CSS, SVG e Canvas.</Subtitulo>
-          <div className="dk-selos dk-cascata dk-t5"><SeloOa>12 rotas OANET</SeloOa><SeloOa tom="azul">25 Lanternas no seed</SeloOa><SeloOa tom="ambar">0 imagens externas</SeloOa></div>
+          <div className="dk-selos dk-selos--carimbo dk-cascata dk-t5"><SeloOa>12 rotas OANET</SeloOa><SeloOa tom="azul">25 Lanternas no seed</SeloOa><SeloOa tom="ambar">0 imagens externas</SeloOa></div>
         </div>
-        <Cartoes className="dk-t3" itens={[
+        <Cartoes variante="virar" className="dk-t3" itens={[
           { icone: 'olho', titulo: 'Visitante', texto: 'Conhece a Tropa, os 25 Lanternas e Oa no site público.' },
           { icone: 'escudo', titulo: 'Lanterna', texto: 'Trabalha nas ocorrências do próprio setor. Nada além dele.', selo: 'setor' },
           { icone: 'hierarquia', titulo: 'Guardião', texto: 'Vê todos os setores, atribui responsáveis e gere usuários.', selo: 'todos' },
@@ -108,13 +110,13 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="02">Arquitetura</Rotulo>
-          <Titulo texto="O navegador nunca toca no token" />
+          <Titulo texto="O navegador nunca toca no token" variante="palavras" />
         </div>
         <div className="dk-entra dk-t3"><DiagramaArquitetura /></div>
         <div className="dk-faixa-numeros dk-t5">
-          <Contador valor={30} rotulo="operações no contrato" />
-          <Contador valor={310} rotulo="cenários de exemplo" />
-          <Contador valor={1} rotulo="ADR: JWT no servidor" detalhe="docs/adr/0001" />
+          <Contador valor={30} rotulo="operações no contrato" variante="odometro" />
+          <Contador valor={310} rotulo="cenários de exemplo" variante="odometro" />
+          <Contador valor={1} rotulo="ADR: JWT no servidor" detalhe="docs/adr/0001" variante="odometro" />
         </div>
       </div>
     ),
@@ -126,7 +128,7 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="03">Processo</Rotulo>
-          <Titulo texto="Contrato primeiro, código depois" />
+          <Titulo texto="Contrato primeiro, código depois" variante="terminal" />
         </div>
         <Etapas className="dk-t3" etapas={[
           { icone: 'relatorios', titulo: 'Decisões', texto: <>42 decisões e ~36 regras de negócio</> },
@@ -136,8 +138,8 @@ export const SLIDES: Slide[] = [
           { icone: 'verificado', titulo: 'Entrega', texto: <>json-server removido, E2E contra a API real</> },
         ]} />
         <div className="dk-faixa-numeros dk-t8">
-          <Contador valor={42} rotulo="decisões registradas" />
-          <Contador valor={129} sufixo="+" rotulo="commits" />
+          <Contador valor={42} rotulo="decisões registradas" variante="holograma" />
+          <Contador valor={129} sufixo="+" rotulo="commits" variante="odometro" />
           <Contador valor={20} sufixo="+" rotulo="PRs revisados" />
         </div>
       </div>
@@ -150,8 +152,8 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="04">Documentação</Rotulo>
-          <Titulo texto="Uma fonte por assunto, conferida por script" />
-          <TabelaRegras className="dk-t3" cabecalho={['Pergunta', 'Fonte canônica']} linhas={[
+          <Titulo texto="Uma fonte por assunto, conferida por script" variante="mascara" />
+          <TabelaRegras variante="colunas" className="dk-t3" cabecalho={['Pergunta', 'Fonte canônica']} linhas={[
             { requisito: 'O que foi decidido?', prova: <Codigo2>ESCOPO.md + ADRs</Codigo2> },
             { requisito: 'Qual regra vale?', prova: <Codigo2>REGRAS-DE-NEGOCIO.md</Codigo2> },
             { requisito: 'Qual formato HTTP?', prova: <Codigo2>openapi.json · API.md · DTOS.md</Codigo2> },
@@ -160,7 +162,7 @@ export const SLIDES: Slide[] = [
           ]} />
         </div>
         <div className="dk-coluna dk-coluna--centro">
-          <Codigo className="dk-t5" arquivo="terminal · verificações" linhas={[
+          <Codigo variante="revelar" className="dk-t5" arquivo="terminal · verificações" linhas={[
             '$ node docs/agents/validar-documentacao.mjs --ancoras',
             '  links locais ............ ok',
             '  âncoras e títulos ....... ok',
@@ -180,22 +182,22 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="05">Regras com ID</Rotulo>
-          <Titulo texto="Requisitos do professor viraram regras com ID" />
+          <Titulo texto="Requisitos do professor viraram regras com ID" variante="palavras" />
         </div>
         <div className="dk-grade dk-grade--2">
-          <Painel className="dk-t3" titulo="skill frontend-web" icone="painel" acao={<SeloOa>~150 regras</SeloOa>}>
+          <Painel variante="holograma" className="dk-t3" titulo="skill frontend-web" icone="painel" acao={<SeloOa>~150 regras</SeloOa>}>
             <div className="dk-chips dk-cascata">{['COMP', 'JS', 'ROTA', 'API', 'AUTH', 'FORM', 'CSS', 'PROD', 'STACK', 'DEC'].map((p) => <span key={p}>{p}</span>)}</div>
             <p className="dk-texto">Origem de cada regra: <b>[SLIDE]</b> os 7 decks da disciplina · <b>[DOCS]</b> o Next instalado · <b>[DECISÃO]</b> escolha do grupo.</p>
           </Painel>
-          <Painel className="dk-t4" titulo="skill backend-api" icone="setores" acao={<SeloOa tom="azul">6 blocos</SeloOa>}>
+          <Painel variante="desdobrar" className="dk-t4" titulo="skill backend-api" icone="setores" acao={<SeloOa tom="azul">6 blocos</SeloOa>}>
             <div className="dk-chips dk-chips--azul dk-cascata">{['Camadas', 'Contrato HTTP', 'Entrada', 'Erros', 'Dados', 'Auth'].map((p) => <span key={p}>{p}</span>)}</div>
             <p className="dk-texto">Aulas de API REST e a atividade da Biblioteca: envelope, filtro global, TypeORM, camadas.</p>
           </Painel>
         </div>
         <div className="dk-faixa-numeros dk-t7">
           <Contador valor={400} sufixo="+" rotulo="marcadores // [AUTH-05] no código" />
-          <Contador valor={111} rotulo="arquivos do front marcados" />
-          <Contador valor={2} rotulo="tabelas Prove: erro testado como sucesso" />
+          <Contador valor={111} rotulo="arquivos do front marcados" variante="odometro" />
+          <Contador valor={2} rotulo="tabelas Prove" detalhe="erro testado como sucesso" variante="holograma" />
         </div>
       </div>
     ),
@@ -207,7 +209,7 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas dk-layout--orbita">
         <div className="dk-coluna">
           <Rotulo codigo="06">Ferramentas</Rotulo>
-          <Titulo texto="Desenvolvimento assistido por agentes" />
+          <Titulo texto="Desenvolvimento assistido por agentes" variante="terminal" />
           <Lista className="dk-t3" itens={[
             <><b>Claude Code</b> coordena, revisa e escreve o código sensível: schemas, Actions, permissões</>,
             <><b>Orca</b> orquestra: worktrees isoladas, terminais e navegador integrado em 1536, 820 e 375 px</>,
@@ -235,9 +237,9 @@ export const SLIDES: Slide[] = [
           ))}
         </div>
         <div className="dk-grade dk-grade--3">
-          <Painel className="dk-t5" titulo="Coordenador" icone="alvo"><p className="dk-texto">Escreve os testes antes, revisa cada diff e é o único que roda o build e o navegador.</p></Painel>
-          <Painel className="dk-t6" titulo="Lições" icone="sino"><p className="dk-texto">Conferir UTF-8 depois de cada worker. Código de segurança <b>não se delega</b>.</p></Painel>
-          <Painel className="dk-t7" titulo="Auditoria" icone="busca"><div className="dk-mini-numeros"><Contador valor={5} rotulo="agentes" /><Contador valor={13} rotulo="defeitos" /><Contador valor={23} rotulo="testes de regressão" /></div></Painel>
+          <Painel variante="desdobrar" className="dk-t5" titulo="Coordenador" icone="alvo"><p className="dk-texto">Escreve os testes antes, revisa cada diff e é o único que roda o build e o navegador.</p></Painel>
+          <Painel variante="holograma" className="dk-t6" titulo="Lições" icone="sino"><p className="dk-texto">Conferir UTF-8 depois de cada worker. Código de segurança <b>não se delega</b>.</p></Painel>
+          <Painel variante="foco" className="dk-t7" titulo="Auditoria" icone="busca"><div className="dk-mini-numeros"><Contador valor={5} rotulo="agentes" /><Contador valor={13} rotulo="defeitos" variante="odometro" /><Contador valor={23} rotulo="testes de regressão" /></div></Painel>
         </div>
       </div>
     ),
@@ -249,9 +251,9 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="08">Qualidade</Rotulo>
-          <Titulo texto="Nada entra sem prova" />
+          <Titulo texto="Nada entra sem prova" variante="mascara" />
         </div>
-        <Cartoes className="dk-cartoes--4 dk-t3" itens={[
+        <Cartoes variante="montar" className="dk-cartoes--4 dk-t3" itens={[
           { icone: 'verificado', titulo: 'Vitest', texto: 'Unidade e componentes do front, com Testing Library.' },
           { icone: 'olho', titulo: 'Playwright', texto: 'E2E no servidor falso do contrato e, separado, na API real.' },
           { icone: 'setores', titulo: 'Jest + Supertest', texto: 'Back: cada suíte sobe a API numa porta livre com SQLite próprio.' },
@@ -263,7 +265,7 @@ export const SLIDES: Slide[] = [
   {
     id: 'parte-2', parte: 2, titulo: 'Parte II: Front-end', minutos: 0.5, capitulo: true,
     notas: 'Estrutura de cada slide: requisito da skill, onde está no código e como provamos.',
-    Conteudo: () => <Capitulo numero="II" parte="PARTE II" minutos={15} titulo="Front-end" texto="Cada requisito da skill frontend-web, do slide da aula até a linha de código." apresentador={APRESENTADORES[2]} Arte={arte('Kyle Rayner')} legenda="Kyle Rayner · Imaginação mecânica: a interface" />,
+    Conteudo: () => <Capitulo numero="II" parte="PARTE II" minutos={15} variante="terminal" titulo="Front-end" texto="Cada requisito da skill frontend-web, do slide da aula até a linha de código." apresentador={APRESENTADORES[2]} Arte={arte('Kyle Rayner')} legenda="Kyle Rayner · Imaginação mecânica: a interface" />,
   },
   {
     id: 'stack-front', parte: 2, titulo: 'Stack e organização do front', minutos: 1.5,
@@ -272,8 +274,8 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="09">Stack</Rotulo>
-          <Titulo texto="Servidor primeiro, cliente só nas folhas" />
-          <div className="dk-selos dk-cascata dk-t3">
+          <Titulo texto="Servidor primeiro, cliente só nas folhas" variante="palavras" />
+          <div className="dk-selos dk-selos--desliza dk-cascata dk-t3">
             <SeloOa>Next.js 16.4</SeloOa><SeloOa>React 19.3</SeloOa><SeloOa tom="azul">TypeScript</SeloOa><SeloOa tom="azul">Tailwind 4</SeloOa><SeloOa tom="ambar">RHF + Zod 4</SeloOa><SeloOa tom="neutro">Base UI</SeloOa>
           </div>
           <p className="dk-regra dk-entra dk-t5"><span className="dk-id">ROTA-08</span><span><Codigo2>{"'use client'"}</Codigo2> só nas folhas interativas, nunca em layout ou página.</span></p>
@@ -300,8 +302,8 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="10">Deck: Consumo de APIs</Rotulo>
-          <Titulo texto="Um cliente, um schema, nenhum as Tipo" />
-          <TabelaRegras className="dk-t3" linhas={[
+          <Titulo texto="Um cliente, um schema, nenhum as Tipo" variante="terminal" />
+          <TabelaRegras variante="celulas" className="dk-t3" linhas={[
             { id: 'API-17', requisito: 'Cliente HTTP único', prova: <Codigo2>lib/api.ts</Codigo2> },
             { id: 'API-04', requisito: 'Resposta validada', prova: <Codigo2>schema.parse(dados)</Codigo2> },
             { id: 'API-03', requisito: 'Erro com código', prova: <Codigo2>ApiError(status, codigo)</Codigo2> },
@@ -310,7 +312,7 @@ export const SLIDES: Slide[] = [
             { id: 'API-08', requisito: 'Ambiente validado', prova: <Codigo2>lib/env.ts</Codigo2> },
           ]} />
         </div>
-        <Codigo className="dk-t4" arquivo="lib/api.ts · resumo" linhas={[
+        <Codigo variante="foco" className="dk-t4" arquivo="lib/api.ts · resumo" linhas={[
           '/** [API-17][API-04] */',
           'export async function requisitarApi<T>(',
           '  caminho: string,',
@@ -333,12 +335,12 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="11">API-09 · API-10 · API-11 · ROTA-21</Rotulo>
-          <Titulo texto="Toda tela tem quatro estados" />
+          <Titulo texto="Toda tela tem quatro estados" variante="mascara" />
         </div>
         <div className="dk-grade dk-grade--4">
-          <Painel className="dk-t3" titulo="Carregando" icone="pausa"><div className="dk-esqueleto"><i /><i /><i /></div><Codigo2>loading.tsx</Codigo2></Painel>
-          <Painel className="dk-t4" titulo="Vazio" icone="busca"><p className="dk-estado-texto">Nenhuma ocorrência neste filtro.</p><Codigo2>EstadoVazio</Codigo2></Painel>
-          <Painel className="dk-t5" titulo="Erro" icone="ocorrencias"><p className="dk-estado-texto dk-estado-texto--erro">A Central não respondeu.<br /><b>Tentar de novo</b></p><Codigo2>error.tsx + retry</Codigo2></Painel>
+          <Painel variante="desdobrar" className="dk-t3" titulo="Carregando" icone="pausa"><div className="dk-esqueleto"><i /><i /><i /></div><Codigo2>loading.tsx</Codigo2></Painel>
+          <Painel variante="foco" className="dk-t4" titulo="Vazio" icone="busca"><p className="dk-estado-texto">Nenhuma ocorrência neste filtro.</p><Codigo2>EstadoVazio</Codigo2></Painel>
+          <Painel variante="holograma" className="dk-t5" titulo="Erro" icone="ocorrencias"><p className="dk-estado-texto dk-estado-texto--erro">A Central não respondeu.<br /><b>Tentar de novo</b></p><Codigo2>error.tsx + retry</Codigo2></Painel>
           <Painel className="dk-t6" titulo="Sucesso" icone="verificado"><div className="dk-mini-lista"><span><SeloOa tom="vermelho">crítica</SeloOa>Fenda em Korugar</span><span><SeloOa tom="ambar">média</SeloOa>Sinal em Thanagar</span></div><Codigo2>dados validados</Codigo2></Painel>
         </div>
         <div className="dk-url dk-entra dk-t8"><IconeOa nome="busca" /><span>/painel/ocorrencias</span><b>?status=aberta&gravidade=critica&pagina=2</b><SeloOa>estado na URL · ROTA-14</SeloOa></div>
@@ -382,8 +384,8 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="13">Deck: Formulários RHF + Zod</Rotulo>
-          <Titulo texto="Um schema, dois lugares" />
-          <Lista className="dk-t3" itens={[
+          <Titulo texto="Um schema, dois lugares" variante="palavras" />
+          <Lista variante="sublinhado" className="dk-t3" itens={[
             <><span className="dk-id">FORM-01</span> React Hook Form com <Codigo2>zodResolver</Codigo2></>,
             <><span className="dk-id">FORM-17</span> o mesmo schema roda de novo na Server Action</>,
             <><span className="dk-id">FORM-19</span> erro da API volta para o campo certo</>,
@@ -391,7 +393,7 @@ export const SLIDES: Slide[] = [
             <><span className="dk-id">FORM-08</span> botão desabilitado contra envio duplo</>,
           ]} />
         </div>
-        <Painel className="dk-t4" titulo="Cadastro na Central" icone="pessoal">
+        <Painel variante="foco" className="dk-t4" titulo="Cadastro na Central" icone="pessoal">
           <div className="dk-form" aria-hidden="true">
             <label>Nome<span className="dk-campo">Kilowog</span></label>
             <label>E-mail<span className="dk-campo dk-campo--erro">kilowog@oa.tropa</span><small><IconeOa nome="ocorrencias" />Este e-mail já está cadastrado.</small></label>
@@ -408,8 +410,8 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--tres">
         <div className="dk-coluna">
           <Rotulo codigo="14">CSS · PROD</Rotulo>
-          <Titulo texto="Bonito, acessível e seguro" />
-          <Lista className="dk-t3" itens={[
+          <Titulo texto="Bonito, acessível e seguro" variante="terminal" />
+          <Lista variante="digitar" className="dk-t3" itens={[
             <><span className="dk-id">CSS-03</span> mobile-first, conferido em 375 px</>,
             <><span className="dk-id">CSS-12</span> cor nunca é o único sinal</>,
             <><span className="dk-id">CSS-14</span> foco sempre visível</>,
@@ -437,14 +439,14 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="15">Tabela Prove · frontend-web</Rotulo>
-          <Titulo texto="Erro testado como sucesso" />
+          <Titulo texto="Erro testado como sucesso" variante="mascara" />
           <div className="dk-mini-numeros dk-mini-numeros--grande dk-t3">
-            <Contador valor={529} rotulo="testes unitários" detalhe="71 arquivos" />
-            <Contador valor={40} rotulo="cenários E2E" detalhe="contra a API real" />
+            <Contador valor={529} rotulo="testes unitários" detalhe="71 arquivos" variante="odometro" />
+            <Contador valor={40} rotulo="cenários E2E" detalhe="contra a API real" variante="holograma" />
             <Contador valor={0} rotulo="erros de lint e tsc" />
           </div>
         </div>
-        <TabelaProva className="dk-t2" linhas={[
+        <TabelaProva variante="deriva" className="dk-t2" linhas={[
           ['Sem cookie em rota privada', <Codigo2 key="a">/login</Codigo2>],
           ['API responde 401', <Codigo2 key="b">/sessao-expirada</Codigo2>],
           ['403', <Codigo2 key="c">/acesso-negado</Codigo2>],
@@ -464,9 +466,9 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada dk-layout--centro">
         <div className="dk-cabecalho dk-cabecalho--centro">
           <Rotulo codigo="16">Ao vivo</Rotulo>
-          <Titulo texto="Transmissão da Central" />
+          <Titulo texto="Transmissão da Central" variante="palavras" />
         </div>
-        <Etapas className="dk-etapas--compacta dk-t3" etapas={[
+        <Etapas variante="pulso" className="dk-etapas--compacta dk-t3" etapas={[
           { icone: 'escudo', titulo: 'Login', texto: 'Hal Jordan · setor 2814' },
           { icone: 'painel', titulo: 'Dashboard', texto: 'resumo por status' },
           { icone: 'mais', titulo: 'Nova ocorrência', texto: 'com erro de campo' },
@@ -480,7 +482,7 @@ export const SLIDES: Slide[] = [
   {
     id: 'parte-3', parte: 3, titulo: 'Parte III: Back-end', minutos: 0.5, capitulo: true,
     notas: 'É a mesma arquitetura pedida na atividade da Biblioteca, aplicada a um domínio maior e com login.',
-    Conteudo: () => <Capitulo numero="III" parte="PARTE III" minutos={15} titulo="Back-end" texto="A API NestJS conferida com a skill backend-api e com a atividade da Biblioteca." apresentador={APRESENTADORES[3]} Arte={arte('John Stewart')} legenda="John Stewart · Arquitetura da luz: a estrutura" />,
+    Conteudo: () => <Capitulo numero="III" parte="PARTE III" minutos={15} variante="mascara" titulo="Back-end" texto="A API NestJS conferida com a skill backend-api e com a atividade da Biblioteca." apresentador={APRESENTADORES[3]} Arte={arte('John Stewart')} legenda="John Stewart · Arquitetura da luz: a estrutura" />,
   },
   {
     id: 'stack-back', parte: 3, titulo: 'Stack e mapa dos módulos', minutos: 1,
@@ -489,12 +491,12 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="17">Stack</Rotulo>
-          <Titulo texto="Um módulo por assunto" />
-          <div className="dk-selos dk-cascata dk-t3">
+          <Titulo texto="Um módulo por assunto" variante="palavras" />
+          <div className="dk-selos dk-selos--carimbo dk-cascata dk-t3">
             <SeloOa>NestJS 12</SeloOa><SeloOa>TypeORM</SeloOa><SeloOa tom="azul">SQLite</SeloOa><SeloOa tom="azul">class-validator</SeloOa><SeloOa tom="ambar">JWT + bcrypt</SeloOa><SeloOa tom="neutro">Helmet + throttler</SeloOa>
           </div>
           <div className="dk-faixa-numeros dk-faixa-numeros--esquerda dk-t5">
-            <Contador valor={30} rotulo="operações" />
+            <Contador valor={30} rotulo="operações" variante="odometro" />
             <Contador valor={9} rotulo="controllers" />
           </div>
         </div>
@@ -514,8 +516,8 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="18">Atividade · Parte 3</Rotulo>
-          <Titulo texto="O controller traduz, o service decide, o repository guarda" />
-          <Lista className="dk-t5" itens={[
+          <Titulo texto="O controller traduz, o service decide, o repository guarda" variante="terminal" />
+          <Lista variante="sublinhado" className="dk-t5" itens={[
             <>Injeção pelo construtor, sem <Codigo2>new</Codigo2>: dá para testar com falsos</>,
             <>Formato no DTO; regra no service</>,
             <>Exemplo: <Codigo2>ciclo-vida.service.ts</Codigo2> decide as transições</>,
@@ -532,9 +534,9 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="19">Contrato HTTP · Entrada</Rotulo>
-          <Titulo texto="O status é a verdade" />
+          <Titulo texto="O status é a verdade" variante="palavras" />
         </div>
-        <div className="dk-status dk-cascata dk-t3">
+        <div className="dk-status dk-status--pixel dk-cascata dk-t3">
           {[['200', 'ok'], ['201', 'criou'], ['204', 'sem corpo'], ['400', 'formato'], ['401', 'quem é você'], ['403', 'o que pode'], ['404', 'é seu?'], ['409', 'conflito'], ['422', 'regra'], ['429', 'calma']].map(([codigo, sentido]) => (
             <div key={codigo} className={`dk-status-item dk-status-item--${codigo[0]}`}><strong>{codigo}</strong><span>{sentido}</span></div>
           ))}
@@ -564,10 +566,10 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="20">Atividade · Parte 4</Rotulo>
-          <Titulo texto="Um envelope para toda resposta" />
+          <Titulo texto="Um envelope para toda resposta" variante="mascara" />
         </div>
         <div className="dk-grade dk-grade--2">
-          <Codigo className="dk-t3" arquivo="200 · interceptor-envelope.ts" linhas={[
+          <Codigo variante="revelar" className="dk-t3" arquivo="200 · interceptor-envelope.ts" linhas={[
             '{',
             '  "sucesso": true,',
             '  "dados": {',
@@ -576,7 +578,7 @@ export const SLIDES: Slide[] = [
             '  }',
             '}',
           ]} />
-          <Codigo className="dk-t4" arquivo="409 · filtro-excecoes.ts" linhas={[
+          <Codigo variante="foco" className="dk-t4" arquivo="409 · filtro-excecoes.ts" linhas={[
             '{',
             '  "sucesso": false,',
             '  "erro": { "status": 409, "codigo": "EMAIL_JA_CADASTRADO",',
@@ -587,7 +589,7 @@ export const SLIDES: Slide[] = [
           ]} />
         </div>
         <div className="dk-encaixe dk-entra dk-t7"><span>backend-api</span><IconeOa nome="seta" /><b>mesmo envelope</b><IconeOa nome="seta" /><span>frontend-web · Zod em lib/api.ts</span></div>
-        <div className="dk-selos dk-cascata dk-t8"><SeloOa>log.middleware.ts</SeloOa><SeloOa>ErroDominio + codigo</SeloOa><SeloOa>500 genérico, detalhe no log</SeloOa><SeloOa tom="ambar">0 try/catch nos controllers</SeloOa></div>
+        <div className="dk-selos dk-selos--pisca dk-cascata dk-t8"><SeloOa>log.middleware.ts</SeloOa><SeloOa>ErroDominio + codigo</SeloOa><SeloOa>500 genérico, detalhe no log</SeloOa><SeloOa tom="ambar">0 try/catch nos controllers</SeloOa></div>
       </div>
     ),
   },
@@ -598,8 +600,8 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="21">Atividade · Parte 5</Rotulo>
-          <Titulo texto="Persistir sem perder a história" />
-          <Lista className="dk-t3" itens={[
+          <Titulo texto="Persistir sem perder a história" variante="terminal" />
+          <Lista variante="digitar" className="dk-t3" itens={[
             <>Migrations versionadas, sem sincronização automática</>,
             <>Seed idempotente: os 25 Lanternas pesquisados</>,
             <>Transações curtas nas escritas dependentes</>,
@@ -630,14 +632,14 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--empilhada">
         <div className="dk-cabecalho">
           <Rotulo codigo="22">Autenticação</Rotulo>
-          <Titulo texto="Quem é você, o que pode, é seu?" />
+          <Titulo texto="Quem é você, o que pode, é seu?" variante="palavras" />
         </div>
         <div className="dk-portoes dk-cascata dk-t3">
           <div className="dk-portao"><strong>401</strong><span>quem é você?</span><small>JwtGuard global</small></div>
           <div className="dk-portao"><strong>403</strong><span>o que você pode?</span><small>PapeisGuard</small></div>
           <div className="dk-portao"><strong>404</strong><span>este recurso é seu?</span><small>dono vem do token</small></div>
         </div>
-        <TabelaRegras className="dk-tabela--larga dk-t6" linhas={[
+        <TabelaRegras variante="colunas" className="dk-tabela--larga dk-t6" linhas={[
           { requisito: 'Rota nova fechada por padrão', prova: <><Codigo2>APP_GUARD</Codigo2> + <Codigo2>@Publica()</Codigo2></> },
           { requisito: 'Login não revela se a conta existe', prova: <>401 único + <b>hash isca</b> no bcrypt</> },
           { requisito: 'Limite de tentativas', prova: <><Codigo2>ThrottlerGuard</Codigo2> → 429</> },
@@ -654,14 +656,14 @@ export const SLIDES: Slide[] = [
       <div className="dk-layout dk-layout--duas">
         <div className="dk-coluna">
           <Rotulo codigo="23">Tabela Prove · backend-api</Rotulo>
-          <Titulo texto="Cada status tem um teste" />
+          <Titulo texto="Cada status tem um teste" variante="terminal" />
           <div className="dk-mini-numeros dk-mini-numeros--grande dk-t3">
-            <Contador valor={17} rotulo="suítes E2E" detalhe="SQLite temporário" />
+            <Contador valor={17} rotulo="suítes E2E" detalhe="SQLite temporário" variante="odometro" />
             <Contador valor={13} rotulo="defeitos corrigidos" detalhe="auditoria 2026-11-11" />
-            <Contador valor={23} rotulo="casos de regressão" detalhe="20 falhavam antes" />
+            <Contador valor={23} rotulo="casos de regressão" detalhe="20 falhavam antes" variante="holograma" />
           </div>
         </div>
-        <TabelaProva className="dk-t2" linhas={[
+        <TabelaProva variante="foco" className="dk-t2" linhas={[
           ['Entrada válida', '200 · 201 · 204'],
           ['Campo extra ou formato inválido', '400 com detalhes'],
           ['Sem token ou token adulterado', '401'],
@@ -678,7 +680,7 @@ export const SLIDES: Slide[] = [
     notas: 'Os requisitos viraram duas skills com regras identificadas; as regras viraram código com marcadores, testes e documentos verificados por script; front e back sobre um contrato com hash; agentes aceleraram, sempre com revisão humana e teste antes do merge. Se perguntarem o que falta: o aceite G9 depende da execução registrada em INTEGRACAO.md; a CSP segue em modo relatório, como a PROD-03 manda; os riscos aceitos estão na auditoria, com o motivo. Agradecer e abrir para perguntas.',
     Conteudo: () => (
       <div className="dk-final">
-        <div className="dk-final-bateria dk-surge"><BateriaOa className="dk-final-svg" /></div>
+        <div className="dk-final-visual dk-surge"><BateriaOa className="dk-final-svg" /></div>
         <div className="dk-final-texto">
           <Rotulo codigo="24">Conclusão</Rotulo>
           <Titulo texto="Requisito, regra, código, prova" nivel="capitulo" />
@@ -688,12 +690,23 @@ export const SLIDES: Slide[] = [
             <>Front e back em paralelo sobre <b>um contrato com hash</b></>,
             <>Agentes aceleraram, <b>sempre com revisão e teste antes do merge</b></>,
           ]} />
-          <blockquote className="dk-juramento dk-cascata dk-t9">
-            <span>No dia mais claro, na noite mais densa,</span>
-            <span>o mal sucumbirá diante da minha presença.</span>
-          </blockquote>
-          <p className="dk-perguntas dk-entra dk-t10">Perguntas?</p>
         </div>
+        <div className="dk-final-tropa"><ChamadaTropa /></div>
+      </div>
+    ),
+  },
+  {
+    id: 'perguntas', parte: 3, titulo: 'Perguntas', minutos: 0.5, capitulo: true,
+    notas: 'Encerramento: a galáxia nasce em cerca de 20 segundos (teia cósmica, colapso, primeiras estrelas, braços espirais e núcleo). Deixe a cena correr ou diga o juramento junto; quando a galáxia amadurece, aparece "Perguntas?". Agradecer e abrir para perguntas.',
+    Conteudo: () => (
+      <div className="dk-encerramento">
+        <div className="dk-encerramento-galaxia" aria-hidden="true"><NascimentoGalaxia /></div>
+        <Rotulo codigo="25" className="dk-encerramento-rotulo">Encerramento · nascimento de uma galáxia</Rotulo>
+        <blockquote className="dk-encerramento-juramento">
+          <span>No dia mais claro, na noite mais densa,</span>
+          <span>o mal sucumbirá diante da minha presença.</span>
+        </blockquote>
+        <p className="dk-encerramento-perguntas">Perguntas?</p>
       </div>
     ),
   },

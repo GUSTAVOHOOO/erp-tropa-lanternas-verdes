@@ -245,6 +245,7 @@ describe('Server Actions de gestão de Lanternas (FE-08)', () => {
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel', 'layout')
+      expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas/kyle-rayner') // Ficha pública
     })
 
     it('editarLanternaAcao revalida e redireciona', async () => {
@@ -260,6 +261,7 @@ describe('Server Actions de gestão de Lanternas (FE-08)', () => {
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel', 'layout')
+      expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas/hal-jordan') // Ficha pública
     })
 
     it('criarLanternaAcao aceita Setor 0 válido e repassa para a API', async () => {
@@ -300,6 +302,7 @@ describe('Server Actions de gestão de Lanternas (FE-08)', () => {
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas')
       expect(revalidatePathMock).toHaveBeenCalledWith('/painel', 'layout')
+      expect(revalidatePathMock).toHaveBeenCalledWith('/lanternas/hal-jordan') // Ficha pública
       expect(redirectMock).not.toHaveBeenCalled()
     })
   })

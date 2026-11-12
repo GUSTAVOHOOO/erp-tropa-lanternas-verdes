@@ -4,6 +4,8 @@ import { env } from '@/lib/env'
 import { ApiError, FALHA_REDE, RESPOSTA_INVALIDA } from '@/lib/api-error'
 
 export type CacheApi = { cache: 'no-store' } | { revalidate: number; tags?: string[] }
+/** Leitura sempre atual: o painel (operação e gestão) não usa o cache de 60 s das páginas públicas. [API-14] */
+export const SEM_CACHE = { cache: 'no-store' } as const satisfies CacheApi
 export type OpcoesApi = {
   metodo?: 'GET' | 'POST' | 'PATCH' | 'DELETE'
   consulta?: Record<string, string | number | boolean | null | undefined>

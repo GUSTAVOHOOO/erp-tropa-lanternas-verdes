@@ -11,6 +11,7 @@ import { buscarOcorrencia } from '@/lib/ocorrencias'
 import { acoesPermitidas } from '@/lib/permissoes-ocorrencia'
 import type { LanternaLista } from '@/lib/schemas/lanterna'
 import { FormAtribuir } from '@/app/(painel)/painel/ocorrencias/_components/FormAtribuir'
+import { SEM_CACHE } from '@/lib/api'
 
 export const metadata: Metadata = { title: 'Atribuir responsável | Central de Comando' }
 
@@ -30,7 +31,7 @@ export default async function AtribuirPage({ params }: AtribuirPageProps) {
 
   let lanternas: LanternaLista[] = []
   try {
-    lanternas = await listarTodosLanternas({ setor: ocorrencia.setorId }, { cache: 'no-store' })
+    lanternas = await listarTodosLanternas({ setor: ocorrencia.setorId }, SEM_CACHE)
   } catch (erro) {
     tratarErroDetalhe(erro) // [API-12]
   }

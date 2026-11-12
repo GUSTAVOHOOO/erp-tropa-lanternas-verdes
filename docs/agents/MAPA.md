@@ -47,7 +47,7 @@ O diagrama representa fluxos de aplicação. A autorização real fica na API
 | Pedido | Ponto de entrada | Dependências a consultar |
 |---|---|---|
 | Home, Sobre e navegação pública | `app/(site)/page.tsx`, `sobre/`, layout público | `components/oanet/CascaOa.tsx` (substitui `MenuNavegacao` e `Marca`, removidos na UI-02.00), `Juramento` |
-| Lista e detalhe de lanternas | `app/(site)/lanternas/` | `lib/lanternas.ts`, `lib/setores.ts`, `lib/schemas/lanterna.ts`, `lib/schemas/setor.ts`, `components/Paginacao.tsx` |
+| Lista e detalhe de lanternas | `app/(site)/lanternas/` | `lib/lanternas.ts`, `lib/setores.ts`, `lib/schemas/lanterna.ts`, `lib/schemas/setor.ts`, `components/Paginacao.tsx`, `components/FichaLanterna.tsx` |
 | Login | `app/(site)/login/` | `lib/auth.ts`, `lib/schemas/login.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Cadastro | `app/(site)/cadastro/` | `lib/cadastro.ts`, `lib/schemas/cadastro.ts`, `lib/schemas/senha.ts`, DAL e sessão |
 | Logout | `app/(painel)/actions.ts` e layout privado | `lib/dal.ts` |
@@ -58,8 +58,8 @@ O diagrama representa fluxos de aplicação. A autorização real fica na API
 | Eventos e comentários | `app/(painel)/painel/ocorrencias/comentarios-actions.ts` | `lib/eventos.ts`, `lib/comentarios.ts`, `lib/schemas/evento.ts`, `lib/schemas/comentario.ts` |
 | Minha fila | `app/(painel)/painel/minha-fila/` | `listarMinhaFila` em `lib/ocorrencias.ts`; link só para o Lanterna em `components/oanet/navegacao.ts` |
 | Gestão de setores | `app/(painel)/painel/setores/` | `lib/setores.ts` (`criarSetor`, `editarSetor`, `excluirSetor`), `lib/schemas/setor.ts` (`setorFormularioSchema`, `edicaoSetorSchema`), `actions.ts`, `FormSetor`, `ExcluirSetor`, `exigirPapel('guardiao')` |
-| Gestão de lanternas | `app/(painel)/painel/lanternas/` | `lib/lanternas.ts` (`criarLanterna`, `editarLanterna`, `alterarStatusLanterna`), `lib/schemas/gestao-lanterna.ts`, `actions.ts`, `FormLanterna`, `StatusLanterna`, `exigirPapel('guardiao')` |
-| Gestão de usuários | `app/(painel)/painel/usuarios/` | `lib/gestao-usuarios.ts` (`listarUsuarios`, `alterarPapel`, `vincularLanterna`), `lib/schemas/gestao-usuario.ts` (`filtroUsuariosSchema`, `papelFormularioSchema`, `vinculoFormularioSchema`), `actions.ts`, `FormPapel`, `FormVinculo`, `exigirPapel('guardiao')` |
+| Gestão e ficha de lanternas no painel | `app/(painel)/painel/lanternas/`, `app/(painel)/painel/lanternas/[id]/` | `lib/lanternas.ts` (`criarLanterna`, `editarLanterna`, `alterarStatusLanterna`, `buscarLanterna`), `lib/schemas/gestao-lanterna.ts`, `actions.ts`, `FormLanterna`, `StatusLanterna`, `components/FichaLanterna.tsx`, `exigirPapel` |
+| Gestão de usuários | `app/(painel)/painel/usuarios/` | `lib/gestao-usuarios.ts` (`listarUsuarios`, `alterarPapel`, `vincularLanterna`), `lib/schemas/gestao-usuario.ts` (`filtroUsuariosSchema`, `papelFormularioSchema`, `vinculoFormularioSchema`), `actions.ts`, `FormPapel` (com transferência de setor opcional para Lanterna), `FormVinculo`, `exigirPapel('guardiao')` |
 | Permissões de ocorrência | `lib/permissoes-ocorrencia.ts` | `acoesPermitidas` e `transicoesPermitidas` pela matriz de [TELAS.md](../frontend/TELAS.md); só visibilidade, a API decide ([matriz](../backend/API.md#matriz-de-permissões)) |
 | UI oficial e assets | `components/oanet/`, `app/globals.css`, `app/laboratorio/` | `docs/UI.md` (D28), `docs/agents/HANDOFF-OANET.md`; `/design-system` antigo é histórico |
 | Dados de demonstração | `backend/` (`npm run seed -- --etapa completa`) | [SEED.md](../backend/SEED.md); o front não lê arquivos de dados locais |
@@ -83,10 +83,10 @@ O alias `@/` aponta para a raiz, conforme [tsconfig.json](../../tsconfig.json).
 | Action → formulário | [ResultadoAcao](../../lib/resultado-acao.ts): `ok`, `erro` geral e `errors` por campo; [aplicarErrosDoServidor](../../lib/erros-formulario.ts) aplica os erros no RHF |
 | Página/action → autorização | [DAL](../../lib/dal.ts): `verificarSessao`, `exigirPapel`, criação/leitura/remoção de cookie |
 | Sessão → setor | [escopo.ts](../../lib/escopo.ts): `podeAcessarSetor`, `setorParaFiltro`; o setor vem do `Usuario` devolvido por `/auth/me` |
-| Servidor → HTTP | [api.ts](../../lib/api.ts) tem o cliente único `requisitarApi` e `requisitarApiSemConteudo`: valida o envelope `{ sucesso, dados }` com o schema do serviço, exige cache explícito e envia Bearer quando há token; todos os serviços passam por ele |
+| Servidor → HTTP | [api.ts](../../lib/api.ts) tem o cliente único `requisitarApi` e `requisitarApiSemConteudo`: valida o envelope `{ sucesso, dados }` com o schema do serviço, exige cache explícito (`SEM_CACHE` no painel) e envia Bearer quando há token; `registrarErro` loga 4xx previstos como `console.warn` e 5xx/respostas inválidas como `console.error` [SEG-08]; todos os serviços passam por ele |
 | HTTP → erro de detalhe | [ApiError](../../lib/api-error.ts) carrega status, código e detalhes; [tratarErroDetalhe](../../lib/erro-detalhe.ts) navega em 401/403, chama `notFound` em 404 e converte 400 de leitura de detalhe em `notFound` |
 | HTTP → erro de Action | [resultadoDeErroApi](../../lib/api-error.ts) e [destinoDoErro](../../lib/api-error.ts) tratam `ApiError` em Actions |
-| Persistência → tela | Actions de escrita revalidam `/painel` no escopo `layout`; cadastro/atribuição redirecionam e status retorna `{ ok: true }` |
+| Persistência → tela | Actions de escrita revalidam `/painel` no escopo `layout` (Setores também revalida `/painel/setores`, `/lanternas` e `/cadastro`; Lanternas revalida `/painel/lanternas`, `/lanternas` e `/lanternas/${slug}`); cadastro/atribuição redirecionam e status retorna `{ ok: true }` |
 
 Os serviços de `lib/` não recebem sessão. Quem chama `listarOcorrencias` precisa
 aplicar o filtro autorizado; quem busca um detalhe privado precisa conferir seu
@@ -102,6 +102,8 @@ Lanterna afastado, 404 em vez de acesso negado para outro Setor) estão em
 As coleções atuais são setores, lanternas, usuários e ocorrências. Os schemas
 em [lib/schemas](../../lib/schemas) definem campos, tipos e enums. Vários IDs são
 normalizados para string; preserve os contratos nas relações entre coleções.
+
+> **Conta vs Ficha:** Atribuição de ocorrências e catálogo listam Fichas de Lanternas, não contas de usuário. Uma conta criada no cadastro público (`/cadastro`) nasce sem Ficha vinculada. Para receber ocorrências ou acessar a Minha Fila, o Guardião precisa criar a Ficha em Lanternas (gestão) e vinculá-la à conta em Usuários (`/painel/usuarios`) → Gerenciar.
 
 | Operação | Guardião | Lanterna |
 |---|---|---|
@@ -165,11 +167,9 @@ removidos, e `SESSION_SECRET` não existe mais. A senha é verificada só pela A
 ## Leitura, cache e erros
 
 - [Lanternas](../../lib/lanternas.ts) e [setores](../../lib/setores.ts):
-  revalidação de 60 segundos nas leituras públicas (`listarLanternas`, `buscarLanterna`,
-  `listarTodosLanternas`, `listarSetores`, `buscarSetor`). As mutações restritas ao Guardião
-  em [lanternas.ts](../../lib/lanternas.ts) (`criarLanterna`, `editarLanterna` com `camposAlterados`,
-  `alterarStatusLanterna`) e em [setores.ts](../../lib/setores.ts) (`criarSetor`, `editarSetor`,
-  `excluirSetor`) usam `no-store` e Bearer obrigatório.
+  a revalidação de 60 segundos fica restrita às leituras das páginas públicas (`app/(site)`: `listarLanternas`, `buscarLanterna`, `listarTodosLanternas`, `listarSetores`, `buscarSetor`).
+  TODO o painel (`app/(painel)`) lê Setores e Lanternas sem cache através da constante `SEM_CACHE` de [api.ts](../../lib/api.ts) (`{ cache: 'no-store' }`) para que alterações, criações e vínculos apareçam imediatamente nos seletores, tabelas e fichas.
+  As mutações restritas ao Guardião em [lanternas.ts](../../lib/lanternas.ts) e em [setores.ts](../../lib/setores.ts) usam `no-store` e Bearer obrigatório. Ao criar, alterar ou excluir Setor, a Action revalida `/painel/setores`, `/lanternas`, `/cadastro` e `/painel` no escopo `layout`; ao criar, editar ou alterar status de Lanterna, a Action revalida `/painel/lanternas`, `/painel` no escopo `layout`, `/lanternas` e `/lanternas/${slug}`.
 - [Gestão de usuários](../../lib/gestao-usuarios.ts): chamadas restritas ao Guardião
   (`listarUsuarios` com paginação, busca e ordenação, `alterarPapel` e `vincularLanterna`)
   sem cache (`no-store`) e com Bearer.

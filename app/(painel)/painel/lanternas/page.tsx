@@ -18,9 +18,8 @@ import { filtroLanternasSchema, rotuloStatusLanterna } from '@/lib/schemas/lante
 import { listarSetores } from '@/lib/setores'
 import { FormLanterna } from '@/app/(painel)/painel/lanternas/_components/FormLanterna'
 import { StatusLanterna } from '@/app/(painel)/painel/lanternas/_components/StatusLanterna'
+import { SEM_CACHE } from '@/lib/api'
 
-// Tela de gestão: Fichas e Setores recém-criados ou alterados precisam aparecer na hora. [API-14]
-const SEM_CACHE = { cache: 'no-store' } as const
 
 export const metadata: Metadata = { title: 'Gestão de Lanternas | Central de Comando' }
 
@@ -40,7 +39,7 @@ export default async function PainelLanternasPage({ searchParams }: PainelLanter
     listarLanternas({ ...filtro, limite: 20 }, SEM_CACHE),
     listarSetores(SEM_CACHE),
     listarTodosLanternas({}, SEM_CACHE),
-    editarSlug ? buscarLanterna(editarSlug) : Promise.resolve(null),
+    editarSlug ? buscarLanterna(editarSlug, SEM_CACHE) : Promise.resolve(null),
   ])
 
   const mapaSetores = Object.fromEntries(setores.map((s) => [s.id, s.nome]))
@@ -60,113 +59,110 @@ export default async function PainelLanternasPage({ searchParams }: PainelLanter
         descricao="Cadastro, edição e controle de status das Fichas da Tropa"
       />
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-        <div className="lg:col-span-7">
-          <MolduraOa titulo="Fichas da Tropa" icone="pessoal">
-            {paginaLanternas.itens.length === 0 ? (
-              <EstadoVazio
-                titulo="Nenhuma ficha encontrada"
-                descricao="Nenhum Lanterna corresponde aos filtros aplicados."
-              />
-            ) : (
-              <div className="grid gap-4">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Codinome</TableHead>
-                      <TableHead>Setor</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Ingresso</TableHead>
-                      <TableHead className="text-right">Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {paginaLanternas.itens.map((lanterna) => (
-                      <TableRow key={lanterna.id}>
-                        <TableCell>
-                          <Link
-                            href={`/painel/lanternas/${lanterna.id}`}
-                            className="oa-record-link font-medium"
-                          >
-                            <strong>{lanterna.codinome}</strong>
-                          </Link>
-                          {lanterna.identidadeCivil && (
-                            <small className="block text-xs text-(--oa-muted)">
-                              {lanterna.identidadeCivil}
-                            </small>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {lanterna.setorId !== null ? (
-                            <span>
-                              Setor {lanterna.setorId}
-                              {mapaSetores[lanterna.setorId] ? ` (${mapaSetores[lanterna.setorId]})` : ''}
-                            </span>
-                          ) : (
-                            <span className="text-(--oa-muted)">Sem setor</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <SeloOa
-                            tom={
-                              lanterna.status === 'ativo'
-                                ? 'verde'
-                                : lanterna.status === 'em_missao'
-                                  ? 'azul'
-                                  : 'ambar'
-                            }
-                          >
-                            {rotuloStatusLanterna[lanterna.status]}
-                          </SeloOa>
-                        </TableCell>
-                        <TableCell>
-                          {lanterna.anoIngresso ?? <span className="text-(--oa-muted)">—</span>}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="inline-flex items-center justify-end gap-2">
-                            <Link
-                              href={`/painel/lanternas?editar=${lanterna.id}`}
-                              className="oa-button oa-button--linha text-xs"
-                            >
-                              <span className="oa-button-content">Editar</span>
-                            </Link>
-                            <StatusLanterna
-                              slug={lanterna.id}
-                              status={lanterna.status}
-                            />
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+      <MolduraOa titulo="Fichas da Tropa" icone="pessoal">
+        {paginaLanternas.itens.length === 0 ? (
+          <EstadoVazio
+            titulo="Nenhuma ficha encontrada"
+            descricao="Nenhum Lanterna corresponde aos filtros aplicados."
+          />
+        ) : (
+          <div className="grid gap-4">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Codinome</TableHead>
+                  <TableHead>Setor</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Ingresso</TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {paginaLanternas.itens.map((lanterna) => (
+                  <TableRow key={lanterna.id}>
+                    <TableCell>
+                      <Link
+                        href={`/painel/lanternas/${lanterna.id}`}
+                        className="oa-record-link font-medium"
+                      >
+                        <strong>{lanterna.codinome}</strong>
+                      </Link>
+                      {lanterna.identidadeCivil && (
+                        <small className="block text-xs text-(--oa-muted)">
+                          {lanterna.identidadeCivil}
+                        </small>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {lanterna.setorId !== null ? (
+                        <span>
+                          Setor {lanterna.setorId}
+                          {mapaSetores[lanterna.setorId] ? ` (${mapaSetores[lanterna.setorId]})` : ''}
+                        </span>
+                      ) : (
+                        <span className="text-(--oa-muted)">Sem setor</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <SeloOa
+                        tom={
+                          lanterna.status === 'ativo'
+                            ? 'verde'
+                            : lanterna.status === 'em_missao'
+                              ? 'azul'
+                              : 'ambar'
+                        }
+                      >
+                        {rotuloStatusLanterna[lanterna.status]}
+                      </SeloOa>
+                    </TableCell>
+                    <TableCell>
+                      {lanterna.anoIngresso ?? <span className="text-(--oa-muted)">—</span>}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="inline-flex items-center justify-end gap-2">
+                        <Link
+                          href={`/painel/lanternas?editar=${lanterna.id}`}
+                          className="oa-button oa-button--linha text-xs"
+                          scroll={false}
+                        >
+                          <span className="oa-button-content">Editar</span>
+                        </Link>
+                        <StatusLanterna
+                          slug={lanterna.id}
+                          status={lanterna.status}
+                        />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
 
-                <Paginacao
-                  pagina={paginaLanternas.meta.pagina}
-                  paginas={paginaLanternas.meta.paginas}
-                  caminho="/painel/lanternas"
-                  parametros={parametrosPaginacao}
-                />
-              </div>
-            )}
-          </MolduraOa>
-        </div>
+            <Paginacao
+              pagina={paginaLanternas.meta.pagina}
+              paginas={paginaLanternas.meta.paginas}
+              caminho="/painel/lanternas"
+              parametros={parametrosPaginacao}
+            />
+          </div>
+        )}
+      </MolduraOa>
 
-        <div className="lg:col-span-5">
-          <MolduraOa
-            titulo={fichaParaEditar ? `Editar Ficha: ${fichaParaEditar.codinome}` : 'Nova Ficha'}
-            icone="mais"
-          >
-            <div className="oa-panel-body">
-              <FormLanterna
-                modo={fichaParaEditar ? 'edicao' : 'criacao'}
-                ficha={fichaParaEditar}
-                setores={setores}
-                lanternas={todosLanternas}
-              />
-            </div>
-          </MolduraOa>
-        </div>
+      <div id="ficha-formulario" className="scroll-mt-8">
+        <MolduraOa
+          titulo={fichaParaEditar ? `Editar Ficha: ${fichaParaEditar.codinome}` : 'Nova Ficha'}
+          icone="mais"
+        >
+          <div className="oa-panel-body">
+            <FormLanterna
+              modo={fichaParaEditar ? 'edicao' : 'criacao'}
+              ficha={fichaParaEditar}
+              setores={setores}
+              lanternas={todosLanternas}
+            />
+          </div>
+        </MolduraOa>
       </div>
     </div>
   )

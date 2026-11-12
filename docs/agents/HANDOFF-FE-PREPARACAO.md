@@ -1,5 +1,7 @@
 # Handoff: refinamentos UI-03 e preparação P do front (FE-00 a FE-08)
 
+> **Nota de atualização:** Este documento é histórico da fase de preparação. Todos os PRs (#10 a #20 e #22) foram mergeados na `main` e o sistema foi integrado à API NestJS real. O estado atual da aplicação está em [docs/README.md](../README.md) e [INTEGRACAO §3](../INTEGRACAO.md#3-matriz-de-recursos-e-gates).
+
 Data: 2026-11-11. Autor: sessão Claude (coordenador e revisor principal), a pedido do dev front.
 Contrato usado em toda a preparação (G-1): `openapi` v1.0.0, pacote SHA-256
 `cd91fef5a43bb239a67be5bbc1a942caedda7129bb268da7dbfdd0632b9a4730`

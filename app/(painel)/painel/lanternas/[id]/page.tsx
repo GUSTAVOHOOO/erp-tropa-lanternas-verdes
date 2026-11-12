@@ -7,6 +7,7 @@ import { buscarLanterna } from '@/lib/lanternas'
 import { listarSetores } from '@/lib/setores'
 import type { LanternaFicha } from '@/lib/schemas/lanterna'
 import type { Setor } from '@/lib/schemas/setor'
+import { SEM_CACHE } from '@/lib/api'
 
 export const metadata: Metadata = { title: 'Ficha do lanterna | Central de Oa' }
 
@@ -24,7 +25,7 @@ export default async function FichaPainelPage({ params }: FichaPainelProps) {
 
   try {
     // Painel mostra o estado atual (status, carga): sem cache. [API-14]
-    ;[lanterna, setores] = await Promise.all([buscarLanterna(id, { cache: 'no-store' }), listarSetores({ cache: 'no-store' })])
+    ;[lanterna, setores] = await Promise.all([buscarLanterna(id, SEM_CACHE), listarSetores(SEM_CACHE)])
   } catch (erro) {
     tratarErroDetalhe(erro) // [API-12]
   }

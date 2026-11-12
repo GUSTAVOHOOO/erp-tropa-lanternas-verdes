@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { GalaxiaProcedural } from '@/components/oanet/GalaxiaProcedural'
 import { MolduraOa } from '@/components/oanet/PainelOa'
 import { FiltroDashboard } from './FiltroDashboard'
 import { DIAS_PADRAO, type Dashboard as DashboardDados } from '@/lib/schemas/dashboard'
@@ -64,7 +65,7 @@ export function Dashboard({ dados, dias = DIAS_PADRAO, setores = [] }: Dashboard
   const pontosResolvidas = serie.map((item, i) => `${calcularX(i).toFixed(1)},${calcularYResolvidas(item.resolvidas).toFixed(1)}`).join(' ')
 
   return (
-    <div className="grid gap-6">
+    <div className="flex flex-col gap-6">
       <MolduraOa titulo="Filtros operacionais" icone="painel">
         <div className="oa-panel-body">
           <FiltroDashboard setores={setores} />
@@ -160,6 +161,16 @@ export function Dashboard({ dados, dias = DIAS_PADRAO, setores = [] }: Dashboard
           </div>
         </MolduraOa>
       </div>
+
+      {/* Mapa galáctico do laboratório OANET */}
+      <MolduraOa
+        titulo="Mapa galáctico"
+        icone="alvo"
+        className="oa-map-panel"
+        acao={<span className="oa-live"><i />Transmissão ao vivo</span>}
+      >
+        <GalaxiaProcedural />
+      </MolduraOa>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* (e) Série dos últimos {dias} dias */}

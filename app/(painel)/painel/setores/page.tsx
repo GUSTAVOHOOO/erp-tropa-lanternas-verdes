@@ -7,6 +7,7 @@ import { exigirPapel } from '@/lib/dal'
 import { listarSetores } from '@/lib/setores'
 import { ExcluirSetor } from './_components/ExcluirSetor'
 import { FormSetor } from './_components/FormSetor'
+import { SEM_CACHE } from '@/lib/api'
 
 export const metadata: Metadata = { title: 'Gestão de Setores | Central de Comando' }
 
@@ -18,7 +19,7 @@ type SetoresPageProps = {
 export default async function SetoresPage({ searchParams }: SetoresPageProps) {
   await exigirPapel('guardiao') // [AUTH-05][AUTH-06]
   const { editar } = await searchParams
-  const setores = await listarSetores({ cache: 'no-store' }) // gestão: sem cache [API-14]
+  const setores = await listarSetores(SEM_CACHE)
 
   const idEditar = editar !== undefined && editar !== '' ? Number(editar) : undefined
   const setorEmEdicao =

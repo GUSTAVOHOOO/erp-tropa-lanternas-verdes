@@ -1,5 +1,7 @@
 # Migração do front-end para a API real
 
+> **Nota de conclusão:** A migração descrita neste documento foi **concluída e ativada em 2026-11-11** (Corte 1 e aditivos, PRs #11 a #19). A coluna "Hoje" descreve o ponto de partida original pré-migração; a coluna "Muda para" corresponde à arquitetura atualmente em vigor. Os arquivos `lib/sessao.ts`, `lib/usuarios.ts`, `lib/filtro-ocorrencias.ts` e `db.json`, assim como a função `urlDaApi`, foram completamente removidos do repositório.
+
 De 2026-11-06, esclarecido em 2026-11-09 (D29). A **ativação** da migração só ocorre quando a API correspondente existe e passa nos testes. A preparação independente pode começar antes, contra o [pacote de contrato](../contratos/README.md), seguindo o [plano FE](PLANO-IMPLEMENTACAO.md) e os [gates de integração](../INTEGRACAO.md). A lista abaixo foi feita lendo a estrutura atual; **confira cada arquivo antes de editar**. Destino em [ARQUITETURA.md](ARQUITETURA.md), sem afirmar que a troca já ocorreu.
 
 Esta migração mexe em dependências, configuração e dados compartilhados; por isso precisa constar no escopo da tarefa, como `AGENTS.md` exige. Desde D28 (2026-11-09), a UI usa a base OANET oficial de [UI.md](../UI.md); não há uma frente de design concorrente que deva ser evitada. Atribua responsável para `components/oanet/` e `app/globals.css` quando extrair e integrar os componentes.
@@ -59,7 +61,7 @@ laboratório vira fonte da aplicação real.
 | Item | Ação |
 |---|---|
 | `package.json` | Remover `json-server` e o script `api`; reavaliar `iniciar` |
-| `scripts/iniciar.sh` | Reescrever para iniciar `backend/` e o Next, ou remover |
+| `scripts/iniciar.sh` | Reescrito para compilar o back, migrar, semear e iniciar `backend/` e o Next juntos |
 | `.env.example` | Remover `SESSION_SECRET`; manter `API_URL`; acrescentar o que PROD-01 exigir |
 | `db.json` | Remover do repositório. Os dados passam para o seed da API |
 | `app/(site)/page.tsx`, `lib/schemas/usuario.ts`, `lib/sessao.ts`, `lib/usuarios.ts`, `__tests__/configuracao.test.ts` | Têm marcadores de regras removidas (AUTH-03, AUTH-11, STACK-04, DEC-09); limpar na migração |

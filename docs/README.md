@@ -27,7 +27,7 @@ As skills canônicas de [front](../.claude/skills/frontend-web/SKILL.md) e [back
 | `docs/contratos/exemplos/` | Requisições/respostas e cenários identificados por operação | Fixtures sintéticas de contrato; não dados do produto |
 | `docs/backend/` | Decisões, dados, regras, API, DTOs, arquitetura, seed, cenários e plano BE | Vigente: descreve o back-end implementado em `backend/`, com as decisões explícitas |
 | `docs/relatorios/` | [Índice](relatorios/README.md) e relatórios de auditoria datados (back e front contra o contrato) | Evidência datada; não redefine contrato nem regras |
-| `docs/relatorios/auditoria-2026-11-11/` | [Resumo](relatorios/auditoria-2026-11-11/README.md) e cinco relatórios (três do back, dois do front) | Auditoria de 2026-11-11; defeitos do back corrigidos, ligação do front pendente |
+| `docs/relatorios/auditoria-2026-11-11/` | [Resumo](relatorios/auditoria-2026-11-11/README.md) e cinco relatórios (três do back, dois do front) | Auditoria de 2026-11-11; defeitos do back corrigidos, ligação do front ativada no Corte 1 e aditivos |
 | `docs/frontend/` | Arquitetura, telas, migração e plano FE/UI | Atual/destino distinguidos em cada documento |
 | `docs/adr/` | Decisões arquiteturais com consequências e alternativas | Permanente; [ADR 0001](adr/0001-token-jwt-fica-no-servidor-do-next.md) mantém JWT no Next |
 | `docs/research/` | Pesquisa primária datada e recomendações | Insumo; [pesquisa para agentes](research/2026-11-09-documentacao-para-agentes.md) orienta esta organização |

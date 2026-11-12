@@ -1,6 +1,6 @@
 # Plano de trabalho
 
-Atualizado em 2026-11-11. Índice do trabalho para **dois desenvolvedores** (D24): um FE, um BE, com revisão cruzada e coordenação documental. A pausa da [DOC-03](agents/DOC-03-PLANEJAMENTO.md) terminou: o back-end foi implementado (BE-01 a BE-12) e a implementação do front está autorizada desde 2026-11-10. Falta integrar os dois (Corte 1).
+Atualizado em 2026-11-11. Índice do trabalho para **dois desenvolvedores** (D24): um FE, um BE, com revisão cruzada e coordenação documental. A pausa da [DOC-03](agents/DOC-03-PLANEJAMENTO.md) terminou: o back-end foi implementado (BE-01 a BE-12) e a integração com o front foi ativada em 2026-11-11 no Corte 1 e aditivos.
 
 Este documento mantém os identificadores e marcos; os passos, arquivos, estados e verificações de cada tarefa estão nos planos de frente. Antes de executar, registre o nome do responsável e a base usando [TAREFA.md](agents/TAREFA.md). Regras: skills [`backend-api`](../.claude/skills/backend-api/SKILL.md) e [`frontend-web`](../.claude/skills/frontend-web/SKILL.md).
 
@@ -14,7 +14,7 @@ Este documento mantém os identificadores e marcos; os passos, arquivos, estados
 | Integração e revisão cruzada | [Roteiro de integração](INTEGRACAO.md) | Ativar por recurso depois das provas de consumidor e provedor |
 | Pesquisa que orienta os documentos | [Documentação para agentes](research/2026-11-09-documentacao-para-agentes.md) | Entender fontes, contexto sob demanda e limites das verificações |
 
-**Estado real (2026-11-11):** o back-end NestJS **existe** em `backend/` (BE-01 a BE-12, fixture de integração BE-FX e testes do provedor), foi auditado contra o contrato em 2026-11-11 ([relatórios](relatorios/README.md)) e os defeitos achados foram corrigidos. O servidor falso de contrato do front (FE-00, `scripts/contrato/`) serve só a testes de consumidor. A UI-01 e a UI-02 inteira estão integradas à `main`. O laboratório OANET está aprovado. A ativação real aconteceu em **um primeiro corte integrado único** (Corte 1, **ativado em 2026-11-11**: cliente, JWT em cookie `httpOnly`, todos os consumidores existentes e dashboard no lugar do Resumo); histórico, comentários, Minha fila e gestão entraram como aditivos depois dele ([INTEGRACAO §3](INTEGRACAO.md#registro-de-ativação-a--corte-1-e-aditivos)). FE-09 (remoção do json-server e do `db.json`) e FE-10 (E2E real, `npm run test:e2e:real`) estão concluídos na branch `front/fe-09-10-entrega`; o aceite final G9 segue pendente até a execução registrada em INTEGRACAO.
+**Estado real (2026-11-11):** o back-end NestJS **existe** em `backend/` (BE-01 a BE-12, fixture de integração BE-FX e testes do provedor), foi auditado contra o contrato em 2026-11-11 ([relatórios](relatorios/README.md)) e os defeitos achados foram corrigidos. O servidor falso de contrato do front (FE-00, `scripts/contrato/`) serve só a testes de consumidor. A UI-01 e a UI-02 inteira estão integradas à `main`. O laboratório OANET está aprovado. A ativação real aconteceu em **um primeiro corte integrado único** (Corte 1, **ativado em 2026-11-11**: cliente, JWT em cookie `httpOnly`, todos os consumidores existentes e dashboard no lugar do Resumo); histórico, comentários, Minha fila e gestão entraram como aditivos depois dele ([INTEGRACAO §3](INTEGRACAO.md#registro-de-ativação-a--corte-1-e-aditivos)). FE-09 (remoção do json-server e do `db.json`) e FE-10 (E2E real, `npm run test:e2e:real`) foram integrados à `main` pelo PR #19; o aceite final G9 segue pendente até a execução registrada em INTEGRACAO.
 **Contrato aceito (G-1):** a primeira dependência de FE-00 e BE-01 é o registro G-1 de [INTEGRACAO §2](INTEGRACAO.md#g-1--aceite-do-contrato) (versão e SHA-256 gravados pelo coordenador, sem P0/P1 abertos). “Contrato v1 aceito” nas tarefas abaixo significa G-1.
 
 Prefixos: **UI** adoção visual · **BE** back-end · **FE** front-end · **DOC** documentação. UI-02 é decomposta no plano FE em UI-02.00 (componentes compartilhados) e UI-02.01 a UI-02.12 (rotas); FE-07 divide-se em FE-07a (dashboard) e FE-07b (Minha fila); BE-FX é a fixture de integração do back, só de teste, entregue em etapas a–e. FE-00 a FE-10 e BE-01 a BE-12 mantêm seus IDs.
@@ -227,7 +227,7 @@ Mudar status (com resolução ou motivo), atribuir, editar, excluir; mensagens p
 
 ### FE-09 Limpeza e testes
 **Depende de:** FE-06, FE-07a, FE-07b, FE-08 e UI-02 inteira. **Referência:** [frontend/MIGRACAO.md](frontend/MIGRACAO.md).
-Remover json-server, `db.json`, `scripts/iniciar.sh` (ou reescrevê-lo), marcadores de regras removidas; testes sem `db.json`.
+Remover json-server, `db.json`, reescrever `scripts/iniciar.sh` para subir API e front juntos, remover marcadores de regras removidas; testes sem `db.json`.
 **Aceite:** `npm run test:run`, `npm run lint` e `npm run build` passam; o [procedimento canônico de remoção](frontend/PLANO-IMPLEMENTACAO.md#procedimento-canônico-de-remoção) (escopo explícito, equivalente em PowerShell, `npm ls json-server --all`) sai vazio. Menções históricas em `docs/` e nas skills não contam como dependência.
 
 ### FE-10 E2E

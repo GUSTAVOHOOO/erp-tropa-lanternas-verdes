@@ -31,8 +31,9 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Detalhe | `/painel/ocorrencias/[id]` | Guardião, Lanterna | Atual (FE-04/05/06, ativado no Corte 1) | Detalhe operacional em MolduraOa com badges de gravidade/status, dados formatados, formulário FormStatus com BotaoOa, ação de atribuição, linha do tempo e comentários |
 | Atribuir | `/painel/ocorrencias/[id]/atribuir` | Guardião | Atual (FE-04/05, ativado no Corte 1) | Atribuição de responsável em MolduraOa com BotaoOa, CampoSelect e validação de permissão exclusiva para Guardião |
 | Lanternas (gestão) | `/painel/lanternas` | Guardião | Atual (FE-08, ativado no Corte 1) | Lista, criar, editar, afastar e reativar. Mostra a carga de cada um |
+| Ficha do Lanterna (painel) | `/painel/lanternas/[id]` | Guardião, Lanterna | Atual (PR #22) | Ficha completa com construto, mentor, aprendizes e fontes dentro da casca do painel sem cache, mantendo o usuário autenticado |
 | Setores (gestão) | `/painel/setores` | Guardião | Atual (FE-08, ativado no Corte 1) | Criar, editar e remover; remoção bloqueada se o Setor estiver em uso |
-| Usuários | `/painel/usuarios` | Guardião | Atual (FE-08, ativado no Corte 1) | Lista, promoção de papel e vínculo da conta a uma Ficha de Lanterna; impede rebaixar o último Guardião |
+| Usuários | `/painel/usuarios` | Guardião | Atual (FE-08, ativado no Corte 1) | Lista, promoção de papel e vínculo da conta a uma Ficha de Lanterna; impede rebaixar o último Guardião. O formulário oculta o setor para quem já é Lanterna, exibindo-o apenas sob o checkbox "Transferir para outro setor". Atribuição e catálogo listam Fichas, não contas: a conta criada no cadastro só recebe ocorrências e acessa a Minha fila após o Guardião criar uma Ficha e vinculá-la aqui |
 
 ## Ações por Status e papel (tela de Detalhe)
 
@@ -44,9 +45,9 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 
 ## Navegação
 
-- **Visitante:** Início, Lanternas, Sobre, Entrar, Cadastrar.
-- **Lanterna:** Resumo, Minha fila, Ocorrências, Nova ocorrência, Lanternas, Sair.
-- **Guardião:** Resumo, Ocorrências, Nova ocorrência, Lanternas (gestão), Setores, Usuários, Sair.
+- **Visitante:** Início, Lanternas, Sobre, Central de Comando (login), Cadastrar.
+- **Lanterna:** Resumo (Dashboard), Minha fila, Ocorrências, Registrar ocorrência, Sair.
+- **Guardião:** Resumo (Dashboard), Ocorrências, Registrar ocorrência, Lanternas (gestão), Setores, Usuários, Sair.
 
 O link ativo usa `usePathname` com `aria-current` (ROTA-17).
 

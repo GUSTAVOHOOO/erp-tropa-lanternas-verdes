@@ -13,6 +13,7 @@ import { listarOcorrencias } from '@/lib/ocorrencias'
 import { filtroOcorrenciasSchema } from '@/lib/schemas/ocorrencia'
 import { listarSetores } from '@/lib/setores'
 import { FiltroOcorrencias } from '@/app/(painel)/painel/ocorrencias/_components/FiltroOcorrencias'
+import { SEM_CACHE } from '@/lib/api'
 
 export const metadata: Metadata = { title: 'Ocorrências | Central de Comando' }
 
@@ -34,8 +35,8 @@ export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageP
 
   const [resultado, setores, lanternas] = await Promise.all([ // [API-07]
     listarOcorrencias(filtroConsulta),
-    listarSetores(),
-    listarTodosLanternas(),
+    listarSetores(SEM_CACHE),
+    listarTodosLanternas({}, SEM_CACHE),
   ])
 
   const temFiltro = Boolean(

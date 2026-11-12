@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -77,6 +78,18 @@ export function FormLanterna({
     },
   })
 
+  const formularioRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    if (ehEdicao && ficha) {
+      const timer = setTimeout(() => {
+        const elemento = formularioRef.current ?? (typeof document !== 'undefined' ? document.getElementById('ficha-formulario') : null)
+        elemento?.scrollIntoView?.({ behavior: 'smooth', block: 'start' })
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [ehEdicao, ficha])
+
   async function onSubmit(dados: LanternaFormularioSaida) {
     if (ehEdicao && ficha) {
       const alterados = camposAlterados(ficha, dados)
@@ -93,7 +106,7 @@ export function FormLanterna({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
+    <form ref={formularioRef} onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
       {!ehEdicao && (
         <CampoTexto
           id="id"

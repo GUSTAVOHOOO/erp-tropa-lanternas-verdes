@@ -12,6 +12,7 @@ import { listarOcorrencias } from '@/lib/ocorrencias'
 import { DIAS_PADRAO, filtroDashboardSchema } from '@/lib/schemas/dashboard'
 import { listarSetores } from '@/lib/setores'
 import { Dashboard } from './_components/Dashboard'
+import { SEM_CACHE } from '@/lib/api'
 
 export const metadata: Metadata = { title: 'Dashboard | Central de Comando' }
 
@@ -38,9 +39,9 @@ export default async function PainelPage({ searchParams }: PainelPageProps = {})
 
   const [dashboard, setores, respostaRecentes, lanternas] = await Promise.all([ // [API-07]
     consultarDashboard(filtroConsulta),
-    listarSetores(), // nomes da tabela para todos; o seletor de setor é só do Guardião
+    listarSetores(SEM_CACHE), // nomes da tabela para todos; o seletor de setor é só do Guardião
     listarOcorrencias({ limite: 5 }),
-    listarTodosLanternas(),
+    listarTodosLanternas({}, SEM_CACHE),
   ])
 
   const ocorrencias = respostaRecentes.itens

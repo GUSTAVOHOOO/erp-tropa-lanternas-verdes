@@ -122,6 +122,7 @@ describe('actions de gestão de setores', () => {
       expect(revalidatePath).toHaveBeenCalledWith('/painel/setores')
       expect(revalidatePath).toHaveBeenCalledWith('/lanternas')
       expect(revalidatePath).toHaveBeenCalledWith('/cadastro')
+      expect(revalidatePath).toHaveBeenCalledWith('/painel', 'layout')
       expect(redirect).toHaveBeenCalledWith('/painel/setores')
     })
 
@@ -190,6 +191,7 @@ describe('actions de gestão de setores', () => {
       expect(revalidatePath).toHaveBeenCalledWith('/painel/setores')
       expect(revalidatePath).toHaveBeenCalledWith('/lanternas')
       expect(revalidatePath).toHaveBeenCalledWith('/cadastro')
+      expect(revalidatePath).toHaveBeenCalledWith('/painel', 'layout')
       expect(redirect).toHaveBeenCalledWith('/painel/setores')
     })
 
@@ -260,6 +262,7 @@ describe('actions de gestão de setores', () => {
       expect(revalidatePath).toHaveBeenCalledWith('/painel/setores')
       expect(revalidatePath).toHaveBeenCalledWith('/lanternas')
       expect(revalidatePath).toHaveBeenCalledWith('/cadastro')
+      expect(revalidatePath).toHaveBeenCalledWith('/painel', 'layout')
       expect(redirect).toHaveBeenCalledWith('/painel/setores')
     })
 

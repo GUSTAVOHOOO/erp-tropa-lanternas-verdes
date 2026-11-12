@@ -24,6 +24,7 @@ import { ConfirmarExclusao } from '@/app/(painel)/painel/ocorrencias/_components
 import { FormEditarOcorrencia } from '@/app/(painel)/painel/ocorrencias/_components/FormEditarOcorrencia'
 import { FormStatus } from '@/app/(painel)/painel/ocorrencias/_components/FormStatus'
 import { LinhaDoTempo } from '@/app/(painel)/painel/ocorrencias/_components/LinhaDoTempo'
+import { SEM_CACHE } from '@/lib/api'
 
 export const metadata: Metadata = { title: 'Ocorrência | Central de Comando' }
 
@@ -46,8 +47,8 @@ export default async function OcorrenciaPage({ params, searchParams }: Ocorrenci
   try {
     ;[ocorrencia, setores, lanternas, eventosPaginados, comentariosPaginados] = await Promise.all([
       buscarOcorrencia(id),
-      listarSetores(),
-      listarTodosLanternas(),
+      listarSetores(SEM_CACHE),
+      listarTodosLanternas({}, SEM_CACHE),
       listarEventos(id, paginaEventos),
       listarComentarios(id, paginaComentarios),
     ]) // [API-07]

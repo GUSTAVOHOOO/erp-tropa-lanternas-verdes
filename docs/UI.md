@@ -6,13 +6,7 @@ API NestJS. Toda tela nova ou migrada deriva dos componentes e assets abaixo.
 O front antigo conserva valor funcional durante a transição; sua aparência,
 `/design-system` antigo e as pranchas raster não orientam o design novo.
 
-**Estado real:** a base visual está implementada; as rotas reais (UI-02.01 a
-UI-02.12) foram migradas nas branches `front/ui-02-bloco-*`, ainda sem ligação à
-API NestJS. Não confundir aprovação do design com integração
-pronta. [Handoff de implementação](agents/HANDOFF-OANET.md),
-[plano](PLANO.md), [migração de dados](frontend/MIGRACAO.md).
-
-Em 2026-11-09, a casca UI-01 herdada permanece parcial, sem aceite final. O usuário suspendeu a implementação para estruturar e revisar a [DOC-03](agents/DOC-03-PLANEJAMENTO.md); a decomposição por tela está no [plano FE/UI](frontend/PLANO-IMPLEMENTACAO.md).
+**Estado real:** a base visual e a migração de todas as rotas reais (UI-01 e UI-02.00 a UI-02.12) estão 100% integradas à `main` (PRs #1, #2, #3, #6, #7, #8) e ligadas à API NestJS real (Corte 1 e aditivos, PRs #11 a #19, com ajustes visuais e de fluxo nos PRs #20 e #22). [Handoff de implementação](agents/HANDOFF-OANET.md), [handoff UI-02](agents/HANDOFF-UI-02.md), [plano](PLANO.md), [migração de dados](frontend/MIGRACAO.md).
 
 **Direção aprovada em 2026-11-06:** uma Central de Oa cinematográfica,
 com componentes arrojados e visuais produzidos integralmente em código.
@@ -81,6 +75,14 @@ As três folhas `components/oanet/movimento-{vetores,construtos,componentes}.css
 são importadas por `app/globals.css`. Preserve o conjunto: copiar apenas um
 SVG sem seus tokens, classes, escopo e controle de pausa perde parte do asset.
 
+### Controles e utilitários OANET em globals.css
+
+- `.oa-disclosure`: gaveta técnica expansível sobre `<details>` com seta animada, borda de energia e chanfro no canto inferior direito (usada em `Dashboard.tsx`).
+- `.oa-checkbox`: caixa de seleção com `clip-path` chanfrado e transição de cor de energia (usada no filtro de vencidas e no formulário de papel).
+- `.oa-select`: seletor de opções com `clip-path` chanfrado no canto inferior direito, no mesmo estilo do `.oa-checkbox`.
+- `.oa-field.oa-field--inline`: contêiner horizontal alinhado para agrupar rótulo e checkbox.
+- `.oa-sidebar-city-frame`: contêiner flexível com máscara gradiente vertical para a ilustração `CidadeOa`; em janelas de baixa altura, a cidade cede espaço vertical para que o botão Sair (`.oa-back-form`) permaneça fixo e visível no rodapé da barra lateral.
+
 Os exports ficam em `components/oanet/`. As telas são montadas por composição
 em `CentralOa`, `TelasOa` e `ComponentesOa`, coordenadas por `LaboratorioOa`.
 `dados-demo.ts` pertence somente à vitrine e não é fonte de dados do ERP.
@@ -122,7 +124,7 @@ Com as dependências instaladas:
 npm run dev
 ```
 
-Abra `http://localhost:3000/laboratorio`. A vitrine não precisa do json-server.
+Abra `http://localhost:3000/laboratorio`. A vitrine não depende da API.
 Para testar a versão compilada em outra porta:
 
 ```powershell
@@ -150,12 +152,7 @@ do Next 16.4.0. O handoff documental não atualizou dependências nem repetiu bu
 
 ## Próximas etapas do redesign
 
-- Aplicar o vocabulário aprovado às rotas públicas reais, incluindo Sobre e
-  estados de carregamento, vazio, erro e acesso negado.
-- Integrar os componentes ao painel e aos formulários reais, mantendo
-  autorização, filtros, atribuição e persistência.
-- Ajustar o layout com dados reais e conteúdo longo; verificar novamente
-  acessibilidade, responsividade e desempenho em cada fluxo migrado.
-
-O laboratório é a referência interativa aprovada, não a conclusão da migração
-visual de todas as rotas do ERP.
+A migração de todas as rotas para o vocabulário OANET foi concluída (UI-01 e UI-02.01 a UI-02.12).
+As próximas etapas de evolução visual são os refinamentos pós-entrega documentados em
+[HANDOFF-UI-02.md](agents/HANDOFF-UI-02.md) (suíte UI-03), incluindo ajustes finos de espaçamento,
+dicas de modo calmo e polimento de componentes compartilhados.

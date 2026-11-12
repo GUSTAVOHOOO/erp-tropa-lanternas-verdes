@@ -48,6 +48,7 @@ function revalidarCaminhosSetores(): void {
   revalidatePath('/painel/setores')
   revalidatePath('/lanternas')
   revalidatePath('/cadastro')
+  revalidatePath('/painel', 'layout') // filtros, formulários e tabelas do painel mostram nomes de Setor
 }
 
 /** Cria um novo setor (restrito ao Guardião). */

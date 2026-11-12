@@ -13,6 +13,7 @@ import { listarMinhaFila } from '@/lib/ocorrencias'
 import type { Ocorrencia } from '@/lib/schemas/ocorrencia'
 import type { Pagina } from '@/lib/schemas/paginacao'
 import { listarSetores } from '@/lib/setores'
+import { SEM_CACHE } from '@/lib/api'
 
 export const metadata: Metadata = { title: 'Minha fila | Central de Comando' }
 
@@ -51,7 +52,7 @@ export default async function MinhaFilaPage({ searchParams }: MinhaFilaPageProps
 
   const [setores, lanternas] = semVinculo
     ? [[], []]
-    : await Promise.all([listarSetores(), listarTodosLanternas()])
+    : await Promise.all([listarSetores(SEM_CACHE), listarTodosLanternas({}, SEM_CACHE)])
 
   const total = resultado?.meta.total ?? 0
 

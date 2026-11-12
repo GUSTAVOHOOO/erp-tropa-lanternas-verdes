@@ -395,7 +395,7 @@ describe('Componentes de gestão de Lanternas (FE-08)', () => {
 
       render(Page)
 
-      expect(buscarLanterna).toHaveBeenCalledWith('hal-jordan')
+      expect(buscarLanterna).toHaveBeenCalledWith('hal-jordan', { cache: 'no-store' })
       expect(screen.getByText('Editar Ficha: Hal Jordan')).toBeDefined()
       expect(screen.getByRole('button', { name: 'Salvar alterações' })).toBeDefined()
     })

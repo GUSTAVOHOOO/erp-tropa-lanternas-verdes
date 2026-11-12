@@ -1,6 +1,6 @@
 # Desenvolvimento com agentes
 
-Este guia organiza tarefas neste projeto (front-end Next.js e, em construção, back-end NestJS). `AGENTS.md` é a entrada compartilhada;
+Este guia organiza tarefas neste projeto (front-end Next.js e back-end NestJS integrados). `AGENTS.md` é a entrada compartilhada;
 `CLAUDE.md` aponta para ela. Os papéis abaixo distribuem trabalho entre pessoas
 ou agentes; os arquivos de documentação não iniciam processos nem agentes.
 
@@ -86,7 +86,7 @@ coordenada dos comandos que escrevem artefatos. Cada worktree precisa das suas
 dependências e configuração local. Use os recursos nativos do ambiente quando
 ele já administrar worktrees.
 
-Os assets OANET já estão no HEAD (commits `5377e39` e `949b1e8`); confirme com `git ls-files components/oanet`. O que ainda é só local são os entregáveis da DOC-03 (contrato, planos, INTEGRACAO, validador, revisões, pesquisa e as edições dos índices). **Antes de distribuir trabalho**, a base comum precisa conter todos eles, por commit autorizado pelo usuário ou por pacote que inclua os não rastreados, aplicado e verificado no destino (lista e verificações em [INTEGRACAO §2](../INTEGRACAO.md#2-preparar-sem-esperar-o-outro-dev)). Uma worktree só do HEAD não os traz. Preserve qualquer trabalho local restante.
+Os assets OANET e os entregáveis da DOC-03 (contrato, planos, INTEGRACAO, validador, revisões, pesquisa e edições de índices) estão todos consolidados na branch `main`. Para novas tarefas, use sempre a `main` atualizada como base comum. Preserve qualquer trabalho local restante.
 
 O responsável pela integração incorpora primeiro os contratos dos quais outras
 tarefas dependem, depois seus consumidores. Depois de resolver conflitos,

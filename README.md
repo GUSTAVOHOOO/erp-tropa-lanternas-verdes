@@ -10,7 +10,7 @@ O front e a API NestJS reais (`backend/`) estão integrados. O json-server e o `
 |---|---|
 | Front-end Next.js (site público e painel) | **Pronto e ligado à API NestJS real**, sem json-server |
 | Integração front ↔ API (Corte 1 e aditivos) | **Ativada (A) em 2026-11-11**: login com JWT em cookie `httpOnly` no servidor do Next, cadastro, catálogo, ocorrências, dashboard, Minha fila, gestão, linha do tempo e comentários ([registro](docs/INTEGRACAO.md#registro-de-ativação-a--corte-1-e-aditivos)) |
-| UI OANET oficial (D28) | Concluída em todas as 12 rotas existentes (UI-01 e UI-02.00 a UI-02.12 integradas à `main`); refinamentos em [HANDOFF-UI-02](docs/agents/HANDOFF-UI-02.md) |
+| UI OANET oficial (D28) | Concluída em todas as rotas (UI-01, suíte UI-02 e rotas de gestão no painel); refinamentos em [HANDOFF-UI-02](docs/agents/HANDOFF-UI-02.md) |
 | Back-end NestJS (`backend/`) | **Implementado** (BE-01 a BE-12): 30 operações do contrato, SQLite/TypeORM, JWT, seeds e testes. Auditado em 2026-11-11 ([relatórios](docs/relatorios/README.md)); os defeitos encontrados no back foram corrigidos |
 | Limpeza e E2E real (FE-09 e FE-10) | **Concluídos** na branch `front/fe-09-10-entrega`: json-server, `db.json` e `SESSION_SECRET` removidos; `npm run test:e2e:real` roda contra a API real. Aceite final **G9** ainda pendente até a execução registrada em [INTEGRACAO](docs/INTEGRACAO.md) |
 | Planos separados e contrato v1 (DOC-03) | Consolidados, revisados e com aceite técnico documental G-1; implementação do front autorizada em 2026-11-10 pelo plano FE; o back foi implementado em `backend/` |
@@ -116,14 +116,21 @@ A sessão é o JWT emitido por `POST /auth/login` da API, guardado em cookie `ht
 | Rota | Acesso | Função |
 |---|---|---|
 | `/` | público | Apresentação da Central de Oa |
-| `/lanternas`, `/lanternas/[id]` | público | Lista de Lanternas e Ficha |
+| `/lanternas`, `/lanternas/[id]` | público | Lista de Lanternas e Ficha pública |
 | `/sobre` | público | Oa, a Tropa e o juramento |
 | `/login` | público | Entrada na Central de Comando |
-| `/painel` | autenticado | Resumo das ocorrências |
+| `/cadastro` | público | Cadastro de Lanterna |
+| `/acesso-negado` | público | Aviso de permissão insuficiente (403) |
+| `/painel` | autenticado | Dashboard operacional de ocorrências (substitui o Resumo) |
+| `/painel/minha-fila` | Lanterna | Fila pessoal de ocorrências atribuídas |
 | `/painel/ocorrencias` | autenticado | Lista com filtros |
 | `/painel/ocorrencias/nova` | autenticado | Registrar ocorrência |
 | `/painel/ocorrencias/[id]` | autenticado | Detalhe e mudança de status |
 | `/painel/ocorrencias/[id]/atribuir` | Guardião | Atribuir responsável |
+| `/painel/lanternas` | Guardião | Gestão de Lanternas (criar, editar, afastar/reativar) |
+| `/painel/lanternas/[id]` | autenticado | Ficha do Lanterna dentro do painel |
+| `/painel/setores` | Guardião | Gestão de Setores (criar, editar, excluir) |
+| `/painel/usuarios` | Guardião | Gestão de Usuários (promoção de papel e vínculo de Ficha) |
 | `/laboratorio` | público | Laboratório do redesign (dados ilustrativos) |
 | `/apresentacao` | público (fora do índice) | Slides da apresentação final: ← → navega, N notas, O visão geral, F tela cheia, T cronômetro |
 

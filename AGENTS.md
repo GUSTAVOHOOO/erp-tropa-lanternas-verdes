@@ -22,7 +22,7 @@ Ao criar ou migrar uma tela, siga [docs/UI.md](docs/UI.md): o laboratório OANET
 é a referência visual oficial (decisão D28). Use seus componentes, vetores,
 tokens e animações. O front antigo serve para recuperar fluxos e regras,
 não como modelo de design. A implementação da UI oficial está concluída:
-siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md), com a UI-01 e toda a suíte UI-02 (UI-02.00 a UI-02.12) integradas à `main` (PRs #1, #2, #3, #6, #7, #8). As próximas etapas de front são os refinamentos visuais ([docs/agents/HANDOFF-UI-02.md](docs/agents/HANDOFF-UI-02.md)) e a preparação contra a API real (FE-00/FE-01 em diante). O [handoff UI-02](docs/agents/HANDOFF-UI-02.md) traz o encerramento da UI-02; o [handoff do front](docs/agents/HANDOFF-FRONT.md) traz o histórico da UI-02.00; e o [handoff OANET](docs/agents/HANDOFF-OANET.md) é o histórico da transferência da UI-01.
+siga o [plano FE](docs/frontend/PLANO-IMPLEMENTACAO.md), com a UI-01 e toda a suíte UI-02 (UI-02.00 a UI-02.12) integradas à `main` (PRs #1, #2, #3, #6, #7, #8), assim como a integração contra a API NestJS real (FE-00 a FE-10 no Corte 1 e aditivos, PRs #11 a #19, e ajustes nos PRs #20 e #22). O [handoff UI-02](docs/agents/HANDOFF-UI-02.md) traz o encerramento da UI-02; o [handoff do front](docs/agents/HANDOFF-FRONT.md) traz o histórico da UI-02.00; o [handoff de preparação FE](docs/agents/HANDOFF-FE-PREPARACAO.md) registra a preparação e o [handoff OANET](docs/agents/HANDOFF-OANET.md) é o histórico da transferência da UI-01.
 
 ## Trabalho com agentes
 

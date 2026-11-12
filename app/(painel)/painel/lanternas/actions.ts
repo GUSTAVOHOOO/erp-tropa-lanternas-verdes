@@ -19,6 +19,7 @@ import {
   type LanternaCriacaoEntrada,
   type LanternaEdicaoEntrada,
 } from '@/lib/schemas/gestao-lanterna'
+import { SEM_CACHE } from '@/lib/api'
 
 const FICHA_INEXISTENTE: ResultadoAcao = { ok: false, erro: 'Esta ficha de Lanterna não existe mais.' }
 
@@ -54,6 +55,14 @@ function errosDeValidacao(erro: z.ZodError): ResultadoAcao {
   return { ok: false, errors: z.flattenError(erro).fieldErrors } // [FORM-18]
 }
 
+/** Depois de mudar uma Ficha: gestão, painel inteiro (seletores e tabelas), catálogo público e a Ficha pública dela. [API-14] */
+function revalidarFichas(slug: string): void {
+  revalidatePath('/painel/lanternas')
+  revalidatePath('/painel', 'layout')
+  revalidatePath('/lanternas')
+  revalidatePath(`/lanternas/${slug}`)
+}
+
 /** Server Action para criar uma nova Ficha de Lanterna (Guardião). [AUTH-05][FORM-01] */
 export async function criarLanternaAcao(dados: unknown): Promise<ResultadoAcao> {
   await exigirPapel('guardiao') // [AUTH-05][AUTH-06]
@@ -86,10 +95,7 @@ export async function criarLanternaAcao(dados: unknown): Promise<ResultadoAcao> 
     return tratarErroApi(erro, corpo)
   }
 
-  revalidatePath('/painel/lanternas') // [API-14]
-  revalidatePath('/lanternas')
-  // A atribuição de Ocorrências lista Lanternas pelo mesmo GET com revalidate: 60; a mudança vale já no painel. [API-14]
-  revalidatePath('/painel', 'layout')
+  revalidarFichas(corpo.id)
   redirect('/painel/lanternas') // [ROTA-20]
 }
 
@@ -99,7 +105,7 @@ export async function editarLanternaAcao(slug: unknown, dados: unknown): Promise
   const slugValido = slugLanternaSchema.safeParse(slug)
   if (!slugValido.success) return FICHA_INEXISTENTE
 
-  const atual = await buscarLanterna(slugValido.data)
+  const atual = await buscarLanterna(slugValido.data, SEM_CACHE) // compara com o estado atual, não com o cache
   if (!atual) return FICHA_INEXISTENTE
 
   const parsed = lanternaFormularioSchema.safeParse(dados)
@@ -123,10 +129,7 @@ export async function editarLanternaAcao(slug: unknown, dados: unknown): Promise
     return tratarErroApi(erro, campos)
   }
 
-  revalidatePath('/painel/lanternas') // [API-14]
-  revalidatePath('/lanternas')
-  // A atribuição de Ocorrências lista Lanternas pelo mesmo GET com revalidate: 60; a mudança vale já no painel. [API-14]
-  revalidatePath('/painel', 'layout')
+  revalidarFichas(slugValido.data)
   redirect('/painel/lanternas') // [ROTA-20]
 }
 
@@ -146,9 +149,6 @@ export async function alterarStatusLanternaAcao(slug: unknown, status: unknown):
     return tratarErroApi(erro)
   }
 
-  revalidatePath('/painel/lanternas') // [API-14]
-  revalidatePath('/lanternas')
-  // A atribuição de Ocorrências lista Lanternas pelo mesmo GET com revalidate: 60; a mudança vale já no painel. [API-14]
-  revalidatePath('/painel', 'layout')
+  revalidarFichas(slugValido.data)
   return { ok: true }
 }

@@ -13,12 +13,14 @@ const SETORES = [
 ] as const
 
 function observarMovimento(callback: () => void) {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {}
   const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-  media.addEventListener('change', callback)
-  return () => media.removeEventListener('change', callback)
+  media.addEventListener?.('change', callback)
+  return () => media.removeEventListener?.('change', callback)
 }
 
 function movimentoReduzido() {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
@@ -284,17 +286,17 @@ export function GalaxiaProcedural({ className = '', compact = false, efeitosRedu
           <circle r="0.045" opacity="0.9" />
         </g>
       </svg>
-      <canvas ref={canvasRef} className="oa-galaxy-canvas" role="img" aria-label="Mapa galáctico procedural: quatro braços espirais luminosos e três setores monitorados. Use os controles para ampliar e selecionar um setor." />
+      <canvas ref={canvasRef} className="oa-galaxy-canvas" role="img" aria-label="Mapa galáctico procedural: quatro braços espirais luminosos e quadrantes monitorados. Use os controles para ampliar e navegar pela galáxia." />
       <div className="oa-galaxy-hud"><small>CARTOGRAFIA EM TEMPO REAL</small><strong>Via Láctea</strong><span className="oa-galaxy-legend">✦ ESPAÇO MAPEADO <b>99,8%</b></span></div>
       <div className="oa-galaxy-coordinate" aria-hidden="true"><span>RA 17h 45m 40s</span><span>DEC −29° 00′ 28″</span></div>
-      <div className="oa-galaxy-status" aria-live="polite" aria-atomic="true"><small>SETOR {setor.id}</small><strong>{setor.nome}</strong><span>{setor.status}</span></div>
+      <div className="oa-galaxy-status"><small>SETOR {setor.id}</small><strong>{setor.nome}</strong><span>{setor.status}</span></div>
       <div className="oa-galaxy-bottom">
-        <div className="oa-galaxy-sectors" role="group" aria-label="Selecionar setor galáctico">
-          {SETORES.map((item) => <button key={item.id} type="button" className="oa-galaxy-sector" aria-label={`Selecionar setor ${item.id}`} aria-pressed={setorId === item.id} onClick={() => setSetorId(item.id)}><span aria-hidden="true">⌖</span> {item.id}</button>)}
+        <div className="oa-galaxy-sectors" role="group" aria-label="Navegar quadrantes espaciais">
+          {SETORES.map((item) => <button key={item.id} type="button" className="oa-galaxy-sector" aria-label={`Quadrante ${item.id}`} aria-pressed={setorId === item.id} onClick={() => setSetorId(item.id)}><span aria-hidden="true">⌖</span> {item.id}</button>)}
         </div>
         <div className="oa-galaxy-controls" role="group" aria-label="Controles do mapa galáctico">
           <button type="button" className="oa-galaxy-control" aria-label="Diminuir zoom" title="Diminuir zoom" disabled={zoom <= 0.7} onClick={() => setZoom((valor) => Math.max(0.7, Number((valor - 0.15).toFixed(2))))}><IconeOa nome="menos" /></button>
-          <output className="oa-galaxy-zoom" aria-label="Zoom atual">{Math.round(zoom * 100)}%</output>
+          <span className="oa-galaxy-zoom" aria-label="Nível de ampliação">{Math.round(zoom * 100)}%</span>
           <button type="button" className="oa-galaxy-control" aria-label="Aumentar zoom" title="Aumentar zoom" disabled={zoom >= 1.75} onClick={() => setZoom((valor) => Math.min(1.75, Number((valor + 0.15).toFixed(2))))}><IconeOa nome="mais" /></button>
           <button type="button" className="oa-galaxy-control" aria-label={parada ? 'Retomar animação' : 'Pausar animação'} title={movimentoLimitado ? 'Movimento reduzido pelas preferências' : parada ? 'Retomar animação' : 'Pausar animação'} disabled={movimentoLimitado} onClick={() => setPausada((valor) => !valor)}><IconeOa nome={parada ? 'play' : 'pausa'} /></button>
           <button type="button" className="oa-galaxy-control" aria-label="Recentralizar mapa" title="Recentralizar mapa" onClick={() => { setZoom(1); setSetorId('2814'); ponteiroRef.current = { x: 0, y: 0 }; anguloRef.current = -0.38; setEnquadramento((valor) => valor + 1) }}><IconeOa nome="alvo" /></button>

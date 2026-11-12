@@ -11,9 +11,8 @@ import { filtroUsuariosSchema } from '@/lib/schemas/gestao-usuario'
 import { listarSetores } from '@/lib/setores'
 import { FormPapel } from '@/app/(painel)/painel/usuarios/_components/FormPapel'
 import { FormVinculo } from '@/app/(painel)/painel/usuarios/_components/FormVinculo'
+import { SEM_CACHE } from '@/lib/api'
 
-// Tela de gestão: Fichas e Setores recém-criados ou alterados precisam aparecer na hora. [API-14]
-const SEM_CACHE = { cache: 'no-store' } as const
 
 export const metadata: Metadata = { title: 'Usuários | Central de Comando' }
 

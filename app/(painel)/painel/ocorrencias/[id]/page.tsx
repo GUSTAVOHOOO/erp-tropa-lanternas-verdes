@@ -12,7 +12,7 @@ import { tratarErroDetalhe } from '@/lib/erro-detalhe'
 import { formatarData } from '@/lib/formatar'
 import { listarLanternas } from '@/lib/lanternas'
 import { buscarOcorrencia } from '@/lib/ocorrencias'
-import { podeAcessarSetor } from '@/lib/sessao'
+import { podeAcessarSetor } from '@/lib/escopo'
 import { listarSetores } from '@/lib/setores'
 import { FormStatus } from '@/app/(painel)/painel/ocorrencias/_components/FormStatus'
 
@@ -31,7 +31,7 @@ export default async function OcorrenciaPage({ params }: OcorrenciaPageProps) {
     tratarErroDetalhe(erro) // [API-12]
   }
   if (!ocorrencia) notFound() // [ROTA-12]
-  if (!podeAcessarSetor(sessao, ocorrencia.setorId)) redirect('/acesso-negado') // [AUTH-07]
+  if (!podeAcessarSetor(sessao, Number(ocorrencia.setorId))) redirect('/acesso-negado') // [AUTH-07] // FE-04: setor inteiro do contrato
 
   const setor = setores.find((s) => s.id === ocorrencia.setorId)
   const responsavel = lanternas.find((l) => l.id === ocorrencia.responsavelId)

@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
 import { CascaOa, linkAtivo, type LinkCascaOa } from '@/components/oanet/CascaOa'
 import { IconeOa } from '@/components/oanet/IconeOa'
+import { linksDoSite } from '@/components/oanet/navegacao'
 
 const caminho = '/painel/ocorrencias/7'
 vi.mock('next/navigation', () => ({ usePathname: () => caminho }))
@@ -113,4 +114,12 @@ test('o globo explica a rede OANET sem interação', () => {
 test('o ícone de brilho renderiza SVG decorativo', () => {
   const { container } = render(<IconeOa nome="brilho" />)
   expect(container.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
+})
+
+test('links por papel: linksDoSite(false) contém Cadastrar e linksDoSite(true) não', () => {
+  const visitante = linksDoSite(false)
+  const logado = linksDoSite(true)
+
+  expect(visitante.some((l) => l.href === '/cadastro' && l.nome === 'Cadastrar')).toBe(true)
+  expect(logado.some((l) => l.href === '/cadastro')).toBe(false)
 })

@@ -10,7 +10,7 @@ import { verificarSessao } from '@/lib/dal'
 import { normalizarFiltroOcorrencias } from '@/lib/filtro-ocorrencias'
 import { listarLanternas } from '@/lib/lanternas'
 import { listarOcorrencias } from '@/lib/ocorrencias'
-import { setorParaFiltro } from '@/lib/sessao'
+import { setorParaFiltro } from '@/lib/escopo'
 import { listarSetores } from '@/lib/setores'
 import { FiltroOcorrencias } from '@/app/(painel)/painel/ocorrencias/_components/FiltroOcorrencias'
 
@@ -24,7 +24,9 @@ export default async function OcorrenciasPage({ searchParams }: OcorrenciasPageP
   const parametros = await searchParams // [ROTA-10]
   const [setores, lanternas] = await Promise.all([listarSetores(), listarLanternas()]) // [API-07]
   const filtro = normalizarFiltroOcorrencias(parametros, setores.map((s) => s.id)) // [ROTA-11]
-  const ocorrencias = await listarOcorrencias({ setorId: setorParaFiltro(sessao, filtro.setor), status: filtro.status, gravidade: filtro.gravidade }) // [AUTH-07]
+  const setorDaUrl = filtro.setor === undefined ? undefined : Number(filtro.setor)
+  const setorDoFiltro = setorParaFiltro(sessao, setorDaUrl !== undefined && Number.isNaN(setorDaUrl) ? undefined : setorDaUrl)
+  const ocorrencias = await listarOcorrencias({ setorId: setorDoFiltro === undefined ? undefined : String(setorDoFiltro), status: filtro.status, gravidade: filtro.gravidade }) // [AUTH-07] // FE-04: setor inteiro do contrato
   const temFiltro = Boolean(filtro.status || filtro.gravidade || (sessao.papel === 'guardiao' && filtro.setor))
 
   return (

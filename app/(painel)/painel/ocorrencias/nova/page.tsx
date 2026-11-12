@@ -20,7 +20,7 @@ export default async function NovaOcorrenciaPage() {
       />
       <MolduraOa titulo="Dados da ocorrência" icone="ocorrencias">
         <div className="oa-panel-body">
-          <FormOcorrencia setores={setores} setorFixo={sessao.papel === 'lanterna' ? sessao.setorId : null} />
+          <FormOcorrencia setores={setores} setorFixo={sessao.papel === 'lanterna' ? String(sessao.setorId) : null} />
         </div>
       </MolduraOa>
     </article>

@@ -16,11 +16,11 @@ import { verificarSessao } from '@/lib/dal'
 import { listarSetores } from '@/lib/setores'
 import { criarOcorrencia } from '@/lib/ocorrencias'
 import { MENSAGEM_ERRO_API } from '@/lib/resultado-acao'
-import type { Sessao } from '@/lib/sessao'
+import type { Sessao } from '@/lib/schemas/usuario'
 import { registrarOcorrencia } from '@/app/(painel)/painel/ocorrencias/actions'
 
-const hal: Sessao = { id: 'u2', nome: 'Hal Jordan', papel: 'lanterna', setorId: '2814', lanternaId: 'hal-jordan', expiraEm: Date.now() + 60_000 }
-const ganthet: Sessao = { id: 'u1', nome: 'Ganthet', papel: 'guardiao', setorId: null, lanternaId: null, expiraEm: Date.now() + 60_000 }
+const hal: Sessao = { id: '00000000-0000-4000-8000-000000000002', nome: 'Hal Jordan', email: 'hal@oa.tropa', papel: 'lanterna', setorId: 2814, lanternaId: 'hal-jordan', criadoEm: '2026-01-01T00:00:00.000Z' }
+const ganthet: Sessao = { id: '00000000-0000-4000-8000-000000000001', nome: 'Ganthet', email: 'ganthet@oa.tropa', papel: 'guardiao', setorId: null, lanternaId: null, criadoEm: '2026-01-01T00:00:00.000Z' }
 const valida = { titulo: 'Invasão em Oa', descricao: 'Muitos invasores na Bateria Central.', planeta: 'Oa', setorId: '674', gravidade: 'alta', envolvidos: '2' }
 
 beforeEach(() => {
@@ -40,7 +40,7 @@ describe('registrarOcorrencia', () => {
     vi.mocked(verificarSessao).mockResolvedValue(hal)
     await expect(registrarOcorrencia(valida)).rejects.toThrow('NEXT_REDIRECT /painel/ocorrencias/nova1')
     expect(vi.mocked(criarOcorrencia).mock.calls[0][0]).toMatchObject({
-      setorId: '2814', status: 'aberta', responsavelId: null, resolucao: null, criadaPor: 'u2', envolvidos: 2,
+      setorId: '2814', status: 'aberta', responsavelId: null, resolucao: null, criadaPor: '00000000-0000-4000-8000-000000000002', envolvidos: 2,
     })
     expect(revalidatePath).toHaveBeenCalledWith('/painel', 'layout')
   })

@@ -14,8 +14,8 @@ Toda tela com dados tem os quatro estados: carregando, erro, vazio e com dados.
 | Sobre | `/sobre` | Atual (UI-01, UI-02.02) | Oa, a Tropa e o juramento |
 | Lanternas | `/lanternas` | Atual (UI-01, UI-02.04) | Lista com filtro por Setor. **Muda:** busca, filtro de status e paginação, vindos da API |
 | Ficha do Lanterna | `/lanternas/[id]` | Atual (UI-01, UI-02.05) | Ficha pública com identidade, espécie, planeta, Setor navegável, status operacional com SeloOa, construto vetorial OANET e link de retorno |
-| Login | `/login` | Atual (UI-01, UI-02.03) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
-| Cadastro | `/cadastro` | **Nova** | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
+| Login | `/login` | Preparado contra contrato (FE-02, P) | **Muda:** chama a API; link para o cadastro; aviso de 429 |
+| Cadastro | `/cadastro` | Preparado contra contrato (FE-02, P) | Nome, e-mail, senha e Setor. Sempre cria um Lanterna; depois leva ao login |
 | Acesso negado | `/acesso-negado` | Atual (UI-01, UI-02.11) | Página de aviso 403 com PaginaAviso, EmblemaOa e botão de retorno ao painel |
 | Design system | `/design-system` | Atual (UI-01, UI-02.12) | Redirecionamento permanente para a vitrine oficial do laboratório OANET (/laboratorio, decisão D28) |
 | Laboratório | `/laboratorio` | Existe, UI oficial D28 | Referência de design, assets e movimento; dados ilustrativos, sem API |

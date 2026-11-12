@@ -89,64 +89,70 @@ export default async function OcorrenciaPage({ params, searchParams }: Ocorrenci
       </div>
 
       <MolduraOa titulo="Registro operacional" icone="ocorrencias">
-        <p className="max-w-prose text-(--oa-text)">{ocorrencia.descricao}</p>
-        <dl className="mt-6 grid gap-x-8 gap-y-4 border-t border-(--oa-line) pt-6 sm:grid-cols-2"> {/* [CSS-03] */}
-          <div className="grid gap-1">
-            <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Planeta</dt>
-            <dd className="text-sm font-medium text-(--oa-text)">{ocorrencia.planeta}</dd>
-          </div>
-          <div className="grid gap-1">
-            <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Setor</dt>
-            <dd className="font-mono text-sm text-(--oa-text)">{setor?.nome ?? `Setor ${ocorrencia.setorId}`}</dd> {/* [CSS-13] */}
-          </div>
-          <div className="grid gap-1">
-            <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Seres envolvidos</dt>
-            <dd className="tabular-nums text-sm font-medium text-(--oa-text)">{ocorrencia.envolvidos}</dd>
-          </div>
-          <div className="grid gap-1">
-            <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Responsável</dt>
-            <dd className="text-sm font-medium text-(--oa-text)">{responsavel?.codinome ?? <span className="text-(--oa-muted)">Sem responsável</span>}</dd>
-          </div>
-          <div className="grid gap-1">
-            <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Prazo</dt>
-            <dd className="text-sm font-medium text-(--oa-text) flex items-center gap-2">
-              <span>{formatarData(ocorrencia.prazoEm)}</span>
-              {ocorrencia.vencida && <SeloOa tom="vermelho">Vencida</SeloOa>}
-            </dd>
-          </div>
-          <div className="grid gap-1">
-            <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Registrada em</dt>
-            <dd className="text-sm font-medium text-(--oa-text)">{formatarData(ocorrencia.criadaEm)}</dd>
-          </div>
-          {ocorrencia.resolvidaEm && (
+        <div className="oa-panel-body">
+          <p className="max-w-prose text-(--oa-text)">{ocorrencia.descricao}</p>
+          <dl className="mt-6 grid gap-x-8 gap-y-4 border-t border-(--oa-line) pt-6 sm:grid-cols-2"> {/* [CSS-03] */}
             <div className="grid gap-1">
-              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Resolvida em</dt>
-              <dd className="text-sm font-medium text-(--oa-text)">{formatarData(ocorrencia.resolvidaEm)}</dd>
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Planeta</dt>
+              <dd className="text-sm font-medium text-(--oa-text)">{ocorrencia.planeta}</dd>
             </div>
-          )}
-          {ocorrencia.resolucao && ( // [COMP-14]
-            <div className="grid gap-1 sm:col-span-2">
-              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Resolução</dt>
-              <dd className="max-w-prose text-sm font-medium text-(--oa-text)">{ocorrencia.resolucao}</dd>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Setor</dt>
+              <dd className="font-mono text-sm text-(--oa-text)">{setor?.nome ?? `Setor ${ocorrencia.setorId}`}</dd> {/* [CSS-13] */}
             </div>
-          )}
-        </dl>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Seres envolvidos</dt>
+              <dd className="tabular-nums text-sm font-medium text-(--oa-text)">{ocorrencia.envolvidos}</dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Responsável</dt>
+              <dd className="text-sm font-medium text-(--oa-text)">{responsavel?.codinome ?? <span className="text-(--oa-muted)">Sem responsável</span>}</dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Prazo</dt>
+              <dd className="text-sm font-medium text-(--oa-text) flex items-center gap-2">
+                <span>{formatarData(ocorrencia.prazoEm)}</span>
+                {ocorrencia.vencida && <SeloOa tom="vermelho">Vencida</SeloOa>}
+              </dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Registrada em</dt>
+              <dd className="text-sm font-medium text-(--oa-text)">{formatarData(ocorrencia.criadaEm)}</dd>
+            </div>
+            {ocorrencia.resolvidaEm && (
+              <div className="grid gap-1">
+                <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Resolvida em</dt>
+                <dd className="text-sm font-medium text-(--oa-text)">{formatarData(ocorrencia.resolvidaEm)}</dd>
+              </div>
+            )}
+            {ocorrencia.resolucao && ( // [COMP-14]
+              <div className="grid gap-1 sm:col-span-2">
+                <dt className="text-xs uppercase tracking-wider text-(--oa-muted)">Resolução</dt>
+                <dd className="max-w-prose text-sm font-medium text-(--oa-text)">{ocorrencia.resolucao}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
       </MolduraOa>
 
       {transicoes.length > 0 && (
         <MolduraOa titulo="Atualizar status" icone="painel">
-          <FormStatus
-            key={`${ocorrencia.status}-${ocorrencia.resolucao ?? ''}`}
-            ocorrenciaId={ocorrencia.id}
-            statusAtual={ocorrencia.status}
-            transicoes={transicoes}
-          />
+          <div className="oa-panel-body">
+            <FormStatus
+              key={`${ocorrencia.status}-${ocorrencia.resolucao ?? ''}`}
+              ocorrenciaId={ocorrencia.id}
+              statusAtual={ocorrencia.status}
+              transicoes={transicoes}
+            />
+          </div>
         </MolduraOa>
       )}
 
       {acoes.editar && (
         <MolduraOa titulo="Editar dados" icone="ocorrencias">
-          <FormEditarOcorrencia ocorrencia={ocorrencia} />
+          <div className="oa-panel-body">
+            <FormEditarOcorrencia ocorrencia={ocorrencia} />
+          </div>
         </MolduraOa>
       )}
 

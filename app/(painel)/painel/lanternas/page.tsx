@@ -85,7 +85,7 @@ export default async function PainelLanternasPage({ searchParams }: PainelLanter
                       <TableRow key={lanterna.id}>
                         <TableCell>
                           <Link
-                            href={`/lanternas/${lanterna.id}`}
+                            href={`/painel/lanternas/${lanterna.id}`}
                             className="oa-record-link font-medium"
                           >
                             <strong>{lanterna.codinome}</strong>

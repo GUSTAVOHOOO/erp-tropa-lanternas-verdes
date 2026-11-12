@@ -13,10 +13,10 @@ export async function listarLanternas(filtro: FiltroListaLanternas = {}, cache: 
 }
 
 /** Busca uma Ficha pública; slug inválido ou recurso inexistente retorna null. */
-export async function buscarLanterna(slug: string): Promise<LanternaFicha | null> {
+export async function buscarLanterna(slug: string, cache: CacheApi = { revalidate: 60 }): Promise<LanternaFicha | null> {
   if (!slugLanternaSchema.safeParse(slug).success) return null
   try {
-    return await requisitarApi('/lanternas/' + encodeURIComponent(slug), lanternaFichaSchema, { cache: { revalidate: 60 } })
+    return await requisitarApi('/lanternas/' + encodeURIComponent(slug), lanternaFichaSchema, { cache })
   } catch (erro) {
     if (erro instanceof ApiError && erro.status === 404) return null
     throw erro

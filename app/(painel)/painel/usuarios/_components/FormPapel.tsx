@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { BotaoOa } from '@/components/oanet/PainelOa'
@@ -26,13 +26,18 @@ const ITENS_PAPEL: Record<string, string> = {
   lanterna: 'Lanterna',
 }
 
-/** Formulário para alteração de papel do usuário pelo Guardião. [FORM-01][FORM-06][FORM-19] */
+/**
+ * Formulário para alteração de papel do usuário pelo Guardião. [FORM-01][FORM-06][FORM-19]
+ * O setor só aparece quando importa: é obrigatório ao rebaixar um Guardião (que não tem setor) e,
+ * para quem já é Lanterna, só quando o Guardião marca a transferência; fora disso é omitido.
+ */
 export function FormPapel({ usuario, setores }: FormPapelProps) {
   const {
     control,
     handleSubmit,
     reset,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<PapelFormularioInput, unknown, PapelFormularioOutput>({
     resolver: zodResolver(papelFormularioSchema),
@@ -52,16 +57,33 @@ export function FormPapel({ usuario, setores }: FormPapelProps) {
   }, [usuario, reset])
 
   const papelAtual = useWatch({ control, name: 'papel' })
+  // A página monta o formulário com key = id da conta: trocar de conta zera esta escolha.
+  const [transferir, setTransferir] = useState(false)
+  // Guardião não tem setor: virar Lanterna exige escolher um (a API responde SETOR_OBRIGATORIO).
+  const exigeSetor = usuario.papel === 'guardiao' && papelAtual === 'lanterna'
+  const mostraSetor = exigeSetor || (usuario.papel === 'lanterna' && papelAtual === 'lanterna' && transferir)
+
+  useEffect(() => {
+    if (!mostraSetor) setValue('setorId', '')
+  }, [mostraSetor, setValue])
 
   async function onSubmit(dados: PapelFormularioOutput) {
+    if (exigeSetor && dados.setorId === undefined) {
+      setError('setorId', { message: 'Escolha o setor: a conta vai virar Lanterna e precisa de um.' })
+      return
+    }
+    if (transferir && !exigeSetor && dados.setorId === undefined) {
+      setError('setorId', { message: 'Escolha o setor de destino da transferência.' })
+      return
+    }
     const resultado = await alterarPapelAcao(usuario.id, dados)
     aplicarErrosDoServidor(resultado, setError)
   }
 
-  const itensSetor: Record<string, string> = {
-    '': 'Manter o setor atual',
-    ...Object.fromEntries(setores.map((s) => [String(s.id), `Setor ${s.id} · ${s.nome}`])),
-  }
+  // Na transferência, o setor atual da conta não aparece como destino.
+  const itensSetor: Record<string, string> = Object.fromEntries(
+    setores.filter((s) => exigeSetor || s.id !== usuario.setorId).map((s) => [String(s.id), `Setor ${s.id} · ${s.nome}`]),
+  )
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="grid gap-5">
@@ -83,21 +105,33 @@ export function FormPapel({ usuario, setores }: FormPapelProps) {
         )}
       />
 
-      {papelAtual === 'lanterna' && (
+      {usuario.papel === 'lanterna' && papelAtual === 'lanterna' && (
+        <label className="oa-field oa-field--inline">
+          <input
+            type="checkbox"
+            className="oa-checkbox"
+            checked={transferir}
+            onChange={(e) => setTransferir(e.target.checked)}
+          />
+          <span>Transferir para outro setor{usuario.setorId !== null ? ` (hoje: Setor ${usuario.setorId})` : ''}</span>
+        </label>
+      )}
+
+      {mostraSetor && (
         <Controller
           name="setorId"
           control={control}
           render={({ field, fieldState }) => (
             <CampoSelect
               id="setorId"
-              rotulo="Setor da conta"
+              rotulo={exigeSetor ? 'Setor da conta' : 'Novo setor da conta'}
               itens={itensSetor}
               valor={field.value !== undefined && field.value !== null ? String(field.value) : ''}
               aoMudar={(v) => field.onChange(v ?? '')}
               aoSair={field.onBlur}
               refCampo={field.ref}
               erro={fieldState.error?.message}
-              placeholder="Manter o setor atual"
+              placeholder="Escolha o setor"
             />
           )}
         />

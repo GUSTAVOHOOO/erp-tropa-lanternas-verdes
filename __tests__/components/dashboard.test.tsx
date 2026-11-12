@@ -130,10 +130,10 @@ test('Dashboard renderiza ranking ordenado com Links para a ficha do lanterna', 
   render(<DashboardComponent dados={dadosCompletos} dias={30} />)
 
   const linkHal = screen.getByRole('link', { name: 'Hal Jordan' })
-  expect(linkHal.getAttribute('href')).toBe('/lanternas/hal-jordan')
+  expect(linkHal.getAttribute('href')).toBe('/painel/lanternas/hal-jordan')
 
   const linkKilowog = screen.getByRole('link', { name: 'Kilowog' })
-  expect(linkKilowog.getAttribute('href')).toBe('/lanternas/kilowog')
+  expect(linkKilowog.getAttribute('href')).toBe('/painel/lanternas/kilowog')
 
   expect(screen.getByText(/2 resolvidas/)).toBeDefined()
 })

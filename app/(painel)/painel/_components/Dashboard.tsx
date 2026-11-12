@@ -237,7 +237,7 @@ export function Dashboard({ dados, dias = DIAS_PADRAO, setores = [] }: Dashboard
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs text-muted-foreground w-4">{index + 1}.</span>
                       <Link
-                        href={`/lanternas/${item.lanternaId}`}
+                        href={`/painel/lanternas/${item.lanternaId}`}
                         className="font-medium text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline text-sm"
                       >
                         {item.codinome}
